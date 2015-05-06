@@ -1,17 +1,25 @@
 package com.caster.caster_android;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
 public class MainActivity extends ActionBarActivity {
+    public static String host = "jdbc:mysql://192.168.2.155:8000/caster_db?autoReconnect=true";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        /*
+        // Testing backend stuff
+        User user = User.makeFromID(24);
+        Podcast podcast = Podcast.makeFromID(3);
+        String str = user.getUsername() + ":" + user.getDescription() + "\n"+
+                podcast.getTitle() +":"+ podcast.getDescription();
+        ((TextView) findViewById(R.id.test_text_view)).setText(str);*/
     }
 
     @Override
