@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Base application theme. -->
+    <style name="CasterTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:actionBarStyle" tools:ignore="NewApi">@style/ActionbarTheme</item>
+        <item name="actionBarStyle">@style/ActionbarTheme</item>
+    </style>
+
+    <style name="ActionbarTheme" parent="Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background" tools:ignore="NewApi">@color/Caster_Colour_Red</item>
+        <item name="background">@color/Caster_Colour_Red</item>
+        <!--<item name="android:colorPrimary">@color/Caster_Colour_Red</item>
+        <item name="android:colorPrimaryDark">@color/Caster_Colour_Red_Dark</item>-->
+    </style>
+
+</resources>
