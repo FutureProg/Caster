@@ -19,8 +19,8 @@ public class User {
 
     /***
      *  Retrieve the user's metadata from the server
-     * @param userid - userid to process
-     * @return - an instance of the user
+     * @param userid userid to process
+     * @return an instance of the user
      */
     public static User makeFromID(int userid){
         HashMap<Integer,Object> data = new HashMap<>();

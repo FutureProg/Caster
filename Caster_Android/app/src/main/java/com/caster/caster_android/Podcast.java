@@ -23,8 +23,8 @@ public class Podcast {
 
     /***
      * Retrieve the podcast's metadata from the server
-     * @param podcastid - the podcast's id
-     * @return - an instance of the podcast
+     * @param podcastid the podcast's id
+     * @return an instance of the podcast
      */
     public static Podcast makeFromID(int podcastid){
         HashMap<Integer,Object> data = new HashMap<>();
