@@ -2,4 +2,5 @@
 <resources>
     <color name="Caster_Colour_Red">#fffb000a</color>
     <color name="Caster_Colour_Red_Dark">#ffad000a</color>
+    <color name="play_screen_grey">#E6E6E6</color>
 </resources>
