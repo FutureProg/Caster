@@ -3,13 +3,10 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-<<<<<<< HEAD
     <string name="author">AuthorName</string>
     <string name="comment_box">Enter Comment Here</string>
     <string name="description">This is a generic Description. Here is some more text to make it even longer. Lorum ipsum dolor sit amet.</string>
     <string name="title_activity_play_podcast">PlayPodcast</string>
-=======
     <string name="drawer_open"></string>
     <string name="drawer_close">Caster</string>
->>>>>>> f396947de4351efd890bd11c68e14cfa156038e1
 </resources>

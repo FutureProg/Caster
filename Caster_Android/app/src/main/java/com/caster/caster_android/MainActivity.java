@@ -2,12 +2,9 @@ package com.caster.caster_android;
 
 import android.app.ActionBar;
 import android.app.Activity;
-<<<<<<< HEAD
 import android.content.Intent;
-=======
 import android.content.res.Configuration;
 import android.graphics.Color;
->>>>>>> f396947de4351efd890bd11c68e14cfa156038e1
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -101,6 +98,11 @@ public class MainActivity extends Activity {
                 imgView.setColorFilter(Color.rgb(255,255,255));
             }
         }
+    }
+
+    public void openPlayer(View view){
+        Intent intent = new Intent(this,PlayPodcast.class);
+        startActivity(intent);
     }
 
     @Override

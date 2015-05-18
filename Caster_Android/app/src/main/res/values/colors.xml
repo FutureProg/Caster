@@ -3,4 +3,5 @@
     <color name="Caster_Colour_Red">#fffb000a</color>
     <color name="Caster_Colour_Red_Dark">#ffad000a</color>
     <color name="play_screen_grey">#E6E6E6</color>
+    <color name="track_bar_bg">#be2e2e2e</color>
 </resources>

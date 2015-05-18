@@ -1,33 +1,19 @@
 package com.caster.caster_android;
 
 import android.app.Activity;
-import android.content.res.Resources;
-import android.graphics.drawable.ColorDrawable;
-import android.media.Image;
-import android.support.v7.app.ActionBarActivity;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.MediaController;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.EditText;
 import android.widget.Button;
-import android.graphics.Color;
-import android.widget.ImageButton;
-
+import android.widget.ImageView;
 import android.widget.SeekBar;
-import android.media.MediaPlayer;
-import android.os.Handler;
+import android.widget.TextView;
 
-import java.sql.Time;
 import java.util.concurrent.TimeUnit;
-import java.util.ArrayList;
 
 
 /*
@@ -75,14 +61,21 @@ public class PlayPodcast extends Activity {
     private TextView length;
     private int track;
     private double timeElapsed, endTime;
-    private ImageButton playButton;
+    private Button playButton;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        overridePendingTransition(R.anim.slide_up,R.anim.abc_fade_out);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_podcast);
         initializeViews();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.abc_fade_in,R.anim.slide_down);
     }
 
     @Override
@@ -118,7 +111,7 @@ public class PlayPodcast extends Activity {
         coverImage = (ImageView)findViewById(R.id.cover_image);
         coverImage.setBackgroundResource(coverImageID);
 
-        playButton = (ImageButton)findViewById(R.id.playButton);
+        playButton = (Button)findViewById(R.id.playButton);
 
         setTitle(podcastName);
 
@@ -141,13 +134,13 @@ public class PlayPodcast extends Activity {
         if(!(mp.isPlaying()))
         {
             mp.start();
-            playButton.setImageResource(R.drawable.pause);
+            playButton.setBackground(getDrawable(R.drawable.pause));
         }
         //Pause
         else if(mp.isPlaying())
         {
             mp.pause();
-            playButton.setImageResource(R.drawable.play);
+            playButton.setBackground(getDrawable(R.drawable.play));
         }
 
         //Handle Seekbar
