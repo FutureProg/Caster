@@ -1,6 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:id="@+id/drawer_layout">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/gridLayout">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/main_content"
+                android:orientation="vertical">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:background="@android:color/black"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Recent Uploads"
+                    android:layout_marginTop="10dp"/>
+                <GridLayout
+                    android:id="@+id/recent_uploads"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:rowCount="3"
+                    android:columnCount="2">
 
-</LinearLayout>
+                    <ImageView
+                        android:src="@drawable/dummy_podcast_img"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        />
+                    <ImageView
+                        android:src="@drawable/dummy_podcast_img"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_marginLeft="10dp"
+                        />
+                    <ImageView
+                        android:src="@drawable/dummy_podcast_img"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        />
+                    <ImageView
+                        android:src="@drawable/dummy_podcast_img"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_marginLeft="10dp"
+                        />
+                    <ImageView
+                        android:src="@drawable/dummy_podcast_img"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        />
+                    <ImageView
+                        android:src="@drawable/dummy_podcast_img"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_marginLeft="10dp"
+                        />
+
+                </GridLayout>
+            </LinearLayout>
+        </ScrollView>
+
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:rowCount="1"
+            android:columnCount="4"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal"
+            android:background="@color/Caster_Colour_Red"
+            android:id="@+id/gridLayout">
+
+            <Button
+                android:layout_width="65dp"
+                android:layout_height="70dp"
+                android:layout_column="0"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/dummy_podcast_img"/>
+
+            <Button
+                android:layout_width="30dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_column="1"
+                android:layout_gravity="center"
+                android:background="@drawable/skip_button_white_left"/>
+
+            <Button
+                android:layout_width="30dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_column="2"
+                android:layout_gravity="center"
+                android:background="@drawable/play_button"/>
+
+            <Button
+                android:layout_width="30dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_column="3"
+                android:layout_gravity="center"
+                android:background="@drawable/skip_button_white"/>
+
+        </GridLayout>
+    </RelativeLayout>
+
+    <ListView
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:id="@+id/left_drawer"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:layout_gravity="left|start"
+        android:dividerHeight="0dp"
+        android:background="@android:color/white"/>
+
+</android.support.v4.widget.DrawerLayout>

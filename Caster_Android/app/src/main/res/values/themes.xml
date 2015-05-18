@@ -12,6 +12,7 @@
     <style name="ActionbarTheme" parent="android:Widget.Holo.Light.ActionBar.Solid.Inverse">
         <item name="android:background" tools:ignore="NewApi">@color/Caster_Colour_Red</item>
         <item name="background">@color/Caster_Colour_Red</item>
+        <item name="android:logo">@drawable/ic_caster_logo</item>
         <!--<item name="android:colorPrimary">@color/Caster_Colour_Red</item>
         <item name="android:colorPrimaryDark">@color/Caster_Colour_Red_Dark</item>-->
     </style>
