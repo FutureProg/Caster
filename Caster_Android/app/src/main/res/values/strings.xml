@@ -9,4 +9,6 @@
     <string name="title_activity_play_podcast">PlayPodcast</string>
     <string name="drawer_open"></string>
     <string name="drawer_close">Caster</string>
+    <string name="lorem_ipsum">Lorem Ipsum Dolar sit amet</string>
+    <string name="title_activity_sign_in_">Sign In</string>
 </resources>

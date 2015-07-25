@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="Caster_Colour_Red">#fffb000a</color>
-    <color name="Caster_Colour_Red_Dark">#ffad000a</color>
+    <color name="Caster_Colour_Red">#F44336</color>
+    <color name="Caster_Colour_Red_Dark">#C62828</color>
     <color name="play_screen_grey">#E6E6E6</color>
     <color name="track_bar_bg">#be2e2e2e</color>
 </resources>

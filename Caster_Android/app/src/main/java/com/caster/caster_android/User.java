@@ -1,5 +1,15 @@
 package com.caster.caster_android;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import com.caster.caster_android.utils.Bin;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
@@ -13,9 +23,11 @@ import java.util.concurrent.ExecutionException;
  */
 public class User {
 
-    public static final int USERNAME = 0, DESCRIPTION = 1, SUBSCRIBER_COUNT = 2,ID=3;
+    public static final int USERNAME = 0, DESCRIPTION = 1, SUBSCRIBER_COUNT = 2,ID=3, IMAGE = 4;
 
     HashMap<Integer, Object> metadata; //username, description,subscriber count,id
+    ArrayList<Podcast> podcasts;
+    Bitmap image;
 
     /***
      *  Retrieve the user's metadata from the server
@@ -23,32 +35,93 @@ public class User {
      * @return an instance of the user
      */
     public static User makeFromID(int userid){
+        if (Bin.users.containsKey(userid)){
+            return Bin.users.get(userid);
+        }
         HashMap<Integer,Object> data = new HashMap<>();
         User re = null;
         String urlStr = "http://192.168.2.155:8000/php/user_info.php";
         CasterRequest req = new CasterRequest(urlStr);
-        req.addParam("q","UN").addParam("id",""+userid);
+        req.addParam("q","USR_JSN").addParam("id",""+userid);
         try {
-            data.put(ID,userid);
-            data.put(USERNAME, (String) req.execute().get());
-            req = new CasterRequest(urlStr);
-            String res = (String)req.addParam("q","DESC").addParam("id",""+userid).execute().get();
-            data.put(DESCRIPTION,res);
+            String res = (String)req.execute().get();
+            JSONObject obj = new JSONObject(res);
+            re = makeFromJson(obj);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        re = new User(data);
+        return re;
+    }
+
+    public static User makeFromJson(JSONObject jsonObject){
+        HashMap<Integer,Object> data = new HashMap<>();
+        User re = null;
+        try {
+            data.put(IMAGE,jsonObject.getString("picture"));
+            data.put(DESCRIPTION,jsonObject.getString("description"));
+            data.put(ID,jsonObject.getInt("user_id"));
+            data.put(USERNAME,jsonObject.getString("username"));
+            re = new User(data);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return re;
     }
 
     public User(HashMap<Integer, Object> metadata){
         this.metadata = metadata;
+        Bin.users.put(getId(),this);
+    }
+
+    public ArrayList<Podcast> getPodcasts(){
+        if (podcasts == null){
+            podcasts = new ArrayList<>();
+            CasterRequest req = new CasterRequest(MainActivity.site + "/php/podcast.php");
+            req.addParam("q","BY_USR").addParam("id",this.getId()+"");
+            try {
+                String result = (String)req.execute().get();
+                JSONArray array = new JSONArray(result);
+                for (int i = 0;i < array.length();i++){
+                    JSONObject obj = array.getJSONObject(i);
+                    podcasts.add(Podcast.makeFromJson(obj));
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return podcasts;
     }
 
     public String getUsername(){
         return (String)this.metadata.get(USERNAME);
+    }
+
+    public Bitmap getImage(){
+        if (image == null){
+            String imgName = (String) this.metadata.get(IMAGE);
+            if (imgName == null || imgName.trim().isEmpty()){
+                image = BitmapFactory.decodeResource(MainActivity.instance.getResources(),
+                        R.drawable.default_profile);
+            }else{
+                String url = MainActivity.site + "/users/"+getId()+"/images/"+imgName;
+                try {
+                    image = Bin.getBitmap(url);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return image;
     }
 
     public String getDescription(){

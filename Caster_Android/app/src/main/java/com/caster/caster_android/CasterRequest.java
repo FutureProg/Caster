@@ -95,6 +95,7 @@ public class CasterRequest extends AsyncTask<Void,Void,Object>{
             urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             String query = createQueryString(this.params);
             urlConnection.setFixedLengthStreamingMode(query.getBytes().length);
+            urlConnection.setConnectTimeout(2000);
             DataOutputStream out = new DataOutputStream(urlConnection.getOutputStream());
             out.writeBytes(query);
             out.flush();

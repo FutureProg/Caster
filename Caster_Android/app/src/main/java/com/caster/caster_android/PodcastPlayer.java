@@ -1,7 +1,7 @@
 package com.caster.caster_android;
 
 import android.app.Activity;
-import android.graphics.drawable.BitmapDrawable;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import com.caster.caster_android.utils.Bin;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -30,44 +32,24 @@ TODO
 
 public class PodcastPlayer extends Activity {
 
+    public static final String KEY_COMMAND = "com.caster.caster_android.PodcastPlayer.COMMAND";
+    public static final byte COMMAND_PLAY = 0x0;
 
     public static Podcast podcast;
 
-    //Grab Podcast Data
-    //Podcast podcast = new Podcast();
-
     private static final String TAG = "Play Podcast";
-    public static final String PODCAST_URL = PodcastPlayer.class.toString()+"/PODCAST_URL";
 
-    //Sample Data
-    private String podcastName = "Podcast Name";
-    private String authorName = "Author Name";
-    private String description = "Lorem ipsum dolor sit amet, mel " +
-            "ei nihil ignota verterem. Eam ea molestie consequat definiebas. " +
-            "Ex persius gloriatur est, id sit integre ponderum postulant, vix " +
-            "cu adhuc dicit. Usu duis velit senserit in, ut quo quas phaedrum lobortis, " +
-            "habeo audiam ut mea.";
-    private boolean subscribed;
-    private int coverImageID = R.drawable.cover;
-    private int profilePictureID;
     private int[] podcastList = {R.raw.sample, R.raw.sample_2};
     private int currentPodcast = 0;
-    //private ArrayList<Podcast> podcastList = new ArrayList<Podcast>();
 
-
-    //Views
     private TextView author,descriptionBox;
     private ImageView coverImage;
-    private View view;
 
-    //Player
     private MediaPlayer mp;
     private SeekBar seekBar;
     private Handler durationHandler = new Handler();
     private Handler playlistHandler = new Handler();
     private TextView length;
-    private int track;
-    private String url;
     private double timeElapsed, endTime;
     private Button playButton;
 
@@ -78,6 +60,25 @@ public class PodcastPlayer extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_podcast);
         initializeViews();
+        if (getIntent().getExtras().containsKey(KEY_COMMAND)){
+            if (getIntent().getExtras().getByte(KEY_COMMAND) == COMMAND_PLAY){
+                mp = new MediaPlayer();
+                mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                String url = MainActivity.site + "/php/audio_file.php?q="+podcast.getId()+"$"+ Bin.getPodcastToken();
+                try {
+                    mp.setDataSource(url);
+                    mp.prepareAsync();
+                    endTime = mp.getDuration();
+                    length = (TextView)findViewById(R.id.length);
+                    seekBar = (SeekBar)findViewById(R.id.seekbar);
+                    seekBar.setMax((int) endTime);
+                    seekBar.setClickable(false);
+                    play(null);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override
@@ -89,8 +90,8 @@ public class PodcastPlayer extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_play_podcast, menu);
-        return true;
+        //getMenuInflater().inflate(R.menu.menu_play_podcast, menu);
+        return false;
     }
 
     @Override
@@ -115,13 +116,15 @@ public class PodcastPlayer extends Activity {
         }
 
         author = (TextView)findViewById(R.id.author_name);
-        author.setText(authorName);
+        author.setText(podcast.getCreator().getUsername());
 
         descriptionBox = (TextView)findViewById(R.id.description);
         descriptionBox.setText(podcast.getDescription());
 
+        ((ImageView)findViewById(R.id.profilePicture)).setImageBitmap(podcast.getCreator().getImage());
+
         coverImage = (ImageView)findViewById(R.id.cover_image);
-        coverImage.setBackground(new BitmapDrawable(getResources(), podcast.getCoverPhoto()));
+        coverImage.setImageBitmap(podcast.getCoverPhoto());
 
         playButton = (Button)findViewById(R.id.playButton);
 
@@ -129,7 +132,7 @@ public class PodcastPlayer extends Activity {
 
         //Media Player
         mp = new MediaPlayer();
-        mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        /*mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
             mp.setDataSource(podcast.getAudioURL());
             mp.prepareAsync();
@@ -140,7 +143,7 @@ public class PodcastPlayer extends Activity {
             seekBar.setClickable(false);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 
 
     }
@@ -168,7 +171,7 @@ public class PodcastPlayer extends Activity {
         durationHandler.postDelayed(updateSeekBarTime, 100);
 
         //Checks if we've reached the end of the song
-        playlistHandler.postDelayed(playNext,100);
+        playlistHandler.postDelayed(playNext, 100);
     }
 
     //Play previous podcast
@@ -197,6 +200,13 @@ public class PodcastPlayer extends Activity {
         }
     }
 
+    public void profilePage(View view){
+        ProfileActivity.user = podcast.getCreator();
+        Intent intent = new Intent(this,ProfileActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
     //Updates seekbar time
     private Runnable updateSeekBarTime = new Runnable() {
         @Override
@@ -223,7 +233,7 @@ public class PodcastPlayer extends Activity {
             timeElapsed = mp.getCurrentPosition();
             if(timeElapsed == endTime)
             {
-                next(view);
+                next(null);
             }
             playlistHandler.postDelayed(this,100);
         }

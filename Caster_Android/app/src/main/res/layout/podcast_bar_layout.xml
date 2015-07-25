@@ -1,6 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.caster.caster_android.views.PodcastBar
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:elevation="2dp"
+    android:layout_marginTop="5dp"
+    android:orientation="horizontal">
 
+    <ImageButton
+        android:id="@+id/cover_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/dummy_podcast_img"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="@string/lorem_ipsum"
+            android:id="@+id/title"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/description"
+            android:text="@string/lorem_ipsum"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="italic"
+            android:text="00:00"
+            android:id="@+id/time"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="by: blabla"
+            android:id="@+id/author_name"/>
+
+    </LinearLayout>
+    
 </com.caster.caster_android.views.PodcastBar>

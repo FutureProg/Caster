@@ -9,8 +9,8 @@
         android:layout_height="match_parent">
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/gridLayout">
+            android:layout_height="match_parent"
+            >
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -20,6 +20,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="180dp"
                     android:background="@android:color/black"
+                    android:elevation="2dp"
                     />
                 <TextView
                     android:layout_width="wrap_content"
@@ -35,39 +36,6 @@
                     android:rowCount="3"
                     android:columnCount="2">
 
-                    <ImageView
-                        android:src="@drawable/dummy_podcast_img"
-                        android:layout_width="120dp"
-                        android:layout_height="120dp"
-                        />
-                    <ImageView
-                        android:src="@drawable/dummy_podcast_img"
-                        android:layout_width="120dp"
-                        android:layout_height="120dp"
-                        android:layout_marginLeft="10dp"
-                        />
-                    <ImageView
-                        android:src="@drawable/dummy_podcast_img"
-                        android:layout_width="120dp"
-                        android:layout_height="120dp"
-                        />
-                    <ImageView
-                        android:src="@drawable/dummy_podcast_img"
-                        android:layout_width="120dp"
-                        android:layout_height="120dp"
-                        android:layout_marginLeft="10dp"
-                        />
-                    <ImageView
-                        android:src="@drawable/dummy_podcast_img"
-                        android:layout_width="120dp"
-                        android:layout_height="120dp"
-                        />
-                    <ImageView
-                        android:src="@drawable/dummy_podcast_img"
-                        android:layout_width="120dp"
-                        android:layout_height="120dp"
-                        android:layout_marginLeft="10dp"
-                        />
 
                 </GridLayout>
             </LinearLayout>
@@ -75,6 +43,7 @@
 
 
         <GridLayout
+            android:elevation="12dp"
             android:layout_width="match_parent"
             android:layout_height="65dp"
             android:rowCount="1"
@@ -82,12 +51,13 @@
             android:layout_alignParentBottom="true"
             android:orientation="horizontal"
             android:background="@color/Caster_Colour_Red"
-            android:id="@+id/gridLayout">
+            android:id="@+id/podcast_bar">
 
             <Button
-                android:layout_width="65dp"
+                android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_column="0"
+                android:id="@+id/podcast_bar_img"
                 android:layout_gravity="center_vertical"
                 android:onClick="openPlayer"
                 android:background="@drawable/dummy_podcast_img"/>
@@ -123,6 +93,7 @@
     </RelativeLayout>
 
     <ListView
+        android:elevation="16dp"
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:id="@+id/left_drawer"
