@@ -3,11 +3,15 @@ package com.caster.caster_android.utils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.caster.caster_android.CasterRequest;
 import com.caster.caster_android.MainActivity;
 import com.caster.caster_android.Podcast;
 import com.caster.caster_android.User;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,9 +24,11 @@ import java.util.concurrent.ExecutionException;
  */
 public class Bin {
 
+
     public static HashMap<Integer,User> users;
     public static HashMap<Integer,Podcast> podcasts;
     private static String podcastToken = null;
+    private static User signedInUser = null;
 
     public static void init(){
         if (users == null){
@@ -71,4 +77,26 @@ public class Bin {
         return re;
     }
 
+    public static User getSignedInUser(){
+        return signedInUser;
+    }
+
+    public static User signIn(String email, String password) throws ExecutionException, InterruptedException {
+        signedInUser = null;
+        CasterRequest req = new CasterRequest(MainActivity.site + "/php/signin.php");
+        req.addParam("e",email).addParam("p",password).addParam("t","mobi");
+        String str = (String) req.execute().get();
+        Log.v("caster LOGIN",str);
+        if (str != null && !str.isEmpty()){
+            try {
+                signedInUser = User.makeFromJson(new JSONObject(str));
+            } catch (JSONException e) {
+            }
+        }
+        return signedInUser;
+    }
+
+    public static void signOut(){
+        signedInUser = null;
+    }
 }

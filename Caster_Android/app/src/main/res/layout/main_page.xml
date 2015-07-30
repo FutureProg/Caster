@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
+    android:fitsSystemWindows="true"
     android:id="@+id/drawer_layout">
     <RelativeLayout
         android:layout_width="match_parent"
@@ -91,6 +94,15 @@
 
         </GridLayout>
     </RelativeLayout>
+
+    <!--<android.support.design.widget.NavigationView
+        android:id="@+id/navigation_view"
+        app:menu="@menu/menu_navdrawer"
+        app:headerLayout="@layout/test_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        />-->
 
     <ListView
         android:elevation="16dp"

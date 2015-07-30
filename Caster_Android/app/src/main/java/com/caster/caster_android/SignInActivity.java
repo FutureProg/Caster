@@ -1,9 +1,16 @@
 package com.caster.caster_android;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+
+import com.caster.caster_android.utils.Bin;
+
+import java.util.concurrent.ExecutionException;
 
 
 public class SignInActivity extends Activity {
@@ -34,4 +41,22 @@ public class SignInActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void signIn(View view){
+        String email = ((TextView)findViewById(R.id.email_field)).getText().toString();
+        String pass = ((TextView)findViewById(R.id.password_field)).getText().toString();
+        try {
+            if (Bin.signIn(email,pass) == null){
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Incorrect Email/Password").setTitle("Message");
+                builder.create().show();
+                return;
+            }
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        finish();
+    };
 }

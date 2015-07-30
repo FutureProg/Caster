@@ -7,8 +7,27 @@
 include '../phpreq/start_session.php';
 include 'php_vars.php';
 
-
-login();
+if(filter_input(INPUT_POST,"t") == "mobi"){
+    $email = trim(filter_input(INPUT_POST, "e"));
+    $password = trim(filter_input(INPUT_POST,"p"));    
+    $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the database");
+    $query = "SELECT * FROM `".TABLE_USERS."` WHERE `email`='".$email."'";
+    $result = mysqli_query($link, $query) or die("Error querying database");
+    if(mysqli_num_rows($result) >= 1){
+        $row = mysqli_fetch_array($result);
+        $hashpass = $row['password'];
+        if(password_verify($password,$hashpass)){
+            echo json_encode($row);                                                            
+            return;
+        }else{                        
+            return;
+        }
+    }else{                   
+        return;
+    }        
+}else{
+ login();   
+}
 
 function login(){    
     $email = trim(filter_input(INPUT_POST, "e"));

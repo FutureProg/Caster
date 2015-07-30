@@ -7,6 +7,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Menu;
@@ -57,8 +58,18 @@ public class MainActivity extends Activity {
 
         //actionBar.setCustomView(R.layout.actionbar_layout);
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE );
+        /*actionBar.setHomeButtonEnabled(true);
 
-
+        NavigationView navview = (NavigationView)findViewById(R.id.navigation_view);
+        navview.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                Snackbar.make(drawerLayout, menuItem.getTitle() + " pressed", Snackbar.LENGTH_LONG).show();
+                menuItem.setChecked(true);
+                drawerLayout.closeDrawers();
+                return true;
+            }
+        });*/
         setupNavDrawer();
         getRecents();
     }
@@ -116,21 +127,44 @@ public class MainActivity extends Activity {
         actionBar.setHomeButtonEnabled(true);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerList = (ListView) findViewById(R.id.left_drawer);
-        String[] navArray = { "Sign in","Sign Up"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, navArray);
-        drawerList.setAdapter(adapter);
-        drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0){
-                    Intent intent = new Intent(MainActivity.instance,SignInActivity.class);
-                    startActivity(intent);
-                }else {
-                    Toast.makeText(MainActivity.this, (String) parent.getAdapter().getItem(position),
-                            Toast.LENGTH_SHORT).show();
+        if (Bin.getSignedInUser() != null){
+            final User user = Bin.getSignedInUser();
+            String[] navArray = {user.getUsername(),"Sign Out"};
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,navArray);
+            drawerList.setAdapter(adapter);
+            drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    if (position == 0){
+                        ProfileActivity.user = user;
+                        Intent intent = new Intent(MainActivity.instance,ProfileActivity.class);
+                        startActivity(intent);
+                        drawerLayout.closeDrawers();
+                    }else{
+                        Bin.signOut();
+                        onCreate(null);
+                    }
                 }
-            }
-        });
+            });
+        }else{
+            String[] navArray = { "Sign in","Sign Up"};
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, navArray);
+            drawerList.setAdapter(adapter);
+            drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    if (position == 0){
+                        Intent intent = new Intent(MainActivity.instance,SignInActivity.class);
+                        startActivity(intent);
+                        drawerLayout.closeDrawers();
+                    }else {
+                        Toast.makeText(MainActivity.this, (String) parent.getAdapter().getItem(position),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+
 
         drawerToggle = new ActionBarDrawerToggle(this,drawerLayout,R.string.drawer_open,R.string.drawer_close){
 
@@ -195,6 +229,11 @@ public class MainActivity extends Activity {
         int id = item.getItemId();
 
         if(drawerToggle.onOptionsItemSelected(item)){
+            return true;
+        }
+
+        if (id == android.R.id.home){
+            drawerLayout.openDrawer(GravityCompat.START);
             return true;
         }
 

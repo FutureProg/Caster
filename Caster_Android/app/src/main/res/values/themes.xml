@@ -5,18 +5,17 @@
 
     <!-- Base application theme. -->
     <style name="CasterTheme" parent="android:Theme.Material.Light.DarkActionBar">
-        <item name="android:colorPrimary">@color/Caster_Colour_Red</item>
-        <item name="android:colorPrimaryDark">@color/Caster_Colour_Red_Dark</item>
-        <!--<item name="android:actionBarStyle" tools:ignore="NewApi">@style/ActionbarTheme</item>-->
-        <!--<item name="actionBarStyle">@style/ActionbarTheme</item>-->
+        <item name="android:colorPrimary">@color/Caster_Colour_Red_Dark</item>
+        <item name="android:colorPrimaryDark">@color/Caster_Colour_Red_Dark</item>-->
+        <item name="android:actionBarStyle" tools:ignore="NewApi">@style/ActionbarTheme</item>
     </style>
 
-    <!--<style name="ActionbarTheme" parent="android:Widget.Holo.Light.ActionBar.Solid.Inverse">
+    <style name="ActionbarTheme" parent="android:Theme.Material.Light.DarkActionBar">
         <item name="android:background" tools:ignore="NewApi">@color/Caster_Colour_Red</item>
         <item name="background">@color/Caster_Colour_Red</item>
-        <item name="android:logo">@drawable/ic_caster_logo</item>
         <item name="android:colorPrimary">@color/Caster_Colour_Red</item>
         <item name="android:colorPrimaryDark">@color/Caster_Colour_Red_Dark</item>
-    </style>-->
+        <item name="android:textColor">@android:color/white</item>
+    </style>
 
 </resources>

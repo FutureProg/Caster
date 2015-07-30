@@ -35,9 +35,9 @@ and open the template in the editor.
         <div id="body-container">
             <?php include 'phpreq/topbar.php';?>
             <!--Start Content here-->
-            <div id="content-container" style="margin:10px;margin-left:0;top:70px;height:80%;">
+            <div id="content-container" style="margin:10px;margin-left:0;top:80px;height:80%;">
                 <div id="edit-container">                    
-                    <h1 style="text-align:center">Edit  </h1>
+                    <h1 style="text-align:center">Edit</h1>
                     <div style="display:inline">                            
                         <div style="display:inline-text">
                             <h2>Cover image</h2>

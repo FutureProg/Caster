@@ -24,7 +24,7 @@ and open the template in the editor.
             <div id="main-content">
                 <!--Start Content Here-->
                 <div id="content-container" style="margin:10px;margin-left:0;top:90px;height:80%;">    
-                    <div style="background-color:white;margin: 20px 20px;border-radius:10px;border: 1px solid black;min-height:100%;">
+                    <div style="background-color:white;margin: 20px 20px;border: 1px solid black;min-height:100%;">
                         <form style="text-align:center;" method="post" action="php/o.php">
                             <h1>!?</h1>
                             <p>

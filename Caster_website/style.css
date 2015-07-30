@@ -307,16 +307,13 @@ h1{
     min-height: 100%;
     padding: 10px;    
     background-color: white;
-    border-radius: 10px;
     border: 1px solid gray;
     margin: 20px;
     margin-top: 30px;
 }
-#sign_up_container #sign_up_form, #login_container #login_form{
-    float: left;
+#sign_up_container #sign_up_form, #login_container #login_form{    
     padding-top: 40px;
-    padding-bottom:40px;
-    padding-left: 10%;
+    padding-bottom:40px;    
     width: auto;
 }
 
@@ -721,8 +718,7 @@ h1{
 #edit-container {
     min-height: 100%;
     padding: 10px;
-    background-color: white;
-    border-radius: 10px;
+    background-color: white;    
     border: 1px solid gray;
     margin: 20px;
 }

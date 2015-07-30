@@ -60,7 +60,7 @@ public class PodcastPlayer extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_podcast);
         initializeViews();
-        if (getIntent().getExtras().containsKey(KEY_COMMAND)){
+        if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(KEY_COMMAND)){
             if (getIntent().getExtras().getByte(KEY_COMMAND) == COMMAND_PLAY){
                 mp = new MediaPlayer();
                 mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -121,7 +121,7 @@ public class PodcastPlayer extends Activity {
         descriptionBox = (TextView)findViewById(R.id.description);
         descriptionBox.setText(podcast.getDescription());
 
-        ((ImageView)findViewById(R.id.profilePicture)).setImageBitmap(podcast.getCreator().getImage());
+        ((ImageView)findViewById(R.id.authorPicture)).setImageBitmap(podcast.getCreator().getImage());
 
         coverImage = (ImageView)findViewById(R.id.cover_image);
         coverImage.setImageBitmap(podcast.getCoverPhoto());

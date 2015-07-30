@@ -24,7 +24,7 @@ and open the template in the editor.
             <div id="main-content">
                 <!--Start Content Here-->
                 <div id="content-container" style="margin:10px;margin-left:0;top:90px;height:80%;">    
-                    <div style="background-color:white;margin: 20px 20px;border-radius:10px;border: 1px solid black;">
+                    <div style="background-color:white;margin: 20px 20px;border: 1px solid black;">
                         <div style="text-align:center;padding: 30px 0">
                             <img src="images/title.png" style="width:25%;"/> 
                             <h1>Welcome to Caster!</h1>

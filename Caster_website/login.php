@@ -40,11 +40,9 @@ include 'phpreq/start_session.php';
                         <br/><br/>          
                         <input style="width:45em;margin-top:1em;" type="submit" class="button-class-2"/>                        
                     </form>      
-                    <div id="side-image">
-                        <img width="50%" src="images/title.png">                        
-                    </div>
                 </div>                
                 <?php include 'phpreq/footer.php' ?>
+                <script src="js/main.js"></script>
             </div>            
         </div>
     </body>
