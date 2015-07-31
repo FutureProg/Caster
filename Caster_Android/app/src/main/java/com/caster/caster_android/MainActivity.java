@@ -33,7 +33,7 @@ import java.util.concurrent.ExecutionException;
 
 
 public class MainActivity extends Activity {
-    public final static String site = "http://192.168.2.155:8000";
+    public final static String site = "http://istrat.ddns.net";
     public static MainActivity instance;
 
     private ActionBarDrawerToggle drawerToggle;
