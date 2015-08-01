@@ -21,7 +21,7 @@
                     <button class="top-bar-buttons" onclick="window.location.href='login.php';" style="margin-left:50px;">Log in</button>
                     <button class="top-bar-buttons" onclick="window.location.href='signup.php'" style="margin-left:50px;">Sign up</button>
             <?php }else{?>
-                    <button class="top-bar-buttons" onclick="loadPage('profile.php<?echo "?user=".$_SESSION['user_id'];?>');" ><?php echo $_SESSION['username']; ?></button>
+                    <button class="top-bar-buttons" onclick="loadPage('profile.php<?php echo "?user=".$_SESSION['user_id'];?>');" ><?php echo $_SESSION['username']; ?></button>
                     <button class="top-bar-buttons" onclick="window.location.href='/upload.php'">Upload</button>
                     <button class="top-bar-buttons" onclick="window.location.href='../php/signout.php'">Sign Out</button>
             <?php } ?>

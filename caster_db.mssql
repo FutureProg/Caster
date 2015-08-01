@@ -1,0 +1,196 @@
+-- phpMyAdmin SQL Dump
+-- version 4.2.11
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: Jul 31, 2015 at 04:59 PM
+-- Server version: 5.6.21
+-- PHP Version: 5.6.3
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
+--
+-- Database: `caster_db`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Comment_List`
+--
+
+CREATE TABLE IF NOT EXISTS `Comment_List` (
+`comment_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `podcast_id` int(11) NOT NULL,
+  `message` text NOT NULL,
+  `post_date` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `Comment_List`
+--
+
+INSERT INTO `Comment_List` (`comment_id`, `user_id`, `podcast_id`, `message`, `post_date`) VALUES
+(1, 24, 3, 'This is a test', '2015-05-17 19:00:39');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `podcast_list`
+--
+
+CREATE TABLE IF NOT EXISTS `podcast_list` (
+`podcast_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `post_date` date NOT NULL,
+  `length` int(11) NOT NULL,
+  `title` text NOT NULL,
+  `description` text NOT NULL,
+  `audio_file` text NOT NULL,
+  `image_file` text NOT NULL,
+  `tags` text NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `podcast_list`
+--
+
+INSERT INTO `podcast_list` (`podcast_id`, `user_id`, `post_date`, `length`, `title`, `description`, `audio_file`, `image_file`, `tags`) VALUES
+(3, 24, '2015-05-02', 14, 'Patch''s Path BGM', 'The background music for an old puzzle game made in Unity: Patch''s Path. ', 'phpABx9CRMenuBGM.mp3', 'phpTrsUBlIcon.png', 'Patchs Patch Path background music');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `show_list`
+--
+
+CREATE TABLE IF NOT EXISTS `show_list` (
+`show_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `name` text NOT NULL,
+  `image` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `token_list`
+--
+
+CREATE TABLE IF NOT EXISTS `token_list` (
+`token_id` int(11) NOT NULL,
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `token_type` varchar(5) NOT NULL,
+  `token_value` varchar(20) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `token_list`
+--
+
+INSERT INTO `token_list` (`token_id`, `time`, `token_type`, `token_value`) VALUES
+(57, '2015-06-27 22:28:43', 'PDCST', 'nhm3Axygyuz31sbFb5Pw'),
+(58, '2015-06-27 22:28:45', 'PDCST', 'ZMcK2uodCtLZK83lGCCe'),
+(59, '2015-06-27 22:28:46', 'PDCST', '6bi8DuNPzDmyqyis3HGF'),
+(60, '2015-06-27 22:28:46', 'PDCST', 'arFVAJgglTvs4NAIhoyR'),
+(61, '2015-06-27 22:28:46', 'PDCST', '1UpstIVwpBcA3RvDBMTW');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_list`
+--
+
+CREATE TABLE IF NOT EXISTS `user_list` (
+`user_id` int(11) NOT NULL,
+  `join_date` date NOT NULL,
+  `username` text NOT NULL,
+  `password` text NOT NULL,
+  `email` text NOT NULL,
+  `picture` text NOT NULL,
+  `subscriptions` text NOT NULL,
+  `description` text NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `user_list`
+--
+
+INSERT INTO `user_list` (`user_id`, `join_date`, `username`, `password`, `email`, `picture`, `subscriptions`, `description`) VALUES
+(24, '2015-01-15', 'admin', '$2y$10$v2Wi3wAoUQcWjXCc0cq2XOocEBTlROH/lQskqzOvD4faoIMuIAr6C', 'nickmorrison09@gmail.com', 'phpm3rhHaLogo.png', '', 'Hi there, I''m the creator of this website! :)'),
+(25, '2015-05-02', 'NickAppz', '$2y$10$mBQbP.paPnlD5OxZGoBO8eQZ4YBy5R5jFjsddF2wnGcVnigga5sxy', 'nickappz@gmail.com', '', '24.', 'Test user');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `Comment_List`
+--
+ALTER TABLE `Comment_List`
+ ADD PRIMARY KEY (`comment_id`);
+
+--
+-- Indexes for table `podcast_list`
+--
+ALTER TABLE `podcast_list`
+ ADD PRIMARY KEY (`podcast_id`), ADD UNIQUE KEY `id` (`podcast_id`), ADD KEY `id_2` (`podcast_id`), ADD FULLTEXT KEY `tags` (`tags`);
+
+--
+-- Indexes for table `show_list`
+--
+ALTER TABLE `show_list`
+ ADD PRIMARY KEY (`show_id`), ADD UNIQUE KEY `show_id` (`show_id`), ADD KEY `show_id_2` (`show_id`);
+
+--
+-- Indexes for table `token_list`
+--
+ALTER TABLE `token_list`
+ ADD PRIMARY KEY (`token_id`);
+
+--
+-- Indexes for table `user_list`
+--
+ALTER TABLE `user_list`
+ ADD PRIMARY KEY (`user_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `Comment_List`
+--
+ALTER TABLE `Comment_List`
+MODIFY `comment_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT for table `podcast_list`
+--
+ALTER TABLE `podcast_list`
+MODIFY `podcast_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `show_list`
+--
+ALTER TABLE `show_list`
+MODIFY `show_id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `token_list`
+--
+ALTER TABLE `token_list`
+MODIFY `token_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=78;
+--
+-- AUTO_INCREMENT for table `user_list`
+--
+ALTER TABLE `user_list`
+MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=26;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
