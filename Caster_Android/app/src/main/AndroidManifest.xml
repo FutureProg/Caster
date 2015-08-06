@@ -10,6 +10,12 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/CasterTheme">
+
+        <receiver android:name=".AudioBroadcastReceiver">
+            <intent-filter>
+                <action android:name="com.caster.caster_android.ACTION_PLAY"/>
+            </intent-filter>
+        </receiver>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

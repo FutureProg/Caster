@@ -41,6 +41,8 @@ public class ProfileActivity extends Activity{
         ((TextView)findViewById(R.id.profile_bio)).setText(user.getDescription());
         podcastArea = (LinearLayout)findViewById(R.id.podcast_area);
         podcasts = new ArrayList<>(user.getPodcasts());
+        this.getActionBar().setTitle(user.getUsername());
+        this.getActionBar().setDisplayShowTitleEnabled(true);
         for (Podcast podcast : podcasts){
             Log.v("caster_profile",podcast.getTitle());
             PodcastBar bar = new PodcastBar(this,null,podcast);

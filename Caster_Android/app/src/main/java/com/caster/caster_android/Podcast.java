@@ -41,7 +41,7 @@ public class Podcast {
         }
         HashMap<Integer,Object> data = new HashMap<>();
         Podcast re = null;
-        String urlStr = "http://192.168.2.155:8000/php/podcast.php";
+        String urlStr = MainActivity.site+"/php/podcast.php";
         try {
             CasterRequest request = new CasterRequest(urlStr);
             String res = (String)request.addParam("q","PDCST_JSN").addParam("id",""+podcastid).execute().get();
@@ -88,7 +88,7 @@ public class Podcast {
      * @return
      */
     public boolean postComment(int userid,String message) throws InterruptedException,ExecutionException{
-        String urlStr = "http://192.168.2.155:8000/php/podcast.php";
+        String urlStr = MainActivity.site+"/php/podcast.php";
         CasterRequest req = new CasterRequest(urlStr);
         String res = (String)req.addParam("q","CMNT").addParam("uid",userid+"").addParam("id",getId()+"")
                 .addParam("msg", message).execute().get();

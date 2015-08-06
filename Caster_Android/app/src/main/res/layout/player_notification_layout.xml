@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content" android:background="@android:color/black">
+    <ImageButton
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/dummy_podcast_img"
+        android:id="@+id/podcast_image"
+        android:adjustViewBounds="true" />
+
+    <TextView
+        android:layout_marginLeft="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/podcast_title"
+        android:text="@string/lorem_ipsum"
+        android:textColor="@android:color/white"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/podcast_image"
+        android:layout_marginStart="36dp" />
+
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/playButton"
+        android:layout_gravity="center"
+        android:background="@android:drawable/ic_media_play"
+        android:layout_below="@+id/podcast_title"
+        android:layout_toEndOf="@+id/backButton"
+        android:layout_marginStart="31dp" />
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@android:drawable/ic_media_next"
+        android:id="@+id/nextButton"
+        android:layout_alignTop="@+id/playButton"
+        android:layout_toEndOf="@+id/playButton"
+        android:layout_marginStart="25dp" />
+
+    <Button
+        android:layout_width="17dp"
+        android:layout_height="37dp"
+        android:background="@android:color/transparent"
+        android:gravity="center_vertical"
+        android:textColor="@android:color/white"
+        android:text="X"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="13dp"
+        android:id="@+id/notification_close_button"
+        android:textSize="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@android:drawable/ic_media_previous"
+        android:id="@+id/backButton"
+        android:layout_alignTop="@+id/playButton"
+        android:layout_alignStart="@+id/podcast_title" />
+
+
+</RelativeLayout>

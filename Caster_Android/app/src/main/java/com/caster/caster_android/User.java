@@ -40,7 +40,7 @@ public class User {
         }
         HashMap<Integer,Object> data = new HashMap<>();
         User re = null;
-        String urlStr = "http://192.168.2.155:8000/php/user_info.php";
+        String urlStr = MainActivity.site+"/php/user_info.php";
         CasterRequest req = new CasterRequest(urlStr);
         req.addParam("q","USR_JSN").addParam("id",""+userid);
         try {
