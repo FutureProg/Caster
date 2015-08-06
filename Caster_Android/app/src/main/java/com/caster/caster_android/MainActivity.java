@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 
 import com.caster.caster_android.utils.Bin;
 import com.caster.caster_android.views.PodcastBox;
+import com.caster.caster_android.views.SignUpActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -158,8 +160,11 @@ public class MainActivity extends Activity {
                         startActivity(intent);
                         drawerLayout.closeDrawers();
                     }else {
-                        Toast.makeText(MainActivity.this, (String) parent.getAdapter().getItem(position),
-                                Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this, (String) parent.getAdapter().getItem(position),
+                        //        Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(MainActivity.instance, SignUpActivity.class);
+                        startActivity(intent);
+                        drawerLayout.closeDrawers();
                     }
                 }
             });
