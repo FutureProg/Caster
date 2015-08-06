@@ -99,4 +99,22 @@ public class Bin {
     public static void signOut(){
         signedInUser = null;
     }
+
+    public static User signUp(String username, String email, String password) throws ExecutionException, InterruptedException {
+        signedInUser = null;
+        CasterRequest req = new CasterRequest(MainActivity.site + "/php/register.php");
+        req.addParam("username", username).addParam("email", email).addParam("password", password).addParam("q", "SIGNUP");
+        String str = (String) req.execute().get();
+        Log.v("caster Created User", str);
+        if (str != null && !str.isEmpty()){
+            try {
+                signedInUser = User.makeFromJson(new JSONObject(str));
+            } catch (JSONException e) {
+            }
+        }
+        else{
+            Log.d("Bin", "There was an error creating the new user");
+        }
+        return signedInUser;
+    }
 }

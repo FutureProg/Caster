@@ -1,6 +1,7 @@
 package com.caster.caster_android.views;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -9,8 +10,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.caster.caster_android.R;
+import com.caster.caster_android.utils.Bin;
 
 import org.w3c.dom.Text;
+
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Teo on 8/6/2015.
@@ -47,6 +51,7 @@ public class SignUpActivity extends Activity {
     }
 
     public void signUp(View v){
+        String username = ((TextView)findViewById(R.id.sign_up_username_field)).getText().toString();
         String email = ((TextView)findViewById(R.id.sign_up_email_field)).getText().toString();
         String password = ((TextView)findViewById(R.id.sign_up_password_field)).getText().toString();
         String passwordConfirm = ((TextView)findViewById(R.id.sign_up_password_confirm_field)).getText().toString();
@@ -62,7 +67,20 @@ public class SignUpActivity extends Activity {
                     Toast.LENGTH_SHORT).show();
         }
         else{
-            //TODO: Create user, don't know how to connect to your server yet or exactly what information you need.
+            try{
+                if(Bin.signUp(username, email, password) == null){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage("Error Creating User").setTitle("Message");
+                    builder.create().show();
+                    return;
+                }
+            }
+            catch (ExecutionException e){
+                e.printStackTrace();
+            }
+            catch (InterruptedException e){
+                e.printStackTrace();
+            }
         }
     }
 }

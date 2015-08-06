@@ -25,6 +25,16 @@
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ems="10"
+            android:id="@+id/sign_up_username_field"
+            android:layout_below="@+id/sign_up_textview"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="27dp"
+            android:hint="username" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:inputType="textPassword"
             android:ems="10"
             android:id="@+id/sign_up_password_field"
@@ -51,7 +61,7 @@
             android:ems="10"
             android:id="@+id/sign_up_email_field"
             android:layout_marginTop="39dp"
-            android:layout_below="@+id/sign_up_textview"
+            android:layout_below="@+id/sign_up_username_field"
             android:layout_alignStart="@+id/sign_up_password_field"
             android:hint="email" />
 
