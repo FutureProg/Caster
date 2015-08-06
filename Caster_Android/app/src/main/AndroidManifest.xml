@@ -41,6 +41,9 @@
             android:name=".SignInActivity"
             android:label="@string/title_activity_sign_in_" >
         </activity>
+        <activity android:name=".views.SignUpActivity"
+            android:label="Sign Up">
+        </activity>
     </application>
 
 </manifest>

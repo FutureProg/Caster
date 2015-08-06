@@ -58,5 +58,5 @@ public class SignInActivity extends Activity {
             e.printStackTrace();
         }
         finish();
-    };
+    }
 }
