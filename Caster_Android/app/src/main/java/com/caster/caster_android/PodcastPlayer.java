@@ -32,7 +32,7 @@ TODO
 */
 
 
-public class PodcastPlayer extends Activity implements SeekBar.OnSeekBarChangeListener{
+public class PodcastPlayer extends Activity {
 
     public static final String KEY_COMMAND = "com.caster.caster_android.PodcastPlayer.COMMAND";
     public static final byte COMMAND_PLAY = 0x0;
@@ -47,38 +47,35 @@ public class PodcastPlayer extends Activity implements SeekBar.OnSeekBarChangeLi
     private TextView author,descriptionBox;
     private ImageView coverImage;
 
-    public static MediaPlayer mp;
+    private MediaPlayer mp;
     private SeekBar seekBar;
     private Handler durationHandler = new Handler();
     private Handler playlistHandler = new Handler();
-    private int timeElapsed, endTime;
+    private TextView length;
+    private double timeElapsed, endTime;
     private Button playButton;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(R.anim.slide_up,R.anim.abc_fade_out);
-        this.getActionBar().setTitle(podcast.getTitle());
-        this.getActionBar().setDisplayShowTitleEnabled(true);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_podcast);
         initializeViews();
         if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(KEY_COMMAND)){
             if (getIntent().getExtras().getByte(KEY_COMMAND) == COMMAND_PLAY){
                 mp = new MediaPlayer();
-                new PlayerNotification(this);
                 mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
                 String url = MainActivity.site + "/php/audio_file.php?q="+podcast.getId()+"$"+ Bin.getPodcastToken();
                 try {
                     mp.setDataSource(url);
                     mp.prepareAsync();
-                    endTime = podcast.getLength();
+                    endTime = mp.getDuration();
+                    length = (TextView)findViewById(R.id.length);
                     seekBar = (SeekBar)findViewById(R.id.seekbar);
-                    seekBar.setMax(endTime * 1000);
-                    seekBar.setOnSeekBarChangeListener(this);
+                    seekBar.setMax((int) endTime);
                     seekBar.setClickable(false);
-                    timeElapsed = 0;
-                    durationHandler.postDelayed(updateSeekBarTime, 100);
+                    play(null);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -137,7 +134,6 @@ public class PodcastPlayer extends Activity implements SeekBar.OnSeekBarChangeLi
 
         //Media Player
         mp = new MediaPlayer();
-
         /*mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
             mp.setDataSource(podcast.getAudioURL());
@@ -159,7 +155,7 @@ public class PodcastPlayer extends Activity implements SeekBar.OnSeekBarChangeLi
     {
         Log.i(TAG, "play");
         //Play
-        if(!mp.isPlaying())
+        if(!(mp.isPlaying()))
         {
             mp.start();
             playButton.setBackground(getDrawable(R.drawable.pause));
@@ -173,10 +169,7 @@ public class PodcastPlayer extends Activity implements SeekBar.OnSeekBarChangeLi
 
         //Handle Seekbar
         timeElapsed = mp.getCurrentPosition();
-        if (seekBar == null){
-            seekBar = (SeekBar)findViewById(R.id.seekbar);
-        }
-        seekBar.setProgress(timeElapsed);
+        seekBar.setProgress((int) timeElapsed);
         durationHandler.postDelayed(updateSeekBarTime, 100);
 
         //Checks if we've reached the end of the song
@@ -216,24 +209,20 @@ public class PodcastPlayer extends Activity implements SeekBar.OnSeekBarChangeLi
         finish();
     }
 
-
-
     //Updates seekbar time
     private Runnable updateSeekBarTime = new Runnable() {
         @Override
         public void run() {
             timeElapsed = mp.getCurrentPosition();
-            endTime = podcast.getLength() * 1000;
             //seekbar progress
-            seekBar.setProgress(timeElapsed);
+            seekBar.setProgress((int)timeElapsed);
             //set remaining time
             double remainingTime = endTime - timeElapsed;
             //Hours, minutes, seconds
-            TextView length = (TextView)findViewById(R.id.elapsed_time);
             length.setText(String.format("%02d:%02d:%02d",
-                    TimeUnit.MILLISECONDS.toHours((long) timeElapsed),
-                    TimeUnit.MILLISECONDS.toMinutes((long) timeElapsed) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours((long)timeElapsed)),
-                    TimeUnit.MILLISECONDS.toSeconds((long)timeElapsed) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long)timeElapsed))));
+                    TimeUnit.MILLISECONDS.toHours((long) remainingTime),
+                    TimeUnit.MILLISECONDS.toMinutes((long) remainingTime) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours((long)remainingTime)),
+                    TimeUnit.MILLISECONDS.toSeconds((long)remainingTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long)remainingTime))));
             //Repeat in 100 milliseconds
             durationHandler.postDelayed(this,100);
         }
@@ -258,27 +247,8 @@ public class PodcastPlayer extends Activity implements SeekBar.OnSeekBarChangeLi
         return false;
     }
 
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        if (!mp.isPlaying()){
-            mp.seekTo(progress);
-            durationHandler.postDelayed(updateSeekBarTime, 1);
-        }
-    }
-
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
-        mp.pause();
-    }
-
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
-        mp.seekTo(seekBar.getProgress());
-        durationHandler.postDelayed(updateSeekBarTime, 1);
-        mp.start();
-    }
-    public void subscribe(View v) {
-        Button subscribe = ((Button) findViewById(R.id.subscribe));
+    public void subscribe(View v){
+        Button subscribe = ((Button)findViewById(R.id.subscribe));
         //UnSubscribing
         if (subscribe.getBackground().getConstantState().equals(getResources().getDrawable(R.drawable.unsubscribe))) {
             try {
@@ -297,22 +267,26 @@ public class PodcastPlayer extends Activity implements SeekBar.OnSeekBarChangeLi
             }
         }
         //Subscribing
-        else {
-            try {
-                if (Bin.subscribe(podcast.getId()) == false) {
+        else{
+            try{
+                if(Bin.subscribe(podcast.getId()) == false){
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setMessage("Error Subscribing, Are you signed in?").setTitle("Message");
                     builder.create().show();
                     return;
-                } else {
+                }
+                else{
                     subscribe.setBackground(getResources().getDrawable(R.drawable.unsubscribe));
                 }
-            } catch (ExecutionException e) {
+            }
+            catch (ExecutionException e){
                 e.printStackTrace();
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e){
                 e.printStackTrace();
             }
         }
     }
+
 
 }
