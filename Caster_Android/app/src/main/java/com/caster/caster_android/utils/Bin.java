@@ -1,5 +1,6 @@
 package com.caster.caster_android.utils;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -107,14 +108,42 @@ public class Bin {
         String str = (String) req.execute().get();
         Log.v("caster Created User", str);
         if (str != null && !str.isEmpty()){
-            try {
-                signedInUser = User.makeFromJson(new JSONObject(str));
-            } catch (JSONException e) {
-            }
+            signedInUser = signIn(email, password);
         }
         else{
             Log.d("Bin", "There was an error creating the new user");
         }
         return signedInUser;
+    }
+
+    public static boolean subscribe(int subscribeID) throws  ExecutionException, InterruptedException {
+        CasterRequest req = new CasterRequest(MainActivity.site + "/php/subscription.php");
+        try {
+            req.addParam("q", "MOBI").addParam("t", "SUB").addParam("u", Integer.toString(signedInUser.getId())).addParam("s", Integer.toString(subscribeID));
+        }
+        catch (Exception e){
+            return false;
+        }
+        String str = (String) req.execute().get();
+        Log.v("user subscribed", str);
+        if (str != null && !str.isEmpty()){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public static boolean unsubscribe(int subscribeID) throws ExecutionException, InterruptedException {
+        CasterRequest req = new CasterRequest(MainActivity.site + "/php/subscription.php");
+        req.addParam("q", "MOBI").addParam("t", "SUB").addParam("u", Integer.toString(signedInUser.getId())).addParam("s", Integer.toString(subscribeID));
+        String str = (String) req.execute().get();
+        Log.v("user unsubscribed", str);
+        if (str != null && !str.isEmpty()){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }

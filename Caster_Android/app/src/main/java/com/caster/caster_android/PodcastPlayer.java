@@ -1,6 +1,7 @@
 package com.caster.caster_android;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import com.caster.caster_android.utils.Bin;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 
@@ -274,6 +276,43 @@ public class PodcastPlayer extends Activity implements SeekBar.OnSeekBarChangeLi
         mp.seekTo(seekBar.getProgress());
         durationHandler.postDelayed(updateSeekBarTime, 1);
         mp.start();
+    }
+    public void subscribe(View v) {
+        Button subscribe = ((Button) findViewById(R.id.subscribe));
+        //UnSubscribing
+        if (subscribe.getBackground().getConstantState().equals(getResources().getDrawable(R.drawable.unsubscribe))) {
+            try {
+                if (Bin.unsubscribe(podcast.getId()) == false) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage("Error UnSubscribing, Are you signed in?").setTitle("Message");
+                    builder.create().show();
+                    return;
+                } else {
+                    subscribe.setBackground(getResources().getDrawable(R.drawable.subscribe));
+                }
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        //Subscribing
+        else {
+            try {
+                if (Bin.subscribe(podcast.getId()) == false) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage("Error Subscribing, Are you signed in?").setTitle("Message");
+                    builder.create().show();
+                    return;
+                } else {
+                    subscribe.setBackground(getResources().getDrawable(R.drawable.unsubscribe));
+                }
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }
