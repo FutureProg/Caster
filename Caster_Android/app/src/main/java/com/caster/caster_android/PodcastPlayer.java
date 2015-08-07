@@ -58,7 +58,7 @@ public class PodcastPlayer extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        overridePendingTransition(R.anim.slide_up,R.anim.abc_fade_out);
+        overridePendingTransition(R.anim.slide_up, R.anim.abc_fade_out);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_podcast);
         initializeViews();
@@ -116,6 +116,28 @@ public class PodcastPlayer extends Activity {
         if(podcast == null){
             return;
         }
+
+        if (Bin.getSignedInUser() != null){
+            Button subbutton = (Button)findViewById(R.id.subscribe);
+            CasterRequest req = new CasterRequest(MainActivity.site + "/php/subscription.php");
+            req.addParam("t","CHECK").addParam("q","MOBI").addParam("u",Bin.getSignedInUser().getId() + "")
+                    .addParam("s",podcast.getCreatorId() + "");
+            try {
+                String res = (String) req.execute().get();
+                Log.v("caster CHECK",res);
+                if (res.equals("YES")) {
+                    subbutton.setBackgroundResource(R.drawable.unsubscribe);
+                }else{
+                    subbutton.setBackgroundResource(R.drawable.subscribe);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
+        }
+
 
         author = (TextView)findViewById(R.id.author_name);
         author.setText(podcast.getCreator().getUsername());
@@ -252,7 +274,7 @@ public class PodcastPlayer extends Activity {
         //UnSubscribing
         if (subscribe.getBackground().getConstantState().equals(getResources().getDrawable(R.drawable.unsubscribe))) {
             try {
-                if (Bin.unsubscribe(podcast.getId()) == false) {
+                if (Bin.unsubscribe(podcast.getCreatorId()) == false) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setMessage("Error UnSubscribing, Are you signed in?").setTitle("Message");
                     builder.create().show();
@@ -269,7 +291,7 @@ public class PodcastPlayer extends Activity {
         //Subscribing
         else{
             try{
-                if(Bin.subscribe(podcast.getId()) == false){
+                if(Bin.subscribe(podcast.getCreatorId()) == false){
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setMessage("Error Subscribing, Are you signed in?").setTitle("Message");
                     builder.create().show();
