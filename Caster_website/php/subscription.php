@@ -33,19 +33,19 @@ function check(){
     $query = "SELECT `subscriptions` FROM `".TABLE_USERS."` WHERE `user_id`=".$user_id;        
     $result = mysqli_query($link,$query) or die("Error querying the server");    
     if(mysqli_num_rows($result) >= 1){
-        echo "OKAY ";
+        print "OKAY ";
         $row = mysqli_fetch_array($result);   
         $string = $subscribe_id.".";
-        echo "/".strpos($row['subscriptions'],$string)."/";        
+        print "/".strpos($row['subscriptions'],$string)."/";        
         if(strpos($row['subscriptions'],$string) !== FALSE){
-            echo "YES";
+            print "YES";
         }
         else{
-            echo "NO";   
+            print "NO";   
         }
     }
     else{
-        echo "NO";   
+        print "NO";   
     }
     mysqli_close($link);
 }
@@ -57,10 +57,10 @@ function subscribe(){
     $query = "UPDATE `".TABLE_USERS."` SET subscriptions=CONCAT(subscriptions,'".$subscribe_id.".') WHERE `user_id`=".$user_id;   
     $result = mysqli_query($link,$query) or die ("Error querying the server");
     if(mysqli_num_rows($result) >= 1){
-        echo "OKAY";   
+        print "OKAY";   
     }
     else{
-        echo "NO";   
+        print "NO";   
     }
     mysqli_close($link);
 }
@@ -77,14 +77,14 @@ function unsubscribe(){
         $query = "UPDATE `".TABLE_USERS."` SET `subscriptions`='".$newSubs."'";        
         $result = mysqli_query($link,$query) or die("Error querying the server");
         if($result){
-            echo "YES";   
+            print "YES";   
         }
         else{
-            echo "NO";   
+            print "NO";   
         }
     }
     else{
-        echo "NO";   
+        print "NO";   
     }
     mysqli_close($link);
 }
@@ -96,10 +96,10 @@ function mobi_sub(){
     $query = "UPDATE `".TABLE_USERS."` SET subscriptions=CONCAT(subscriptions,'".$subscribe_id.".') WHERE `user_id`=".$user_id;   
     $result = mysqli_query($link,$query) or die ("Error querying the server");
     if(mysqli_num_rows($result) >= 1){
-        echo "OKAY";   
+        print "OKAY";   
     }
     else{
-        echo "NO";   
+        print "NO";   
     }
     mysqli_close($link);
 }
@@ -116,14 +116,14 @@ function mobi_unsub(){
         $query = "UPDATE `".TABLE_USERS."` SET `subscriptions`='".$newSubs."'";        
         $result = mysqli_query($link,$query) or die("Error querying the server");
         if($result){
-            echo "YES";   
+            print "YES";   
         }
         else{
-            echo "NO";   
+            print "NO";   
         }
     }
     else{
-        echo "NO";   
+        print "NO";   
     }
     mysqli_close($link);
 }
@@ -140,14 +140,14 @@ function mobi_check(){
         $string = $subscribe_id.".";
         echo "/".strpos($row['subscriptions'],$string)."/";        
         if(strpos($row['subscriptions'],$string) !== FALSE){
-            echo "YES";
+            print "YES";
         }
         else{
-            echo "NO";   
+            print "NO";   
         }
     }
     else{
-        echo "NO";   
+        print "NO";   
     }
     mysqli_close($link);
 }
