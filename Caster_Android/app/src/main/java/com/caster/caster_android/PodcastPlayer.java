@@ -71,7 +71,7 @@ public class PodcastPlayer extends Activity {
                     mp.setDataSource(url);
                     mp.prepareAsync();
                     endTime = mp.getDuration();
-                    length = (TextView)findViewById(R.id.length);
+                    length = (TextView)findViewById(R.id.elapsed_time);
                     seekBar = (SeekBar)findViewById(R.id.seekbar);
                     seekBar.setMax((int) endTime);
                     seekBar.setClickable(false);
