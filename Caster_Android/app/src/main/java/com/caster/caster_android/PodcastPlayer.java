@@ -47,7 +47,7 @@ public class PodcastPlayer extends Activity {
     private TextView author,descriptionBox;
     private ImageView coverImage;
 
-    private MediaPlayer mp;
+    public static MediaPlayer mp;
     private SeekBar seekBar;
     private Handler durationHandler = new Handler();
     private Handler playlistHandler = new Handler();
