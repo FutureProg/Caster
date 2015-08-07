@@ -62,17 +62,17 @@ public class PodcastPlayer extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_podcast);
         initializeViews();
-        if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(KEY_COMMAND)){
-            if (getIntent().getExtras().getByte(KEY_COMMAND) == COMMAND_PLAY){
+        if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(KEY_COMMAND)) {
+            if (getIntent().getExtras().getByte(KEY_COMMAND) == COMMAND_PLAY) {
                 mp = new MediaPlayer();
                 mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                String url = MainActivity.site + "/php/audio_file.php?q="+podcast.getId()+"$"+ Bin.getPodcastToken();
+                String url = MainActivity.site + "/php/audio_file.php?q=" + podcast.getId() + "$" + Bin.getPodcastToken();
                 try {
                     mp.setDataSource(url);
                     mp.prepareAsync();
                     endTime = mp.getDuration();
-                    length = (TextView)findViewById(R.id.elapsed_time);
-                    seekBar = (SeekBar)findViewById(R.id.seekbar);
+                    length = (TextView) findViewById(R.id.elapsed_time);
+                    seekBar = (SeekBar) findViewById(R.id.seekbar);
                     seekBar.setMax((int) endTime);
                     seekBar.setClickable(false);
                     play(null);
