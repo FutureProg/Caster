@@ -2,9 +2,9 @@
 include_once '../phpreq/start_session.php';
 include_once 'php_vars.php';
 
-if(!isset($_SESSION['user_id']))
-    return;
 $q = filter_input(INPUT_POST,"q");
+if(!isset($_SESSION['user_id']) && !($q == "MOBI"))
+    return;
 if($q == "SUB"){
     subscribe();
 }
@@ -17,13 +17,13 @@ else if($q == "CHECK"){
 else if($q == "MOBI"){
 	$t = filter_input(INPUT_POST, "t");
 	if($t == "SUB"){
-		mobi_sub();
+		print mobi_sub();
 	}
 	else if($t == "UNSUB"){
-		mobi_unsub();
+		print mobi_unsub();
 	}
 	else if($t == "CHECK"){
-		mobi_chek();
+		print mobi_check();
 	}
 }
 function check(){
@@ -96,10 +96,10 @@ function mobi_sub(){
     $query = "UPDATE `".TABLE_USERS."` SET subscriptions=CONCAT(subscriptions,'".$subscribe_id.".') WHERE `user_id`=".$user_id;   
     $result = mysqli_query($link,$query) or die ("Error querying the server");
     if(mysqli_num_rows($result) >= 1){
-        print "OKAY";   
+        return "OKAY";   
     }
     else{
-        print "NO";   
+        return "NO";   
     }
     mysqli_close($link);
 }
@@ -116,14 +116,14 @@ function mobi_unsub(){
         $query = "UPDATE `".TABLE_USERS."` SET `subscriptions`='".$newSubs."'";        
         $result = mysqli_query($link,$query) or die("Error querying the server");
         if($result){
-            print "YES";   
+            return "YES";   
         }
         else{
-            print "NO";   
+            return "NO";   
         }
     }
     else{
-        print "NO";   
+        return "NO";   
     }
     mysqli_close($link);
 }
@@ -135,19 +135,17 @@ function mobi_check(){
     $query = "SELECT `subscriptions` FROM `".TABLE_USERS."` WHERE `user_id`=".$user_id;        
     $result = mysqli_query($link,$query) or die("Error querying the server");    
     if(mysqli_num_rows($result) >= 1){
-        echo "OKAY ";
         $row = mysqli_fetch_array($result);   
         $string = $subscribe_id.".";
-        echo "/".strpos($row['subscriptions'],$string)."/";        
         if(strpos($row['subscriptions'],$string) !== FALSE){
-            print "YES";
+            return "YES";
         }
         else{
-            print "NO";   
+            return "NO";   
         }
     }
     else{
-        print "NO";   
+        return "NO";   
     }
     mysqli_close($link);
 }
