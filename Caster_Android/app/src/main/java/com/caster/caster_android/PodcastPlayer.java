@@ -124,11 +124,13 @@ public class PodcastPlayer extends Activity {
                     .addParam("s",podcast.getCreatorId() + "");
             try {
                 String res = (String) req.execute().get();
-                Log.v("caster CHECK",res);
-                if (res.equals("YES")) {
-                    subbutton.setBackgroundResource(R.drawable.unsubscribe);
-                }else{
-                    subbutton.setBackgroundResource(R.drawable.subscribe);
+                if (res != null){
+                    Log.v("caster CHECK",res);
+                    if (res.endsWith("YES")) {
+                        subbutton.setBackgroundResource(R.drawable.unsubscribe);
+                    }else{
+                        subbutton.setBackgroundResource(R.drawable.subscribe);
+                    }
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();

@@ -1,6 +1,5 @@
 package com.caster.caster_android.utils;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -63,7 +62,7 @@ public class Bin {
             req.addParam("q","TKN").addParam("t","PDCST");
             try {
                 podcastToken = (String) req.execute().get();
-                if (podcastToken.contains("Error")){
+                if (podcastToken == null || podcastToken.contains("Error")){
                     podcastToken = null;
                     return null;
                 }
