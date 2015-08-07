@@ -23,7 +23,8 @@ import java.util.concurrent.ExecutionException;
  */
 public class User {
 
-    public static final int USERNAME = 0, DESCRIPTION = 1, SUBSCRIBER_COUNT = 2,ID=3, IMAGE = 4;
+    public static final int USERNAME = 0, DESCRIPTION = 1, SUBSCRIBER_COUNT = 2,ID=3, IMAGE = 4,
+        SUBSCRIPTIONS = 5;
 
     HashMap<Integer, Object> metadata; //username, description,subscriber count,id
     ArrayList<Podcast> podcasts;
@@ -65,6 +66,7 @@ public class User {
             data.put(DESCRIPTION,jsonObject.getString("description"));
             data.put(ID,jsonObject.getInt("user_id"));
             data.put(USERNAME,jsonObject.getString("username"));
+            data.put(SUBSCRIPTIONS,jsonObject.getString("subscriptions"));
             re = new User(data);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -138,6 +140,19 @@ public class User {
 
     public HashMap<Integer, Object> getMetadata(){
         return metadata;
+    }
+
+    public int[] getSubscriptions(){
+        String[] reS = ((String)metadata.get(SUBSCRIPTIONS)).split(".");
+        int[] re = new int[reS.length];
+        for (int i = 0; i < reS.length;i++){
+            re[i] = Integer.parseInt(reS[i]);
+        }
+        return re;
+    }
+
+    public boolean isSubscribed(int userid){
+        return ((String)metadata.get(SUBSCRIPTIONS)).contains(userid + ".");
     }
 
 }

@@ -282,7 +282,7 @@ public class PodcastPlayer extends Activity {
                     builder.create().show();
                     return;
                 } else {
-                    subscribe.setBackground(getResources().getDrawable(R.drawable.subscribe));
+                    subscribe.setBackground(getDrawable(R.drawable.subscribe));
                 }
             } catch (ExecutionException e) {
                 e.printStackTrace();
@@ -300,7 +300,7 @@ public class PodcastPlayer extends Activity {
                     return;
                 }
                 else{
-                    subscribe.setBackground(getResources().getDrawable(R.drawable.unsubscribe));
+                    subscribe.setBackground(getDrawable(R.drawable.unsubscribe));
                 }
             }
             catch (ExecutionException e){
