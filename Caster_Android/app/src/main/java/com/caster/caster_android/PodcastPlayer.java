@@ -274,7 +274,7 @@ public class PodcastPlayer extends Activity {
     public void subscribe(View v){
         Button subscribe = ((Button)findViewById(R.id.subscribe));
         //UnSubscribing
-        if (subscribe.getBackground().getConstantState().equals(getResources().getDrawable(R.drawable.unsubscribe))) {
+        if (subscribe.getBackground().equals(getDrawable(R.drawable.unsubscribe))) {
             try {
                 if (Bin.unsubscribe(podcast.getCreatorId()) == false) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
