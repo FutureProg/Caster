@@ -3,7 +3,9 @@ var myuserid;
 var ismyprofile;
 var _username;
 $(document).ready(function(){    
-    userid = document.URL.match(/user=(\d*)/)[1];            
+    _username = document.URL.match(/user=(\.*)/)[1];               
+    $("#profile-user-name h1").html(_username);
+    document.title = "Caster - "+_username;
     $.ajax({
         url: "../php/user_info.php",
         type: "POST",
@@ -20,7 +22,7 @@ $(document).ready(function(){
 });
 
 function init(){
-    getUsername();
+    getUserID();
     //change user picture    
     subscribed(function(res){
         if(res == true){
@@ -40,6 +42,10 @@ function init(){
         console.log("Hide camera");          
         ismyprofile = false;
     }
+    
+    var headerhtml = $("head").html();
+    headerhtml = headerhtml + "\n <link rel=\"altername\" type=\"application/xml\" title=\"RSS 2.0\" href=\"http://istrat.ddns.net/users/"+userid+"/audio/feed.rss\"/>";
+    $("head").html(headerhtml);
     
     refreshProfileImage();        
     
@@ -130,6 +136,16 @@ function getUsername(){
        $("#profile-user-name h1").html(response);
         _username = response;
         document.title = "Caster - "+response;
+    });
+}
+
+function getProfileID(){
+    $.ajax({
+        url: "../php/user_info.php",
+        data: {"q": "UID","name":username},
+        type: "POST"
+    }).done(function(response){
+        userid = int.parseInt(response);
     });
 }
 

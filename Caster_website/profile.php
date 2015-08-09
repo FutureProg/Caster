@@ -1,7 +1,7 @@
 <?php
 include_once 'phpreq/start_session.php';
-$profile_id = filter_input(INPUT_GET,"user");
-$myprofile =  (isset($_SESSION['user_id']) && $profile_id == $_SESSION['user_id']);
+$profile_username = filter_input(INPUT_GET,"user");
+$myprofile =  (isset($_SESSION['username']) && $profile_username == $_SESSION['username']);
 
 ?>
 <!--

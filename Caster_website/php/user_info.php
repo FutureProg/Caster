@@ -31,6 +31,9 @@ else if($q == "EDIT_PASS"){
 else if($q == "USR_JSN"){
     print user_json(filter_input(INPUT_POST,"id"));
 }
+else if($q == "UID"){
+    userid();
+}
 
 function user_json($userid){
     $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the server");
@@ -71,6 +74,20 @@ function username(){
         echo $row['username'];
     }else{
         echo "UNDEFINED";
+    }
+    mysqli_close($link);
+}
+
+function userid(){
+    $username = filter_input(INPUT_POST,"name");
+    $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to server");
+    $query = "SELECT `user_id` FROM `".TABLE_USERS."` WHERE `username`=".$username;    
+    $result = mysqli_query($link,$query) or die("Error querying database");
+    if(mysqli_num_rows($result) >= 1){
+        $row = mysqli_fetch_array($result);
+        echo $row['user_id'];
+    }else{
+        echo "-1";
     }
     mysqli_close($link);
 }
