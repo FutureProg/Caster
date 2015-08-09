@@ -2,12 +2,15 @@ package com.caster.caster_android;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
@@ -20,10 +23,12 @@ import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.caster.caster_android.utils.Bin;
 import com.caster.caster_android.views.PodcastBox;
+import com.caster.caster_android.views.SearchResults;
 import com.caster.caster_android.views.SignUpActivity;
 
 import org.json.JSONArray;
@@ -149,7 +154,7 @@ public class MainActivity extends Activity {
                 }
             });
         }else{
-            String[] navArray = { "Sign in","Sign Up"};
+            String[] navArray = { "Sign In","Sign Up"};
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, navArray);
             drawerList.setAdapter(adapter);
             drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -223,7 +228,39 @@ public class MainActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         //getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        getMenuInflater().inflate(R.menu.menu, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+
+        if (null != searchView) {
+            searchView.setSearchableInfo(searchManager
+                    .getSearchableInfo(getComponentName()));
+            searchView.setIconifiedByDefault(false);
+        }
+
+        SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+            public boolean onQueryTextChange(String newText) {
+                // this is your adapter that will be filtered
+                return true;
+            }
+
+            public boolean onQueryTextSubmit(String query) {
+                //Create intent to start podcast list activity
+                //From there you can see the results of your search and pick one to listen to
+                //Toast.makeText(MainActivity.this, query,Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(getApplicationContext(), SearchResults.class);
+                i.putExtra("query", query);
+                startActivity(i);
+                return true;
+            }
+        };
+        searchView.setOnQueryTextListener(queryTextListener);
+
+
+        //return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -244,6 +281,10 @@ public class MainActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+
+        if (id == R.id.action_search){
             return true;
         }
 

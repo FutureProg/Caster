@@ -15,6 +15,10 @@ elseif(filter_input(INPUT_POST,"t") == "SP"){
 elseif(filter_input(INPUT_POST,"t") == "RUJSON"){
     print recentPodcastsJson();
 }
+else if(filter_input(INPUT_POST,"m") == "MOBI"){
+	mobi_loadPodcasts();
+}
+
 
 function createPodcastBar($podcast,$username){
     echo "<div class='podcast-bar' title='$podcast[4]' id='$podcast[0]'>";
@@ -176,4 +180,29 @@ function userpicture($userid){
         return "UNDEFINED";
     }
     mysqli_close($link);
+}
+
+function mobi_loadPodcasts(){
+	$search = str_replace("%20"," ",filter_input(INPUT_GET,"mq"));
+    $search = trim($search);
+    if($search == ""){
+        print "No results found";        
+        return;
+    }    
+    $list = explode(' ',$search);
+    $str = join('* +',$list);
+    $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Unable to connect to the database");    
+    $query = "SELECT *,MATCH(tags) AGAINST('*$str+') AS `relevance` FROM `".TABLE_PODCASTS."` WHERE MATCH(tags) AGAINST('+$str*') ORDER BY relevance DESC;";        
+    /*$sqlOpt = array();
+    foreach($list as $key){
+        $sqlOpt[] = "tags LIKE '%".addslashes($key)."%'";
+    }
+    $query .= " ".join(' OR ',$sqlOpt).";";*/    
+    $result = mysqli_query($link,$query) or die("Error querying the database: ".mysqli_errno($link));    
+    mysqli_close($link);
+    $re = array();
+    while($r = mysqli_fetch_array($result)){
+        $re[] = $r;
+    }
+    return json_encode($re);
 }
