@@ -44,6 +44,9 @@
         <activity android:name=".views.SignUpActivity"
             android:label="Sign Up">
         </activity>
+        <activity android:name=".views.SearchResults"
+            android:label="Search Results">
+        </activity>
     </application>
 
 </manifest>

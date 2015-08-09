@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.caster.caster_android.utils.Bin;
 import com.caster.caster_android.views.PodcastBox;
+import com.caster.caster_android.views.SearchResults;
 import com.caster.caster_android.views.SignUpActivity;
 
 import org.json.JSONArray;
@@ -248,7 +249,10 @@ public class MainActivity extends Activity {
             public boolean onQueryTextSubmit(String query) {
                 //Create intent to start podcast list activity
                 //From there you can see the results of your search and pick one to listen to
-                Toast.makeText(MainActivity.this, query,Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this, query,Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(getApplicationContext(), SearchResults.class);
+                i.putExtra("query", query);
+                startActivity(i);
                 return true;
             }
         };
