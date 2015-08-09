@@ -2,6 +2,8 @@
 include 'php_vars.php';
 include_once '../phpreq/start_session.php';
 require_once('getid3/getid3.php');
+include 'rss.php';
+include 'podcast.php';
 
 $q = filter_input(INPUT_GET,"q");
 if($q == "CHECK"){
@@ -30,6 +32,10 @@ function upload(){
     $description = filter_input(INPUT_POST,"description");
     $tags = filter_input(INPUT_POST,"tags");
     $sharing = filter_input(INPUT_POST,"sharing");
+    $downloadable = filter_input(INPUT_POST,"downloadable");
+    if($sharing == "GLOBAL"){
+        $downloadable = true;
+    }
     //echo var_dump($_FILES);
     $picture_file = $_FILES["image_file"];
     $audio_file = $_FILES["podcast_file"];
@@ -57,8 +63,14 @@ function upload(){
         }
     }        
     $userid = $_SESSION['user_id'];
-    $query = "INSERT INTO `".TABLE_PODCASTS."` (`podcast_id`,`user_id`,`post_date`,`title`,`description`,`tags`,`image_file`,`audio_file`,`length`) VALUES (0,".$userid.",NOW(),'".addslashes($title)."','".addslashes($description)."','".addslashes($tags)."','".addslashes($image)."','".addslashes($audio)."',$duration,$sharing);";        
-    $result = mysqli_query($link,$query) or die("Error querying database: ".mysqli_errno($link).":".mysqli_error($link).":$query");
+    $query = "INSERT INTO `".TABLE_PODCASTS."` (`podcast_id`,`user_id`,`post_date`,`title`,`description`,`tags`,`image_file`,`audio_file`,`length`,`sharing`) VALUES (0,".$userid.",NOW(),'".addslashes($title)."','".addslashes($description)."','".addslashes($tags)."','".addslashes($image)."','".addslashes($audio)."',$duration,$sharing,$downloadable);";        
+    $result = mysqli_query($link,$query) or die("Error querying database: ".mysqli_errno($link).":".mysqli_error($link).":$query");    
+    
+    if($sharing == "GLOBAL"){            
+        $podcastid = mysql_insert_id($link);
+        $podcast = get_podcast_json($podcastid);
+        rss($userid,$podcast);
+    }
     mysqli_close($link);
     echo "OKAY";
     return;
