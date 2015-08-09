@@ -3,7 +3,7 @@ var myuserid;
 var ismyprofile;
 var _username;
 $(document).ready(function(){    
-    _username = document.URL.match(/user=(\.*)/)[1];               
+    _username = document.URL.match(/user=(.*)/)[1];               
     $("#profile-user-name h1").html(_username);
     document.title = "Caster - "+_username;
     $.ajax({
@@ -17,12 +17,11 @@ $(document).ready(function(){
            myuserid = -1;       
        }
         console.log("muid : " + res);
-        init();
+        getProfileID();
     });      
 });
 
 function init(){
-    getUserID();
     //change user picture    
     subscribed(function(res){
         if(res == true){
@@ -142,10 +141,12 @@ function getUsername(){
 function getProfileID(){
     $.ajax({
         url: "../php/user_info.php",
-        data: {"q": "UID","name":username},
+        data: {"q": "UID","name":_username},
         type: "POST"
     }).done(function(response){
-        userid = int.parseInt(response);
+        userid = parseInt(response);
+        console.log("uid: " + response);
+        init();
     });
 }
 
