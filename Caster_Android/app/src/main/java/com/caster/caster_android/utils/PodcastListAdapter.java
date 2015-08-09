@@ -40,6 +40,7 @@ public class PodcastListAdapter extends ArrayAdapter<Podcast>{
 
             holder = new PodcastHolder();
             holder.image = (ImageView)row.findViewById(R.id.imgSearchResultsItemImage);
+            holder.share = (ImageView)row.findViewById(R.id.imgSearchResultsItemShare);
             holder.title = (TextView)row.findViewById(R.id.txtSearchResultsItemTitle);
             holder.description = (TextView)row.findViewById(R.id.txtSearchResultsItemDescription);
 
@@ -69,11 +70,20 @@ public class PodcastListAdapter extends ArrayAdapter<Podcast>{
             holder.description.setText("Error getting description");
         }
 
+        try{
+            holder.share.setImageResource(R.drawable.ic_share_black_24dp);
+            holder.share.setTag(position);
+        }catch (Exception e){
+            holder.share.setImageResource(R.drawable.ic_share_black_24dp);
+            holder.share.setTag(position);
+        }
+
         return row;
     }
 
     static class PodcastHolder{
         ImageView image;
+        ImageView share;
         TextView title;
         TextView description;
     }

@@ -3,14 +3,12 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/txtSearchResults"/>
     <ListView
+        android:paddingTop="3dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/search_results_listview">
+        android:id="@+id/search_results_listview"
+        android:dividerHeight="2dp">
     </ListView>
 
 </LinearLayout>
