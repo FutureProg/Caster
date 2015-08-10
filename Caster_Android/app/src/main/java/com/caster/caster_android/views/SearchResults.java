@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +12,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -19,6 +22,7 @@ import android.widget.TextView;
 import com.caster.caster_android.CasterRequest;
 import com.caster.caster_android.MainActivity;
 import com.caster.caster_android.Podcast;
+import com.caster.caster_android.PodcastPlayer;
 import com.caster.caster_android.R;
 import com.caster.caster_android.utils.PodcastListAdapter;
 
@@ -36,6 +40,7 @@ import java.util.concurrent.ExecutionException;
 public class SearchResults extends Activity {
     private ArrayList<Podcast> results;
     private String query;
+    private GridLayout podcastBar;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -46,6 +51,7 @@ public class SearchResults extends Activity {
             newSearch();
         }
         getActionBar().setDisplayShowTitleEnabled(true);
+        podcastBar = (GridLayout)findViewById(R.id.podcast_bar_search_results);
 
         //Open Podcast on item click
         ListView listview = ((ListView)findViewById(R.id.search_results_listview));
@@ -53,10 +59,22 @@ public class SearchResults extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //Open profile view, or player view and play podcast
-
+                podcastBar.setVisibility(View.VISIBLE);
+                PodcastPlayer.podcast = results.toArray(new Podcast[results.size()])[position];
+                updatePlayerBar();
             }
         });
 
+    }
+
+    public void updatePlayerBar(){
+        if (PodcastPlayer.podcast == null){
+            podcastBar.setVisibility(View.INVISIBLE);
+        }else{
+            ((Button)podcastBar.findViewById(R.id.podcast_bar_img)).setBackground(
+                    new BitmapDrawable(getResources(),PodcastPlayer.podcast.getCoverPhoto()));
+            podcastBar.setVisibility(View.VISIBLE);
+        }
     }
 
     public void share(View v){

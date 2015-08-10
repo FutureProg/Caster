@@ -4,11 +4,63 @@
     android:layout_height="match_parent">
 
     <ListView
+        android:layout_weight="8.5"
         android:paddingTop="3dp"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:id="@+id/search_results_listview"
         android:dividerHeight="2dp">
     </ListView>
+
+    <GridLayout
+        android:layout_weight="1.5"
+        android:visibility="gone"
+        android:elevation="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:rowCount="1"
+        android:columnCount="4"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:background="@color/Caster_Colour_Red"
+        android:id="@+id/podcast_bar_search_results">
+
+        <Button
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_column="0"
+            android:id="@+id/podcast_bar_img"
+            android:layout_gravity="center_vertical"
+            android:onClick="openPlayer"
+            android:background="@drawable/dummy_podcast_img"/>
+
+        <Button
+            android:layout_width="30dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_column="1"
+            android:layout_gravity="center"
+            android:background="@drawable/skip_button_white_left"/>
+
+        <Button
+            android:layout_width="30dp"
+            android:layout_height="35dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_column="2"
+            android:layout_gravity="center"
+            android:background="@drawable/play_button"/>
+
+        <Button
+            android:layout_width="30dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_column="3"
+            android:layout_gravity="center"
+            android:background="@drawable/skip_button_white"/>
+
+    </GridLayout>
 
 </LinearLayout>
