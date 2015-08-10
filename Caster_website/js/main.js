@@ -33,13 +33,28 @@ function loadPage(url,scroll){
     }).done(function(html){
         scroll = scroll || true;
         if(scroll)
-            $("html,body").scrollTop(0);        
-        history.pushState(null,null,url);                
+            $("html,body").scrollTop(0);   
+        if(url.indexOf("profile.php") != -1){
+            url = url.replace("profile.php?user=","");
+        }
+        history.pushState(null,null,url);          
         $("#main-content").html(html);        
     });    
 }
 
 function backPage(url){
+    if(url.indexOf("error403.php") < 0 || url.indexOf("index.php") < 0 || url.indexOf("profile_podcasts.php") < 0 ||
+       url.indexOf("profile.php") < 0 || url.indexOf("search.php") < 0){
+        window.location.href = url;
+        return;
+    }
+    else if(url.indexOf(".php") < 0){
+        url = "profile.php?user=" + url;
+    }
+    else if(url == ""){
+        url = "index.php";
+    }
+    console.log("GO " + url);
     $.ajax({
         type: "GET",
         url: "php/page_content/" + url.split("/").pop()       

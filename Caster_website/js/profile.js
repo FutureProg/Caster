@@ -3,7 +3,11 @@ var myuserid;
 var ismyprofile;
 var _username;
 $(document).ready(function(){    
-    _username = document.URL.match(/user=(.*)/)[1];               
+    if(document.URL.indexOf("profile.php") != -1){
+        _username = document.URL.match(/user=(.*)/)[1];               
+    }else{
+        _username = document.URL.match(/\/\/.*\/(.*)/)[1];               
+    }    
     $("#profile-user-name h1").html(_username);
     document.title = "Caster - "+_username;
     $.ajax({

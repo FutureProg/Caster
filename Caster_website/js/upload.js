@@ -36,13 +36,13 @@ function submit(){
         return;
     }
     var sharing = $("#share-settings :selected").val();
-    var downloadable = $("#download-checkbox").checked();
+    var downloadable = $("#download-checkbox")[0].checked;
     var data = new FormData();
     data.append('title',title);
     data.append('description',desc);
     data.append('tags',tags);
-    data.append('sharing',sharing);
-    data.append("downloadable",downloadable);
+    data.append('sharing',""+sharing);
+    data.append("downloadable",""+downloadable);
     $.ajax({
         url: "../php/upload_audio.php?q=CHECK",
         type:"POST",

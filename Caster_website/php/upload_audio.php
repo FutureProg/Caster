@@ -63,7 +63,7 @@ function upload(){
         }
     }        
     $userid = $_SESSION['user_id'];
-    $query = "INSERT INTO `".TABLE_PODCASTS."` (`podcast_id`,`user_id`,`post_date`,`title`,`description`,`tags`,`image_file`,`audio_file`,`length`,`sharing`) VALUES (0,".$userid.",NOW(),'".addslashes($title)."','".addslashes($description)."','".addslashes($tags)."','".addslashes($image)."','".addslashes($audio)."',$duration,$sharing,$downloadable);";        
+    $query = "INSERT INTO `".TABLE_PODCASTS."` (`podcast_id`,`user_id`,`post_date`,`title`,`description`,`tags`,`image_file`,`audio_file`,`length`,`sharing`,`downloadable`) VALUES (0,".$userid.",NOW(),'".addslashes($title)."','".addslashes($description)."','".addslashes($tags)."','".addslashes($image)."','".addslashes($audio)."',$duration,$sharing,$downloadable);";        
     $result = mysqli_query($link,$query) or die("Error querying database: ".mysqli_errno($link).":".mysqli_error($link).":$query");    
     
     if($sharing == "GLOBAL"){            

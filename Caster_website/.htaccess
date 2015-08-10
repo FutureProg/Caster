@@ -1,4 +1,8 @@
-RewriteEngine on 
-RewriteCond ${SCRIPT_FILENAME} !-d
+RewriteEngine On
+
+RewriteCond %{request_filename} !-f
+RewriteCond %{request_filename} !-d
+RewriteRule ^([^/]+)/?$  /profile.php?user=$1    [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^([^\.]+)$ $1.php [NC,L]
-FileETag MTime Size
