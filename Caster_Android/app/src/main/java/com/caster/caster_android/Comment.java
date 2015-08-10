@@ -29,7 +29,7 @@ public class Comment {
     public static ArrayList<Comment> makeFromID(int podcastid){
         HashMap<Integer,Object> data = new HashMap<>();
         ArrayList<Comment> re = new ArrayList<>();
-        String urlStr = "http://192.168.2.155:8000/php/podcast.php";
+        String urlStr = MainActivity.site + "/php/podcast.php";
         CasterRequest req = new CasterRequest(urlStr);
         req.addParam("q","CMNTS_JSON").addParam("id",""+podcastid);
         try {

@@ -77,6 +77,12 @@ public class SearchResults extends Activity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updatePlayerBar();
+    }
+
     public void share(View v){
         Integer position = (Integer)v.findViewById(R.id.imgSearchResultsItemShare).getTag();
         Podcast toshare = results.toArray(new Podcast[results.size()])[position];

@@ -8,17 +8,25 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.caster.caster_android.utils.Bin;
+import com.caster.caster_android.utils.CommentListAdapter;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -38,6 +46,7 @@ public class PodcastPlayer extends Activity {
     public static final byte COMMAND_PLAY = 0x0;
 
     public static Podcast podcast;
+    public ArrayList<Comment> comments;
 
     private static final String TAG = "Play Podcast";
 
@@ -156,6 +165,36 @@ public class PodcastPlayer extends Activity {
 
         setTitle(podcast.getTitle());
 
+        //Load Comments
+        reloadComments();
+
+        //Listen for comments
+        ((EditText)findViewById(R.id.comment_box)).setOnEditorActionListener(
+                new EditText.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        if (event != null) {
+                            if (!event.isShiftPressed()) {
+                                //Toast.makeText(getApplicationContext(),v.getText(), Toast.LENGTH_SHORT).show();
+                                try {
+                                    podcast.postComment(User.ID, v.getText().toString());
+                                    reloadComments();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                } catch (ExecutionException e) {
+                                    e.printStackTrace();
+                                } catch (Exception e){
+                                    e.printStackTrace();
+                                    Toast.makeText(getApplicationContext(),"Error posting comment", Toast.LENGTH_SHORT).show();
+                                }
+
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                }
+        );
         //Media Player
         mp = new MediaPlayer();
         /*mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -172,6 +211,13 @@ public class PodcastPlayer extends Activity {
         }*/
 
 
+    }
+
+    public void reloadComments(){
+        comments = Comment.makeFromID(podcast.getCreatorId());
+        ListView lv = (ListView)findViewById(R.id.play_podcast_comments_list);
+        CommentListAdapter adapter = new CommentListAdapter(this, R.layout.comment_layout, comments.toArray(new Comment[comments.size()]));
+        lv.setAdapter(adapter);
     }
 
     //Plays or pauses the current podcast
