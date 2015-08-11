@@ -125,6 +125,9 @@ public class PodcastPlayer extends Activity {
         if(podcast == null){
             return;
         }
+        View header = getLayoutInflater().inflate(R.layout.activity_play_podcast_listview_header, null);
+        ListView listView = (ListView)findViewById(R.id.play_podcast_comments_list);
+        listView.addHeaderView(header);
 
         if (Bin.getSignedInUser() != null){
             Button subbutton = (Button)findViewById(R.id.subscribe);
