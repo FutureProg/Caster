@@ -28,7 +28,7 @@ function createPodcastBar($podcast,$username){
     echo "</div>";
     echo "<div class='description'>";
     echo "<p>$podcast[5]<p><br/>";
-    echo "<p>by: <a href='profile.php?user=$podcast[1]'>$username</a><br/> length: ".secondsToTime($podcast)."<br/> uploaded ".dateDifference($podcast)." ago</p>";     
+    echo "<p>by: <a href='$username'>$username</a><br/> length: ".secondsToTime($podcast)."<br/> uploaded ".dateDifference($podcast)." ago</p>";     
     echo "</div>";
     echo "</div>";
 }
