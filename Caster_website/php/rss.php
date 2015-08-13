@@ -1,7 +1,5 @@
 <?php
-include 'user_info.php';
-include 'podcast.php';
-function RSS($userid,$podcast){
+function rss($userid,$podcast){
     $filename = "/home/nick/www/public/users/$userid/audio/feed.rss";
     if(file_exists($filename)){
         edit_rss($userid,$podcast,$filename);
@@ -10,7 +8,7 @@ function RSS($userid,$podcast){
     }
 }
 
-function edit_rss($userid,$podcast){
+function edit_rss($userid,$podcast,$filename){
     $file = fopen($filename,'r');
     if($file == false){
         return;
@@ -25,6 +23,7 @@ function edit_rss($userid,$podcast){
         $contents .= $line;
     }
     fclose($file);
+    $user = get_user($userid);
     $contents = str_replace("</channel>\n</rss>\n","",$contents);
     $contents .= "<item>\n";
     $contents .= "<itunes:image href=\"http://istrat.ddns.net/users/".$userid."/images/podcast/".$podcast['image_file']."\" />\n";
@@ -41,12 +40,12 @@ function edit_rss($userid,$podcast){
     fclose($file);
 }
 
-function new_rss($userid,$podcast){
+function new_rss($userid,$podcast,$filename){
     $file = fopen($filename,'w');
     if($file == false){
         return;
     }
-    $user = user_json($userid);
+    $user = get_user($userid);
     $contents = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     $contents .= "<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\"\n";
     $contents .= "xmlns:itunes=\"http://www.itunes.com/dtds/podcast-1.0.dtd\">";
@@ -55,10 +54,10 @@ function new_rss($userid,$podcast){
     $contents .= "<link>http://istrat.ddns.net/".$user['username']."</link>\n";
     $contents .= "<description>".$podcast['description']."</description>\n";
     $contents .= "<category>Podcasts</category>\n"; // to change later
-    $contents .= "<atom:link href=\"http://istrat.ddnes.net/users/".$userid."/audio/feed.rss\" rel=\"self\" />\n";
+    $contents .= "<atom:link href=\"http://istrat.ddns.net/users/".$userid."/audio/feed.rss\" rel=\"self\" />\n";
     $contents .= "<image>\n";
     $contents .= "<url>http://istrat.ddns.net/users/".$userid."/images/podcast/".$podcast['image_file']."</url>\n";
-    $contents .= "<title>".$podcast['title']."</title>\n";
+    $contents .= "<title>".$user['username']."</title>\n";
     $contents .= "<link>http://istrat.ddns.net/".$user['username']."</link>\n";
     $contents .= "</image>\n";
     $contents .= "<itunes:image href=\"http://istrat.ddns.net/users/".$userid."/images/".$user['picture']."\" />\n";
@@ -67,4 +66,12 @@ function new_rss($userid,$podcast){
     fwrite($file,$contents);
     fclose($file);
     edit_rss($userid,$podcast);
+}
+
+function get_user($userid){
+    $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the server");
+    $query = "SELECT * FROM `".TABLE_USERS."` WHERE `user_id`=$userid";
+    $result = mysqli_query($link,$query) or die("Error quering the database");
+    mysqli_close($link);
+    return mysqli_fetch_array($result);
 }

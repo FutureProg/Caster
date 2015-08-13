@@ -2,14 +2,14 @@
 include 'php_vars.php';
 include_once '../phpreq/start_session.php';
 require_once('getid3/getid3.php');
-include 'rss.php';
 include 'podcast.php';
+include 'rss.php';
 
 $q = filter_input(INPUT_GET,"q");
-if($q == "CHECK"){
+if($q == "CHECK" && isset($_SESSION['user_id'])){
     check();
 }
-else if($q == "UPLOAD"){
+else if($q == "UPLOAD" && isset($_SESSION['user_id'])){
     upload();
 }
 
@@ -61,14 +61,17 @@ function upload(){
             echo "Error uploading podcast";
             return;
         }
-    }        
+    }else{
+        echo "No audio file uploaded: ".$audio_file['error']." with size: ".sizeof($audio_file);
+        return;
+    }
     $userid = $_SESSION['user_id'];
-    $query = "INSERT INTO `".TABLE_PODCASTS."` (`podcast_id`,`user_id`,`post_date`,`title`,`description`,`tags`,`image_file`,`audio_file`,`length`,`sharing`,`downloadable`) VALUES (0,".$userid.",NOW(),'".addslashes($title)."','".addslashes($description)."','".addslashes($tags)."','".addslashes($image)."','".addslashes($audio)."',$duration,$sharing,$downloadable);";        
+    $query = "INSERT INTO `".TABLE_PODCASTS."` (`user_id`,`post_date`,`title`,`description`,`tags`,`image_file`,`audio_file`,`length`,`sharing`,`downloadable`) VALUES (".$userid.",NOW(),'".addslashes($title)."','".addslashes($description)."','".addslashes($tags)."','".addslashes($image)."','".addslashes($audio)."',$duration,'$sharing',$downloadable);";        
     $result = mysqli_query($link,$query) or die("Error querying database: ".mysqli_errno($link).":".mysqli_error($link).":$query");    
     
     if($sharing == "GLOBAL"){            
-        $podcastid = mysql_insert_id($link);
-        $podcast = get_podcast_json($podcastid);
+        $podcastid = mysqli_insert_id($link);
+        $podcast = get_podcast($podcastid);        
         rss($userid,$podcast);
     }
     mysqli_close($link);
