@@ -12,7 +12,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,7 +25,6 @@ import com.caster.caster_android.utils.CommentListAdapter;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -217,7 +215,7 @@ public class PodcastPlayer extends Activity {
     }
 
     public void reloadComments(){
-        comments = Comment.makeFromID(podcast.getCreatorId());
+        comments = Comment.makeFromID(podcast.getId());
         ListView lv = (ListView)findViewById(R.id.play_podcast_comments_list);
         CommentListAdapter adapter = new CommentListAdapter(this, R.layout.comment_layout, comments.toArray(new Comment[comments.size()]));
         lv.setAdapter(adapter);
