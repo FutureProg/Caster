@@ -1,28 +1,79 @@
 var userid;
 var myuserid;
+var mypodcastid;
 var ismyprofile;
 var _username;
-$(document).ready(function(){    
+var _podcast;
+$(document).ready(function(){  
+	/* OLD PHP
     if(document.URL.indexOf("profile.php") != -1){
         _username = document.URL.match(/user=(.*)/)[1];               
     }else{
         _username = document.URL.match(/\/\/.*\/(.*)/)[1];               
     }    
-    $("#profile-user-name h1").html(_username);
-    document.title = "Caster - "+_username;
-    $.ajax({
-        url: "../php/user_info.php",
-        type: "POST",
-        data: { "q" : "UI"}
-    }).done(function(res){
-       if(res != "NO"){              
-           myuserid = parseInt(res.trim());           
-       }else{
-           myuserid = -1;       
-       }
-        console.log("muid : " + res);
-        getProfileID();
-    });      
+	*/
+	//Get URL as String
+	urlAsString = document.URL.toString()
+	//Remove any trailing '/' or '\'
+	while (urlAsString.charAt(urlAsString.length - 1) == "/" || urlAsString.charAt(urlAsString.length - 1) == '\\'){
+		urlAsString = urlAsString.substr(0, urlAsString.length - 1);
+	}
+	//If the url is in the form caster.media/user/podcast
+	_podcast = urlAsString.match(/\/\/.*\/(.*)/);
+	_username = urlAsString.match(/\/\/.*\/(.*)\//);
+
+	//If the url is in the form caster.media/nick
+	if (_username === ''){
+		_username = _podcast;
+		//The old PHP you had before
+		$("#profile-user-name h1").html(_username);
+		document.title = "Caster - "+_username;
+		$.ajax({
+			url: "../php/user_info.php",
+			type: "POST",
+			data: { "q" : "UI"}
+		}).done(function(res){
+		   if(res != "NO"){              
+			   myuserid = parseInt(res.trim());           
+		   }else{
+			   myuserid = -1;       
+		   }
+			console.log("muid : " + res);
+			getProfileID();
+		});      
+	}
+	else{
+	  //podcast urlid function
+	  $.ajax({
+		url: "../php/podcast.php",
+		type: "POST",
+		data: {"q" : "URLIDTOPID", "id" : _podcast}
+	  }).done(function(res){
+		if (res !== null){
+		  mypodcastid = res.trim();
+		}
+		else{
+		  mypodcastid = -1;
+		}
+		console.log("pdid : " + res);
+
+	  });
+
+	  $.ajax({
+		url: "../php/podcast.php",
+		type: "POST",
+		data: {"q" : "TTL", "id" : mypodcastid}
+	  }).done(function(res){
+		if (res !== null){
+		  //call playSound(mypodcastid, res.trim());
+		  playSound(mypodcastid, res.trim());
+		}
+		else{
+		  //error getting podcast title
+		}
+
+	  });
+	}    
 });
 
 function init(){

@@ -50,6 +50,9 @@ elseif ($q == "BY_USR"){
 elseif ($q == "PDCST_JSN"){
     print get_podcast_json(filter_input(INPUT_POST,"id"));
 }
+elseif ($q =="URLIDTOPID"){
+  echo get_podcast_by_urlid(filter_input(INPUT_POST, "id"));
+}
 
 function comment(){
     $user_id = "";
@@ -183,6 +186,20 @@ function delete(){
     mysqli_close($link);
     echo "OKAY";
     return;
+}
+
+function get_podcast_by_urlid($urlid){
+  $link = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME) or die("Error connecting to the server");
+  $query = "SELECT podcast_id FROM '".TABLE_PODCASTS."' WHERE 'urlid'=$urlid";
+  $result = mysqli_query($link, $query) or die("Error querying the database");
+  mysqli_close($link);
+  if($request != null){
+    return $result;
+  }
+  else{
+    return null;
+  }
+  
 }
 
 //get_comments_json(3);
