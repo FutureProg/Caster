@@ -58,6 +58,27 @@ public class User {
         return re;
     }
 
+    public static User makeFromUsername(String username){
+        HashMap<Integer, Object> data = new HashMap<>();
+        User re = null;
+        String urlStr = MainActivity.site + "/php/user_info.php";
+        CasterRequest req = new CasterRequest(urlStr);
+        req.addParam("q", "UNAMETOUID").addParam("id", username);
+        try{
+            String res = (String)req.execute().get();
+            if (res != null){
+                return makeFromID(Integer.parseInt(res.trim()));
+            }
+            else{
+                return re;
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return  re;
+    }
+
     public static User makeFromJson(JSONObject jsonObject){
         HashMap<Integer,Object> data = new HashMap<>();
         User re = null;

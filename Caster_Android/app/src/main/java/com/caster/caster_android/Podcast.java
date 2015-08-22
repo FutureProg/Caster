@@ -1,6 +1,7 @@
 package com.caster.caster_android;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.caster.caster_android.utils.Bin;
 
@@ -8,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 import static com.caster.caster_android.utils.Bin.*;
@@ -24,7 +26,7 @@ import static com.caster.caster_android.utils.Bin.*;
 public class Podcast {
 
     public final static int COVER_PHOTO = 0, TITLE = 1, DESCRIPTION = 2, VIEWS = 3, LIKES = 4,
-                            LENGTH = 5, ID=6,CREATOR_ID=7, AUDIO_FILE = 8;
+                            LENGTH = 5, ID=6,CREATOR_ID=7, AUDIO_FILE = 8, URLID = 9;
 
     HashMap<Integer, Object> metadata; //image,title, descriptions, views, likes, length, etc.
     User creator;
@@ -53,6 +55,22 @@ public class Podcast {
         return re;
     }
 
+    public static Podcast makeFromUrlid(String urlid){
+        HashMap<Integer, Object> data = new HashMap<>();
+        Podcast re = null;
+        String urlStr = MainActivity.site + "/php/podcast.php";
+        try{
+            CasterRequest request = new CasterRequest(urlStr);
+            String res = (String)request.addParam("q", "URLIDTOPID").addParam("id", urlid).execute().get();
+            Log.d("Make From Urlid : ", res + "");
+            return makeFromID(Integer.parseInt(res.trim()));
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return re;
+    }
+
     public static Podcast makeFromJson(JSONObject jsonObject){
         HashMap<Integer,Object> data = new HashMap<>();
         Podcast re = null;
@@ -64,6 +82,7 @@ public class Podcast {
             data.put(CREATOR_ID,jsonObject.getInt("user_id"));
             data.put(COVER_PHOTO,jsonObject.getString("image_file"));
             data.put(AUDIO_FILE,jsonObject.getString("audio_file"));
+            data.put(URLID, jsonObject.getString("urlid"));
             re = new Podcast(data);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -78,7 +97,7 @@ public class Podcast {
     }
 
     public Podcast(HashMap<Integer, Object> metadata){
-        this(null,metadata);
+        this(null, metadata);
     }
 
     /**
@@ -166,6 +185,8 @@ public class Podcast {
     public int getCreatorId(){
         return (int)metadata.get(CREATOR_ID);
     }
+
+    public String getUrlid() { return (String)metadata.get(URLID); }
 
 
     public HashMap<Integer, Object> getMetadata(){

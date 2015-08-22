@@ -50,8 +50,8 @@ elseif ($q == "BY_USR"){
 elseif ($q == "PDCST_JSN"){
     print get_podcast_json(filter_input(INPUT_POST,"id"));
 }
-elseif ($q =="URLIDTOPID"){
-  echo get_podcast_by_urlid(filter_input(INPUT_POST, "id"));
+elseif ($q == "URLIDTOPID"){
+ 	print get_podcast_by_urlid(filter_input(INPUT_POST, "id"))['podcast_id'];
 }
 
 function comment(){
@@ -190,11 +190,11 @@ function delete(){
 
 function get_podcast_by_urlid($urlid){
   $link = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME) or die("Error connecting to the server");
-  $query = "SELECT podcast_id FROM '".TABLE_PODCASTS."' WHERE 'urlid'=$urlid";
+  $query = "SELECT `podcast_id` FROM `".TABLE_PODCASTS."` WHERE `urlid`='$urlid'";
   $result = mysqli_query($link, $query) or die("Error querying the database");
   mysqli_close($link);
-  if($request != null){
-    return $result;
+  if($result != null){
+    return mysqli_fetch_array($result);
   }
   else{
     return null;
@@ -202,4 +202,4 @@ function get_podcast_by_urlid($urlid){
   
 }
 
-//get_comments_json(3);
+//get_comments_json(3);/

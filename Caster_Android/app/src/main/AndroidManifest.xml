@@ -31,7 +31,14 @@
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/title_activity_play_podcast"
             android:theme="@style/CasterTheme"
-            android:windowSoftInputMode="stateHidden" >
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.default"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:host="istrat.ddns.net"/>
+                <data android:mimeType="text/plain"/>
+            </intent-filter>
         </activity>
         <activity
             android:name=".ProfileActivity"

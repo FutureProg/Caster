@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.caster.caster_android.CasterRequest;
 import com.caster.caster_android.MainActivity;
@@ -91,7 +92,7 @@ public class SearchResults extends Activity {
         share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         share.putExtra(Intent.EXTRA_SUBJECT, toshare.getTitle());
         //Change description to direct link to podcast when available
-        share.putExtra(Intent.EXTRA_TEXT, toshare.getDescription());
+        share.putExtra(Intent.EXTRA_TEXT, MainActivity.site + "/" + toshare.getUrlid());
         startActivity(Intent.createChooser(share, "Share link"));
     }
 
@@ -158,6 +159,9 @@ public class SearchResults extends Activity {
                 return;
             }
             Log.d("Search Results result: ", res);
+            if (res.contains("No results found")){
+                Toast.makeText(getApplicationContext(), "No Results Found :(", Toast.LENGTH_SHORT);
+            }
             JSONArray jsonArray = new JSONArray(res);
             for(int i = 0; i< jsonArray.length(); i++){
                 JSONObject obj = jsonArray.getJSONObject(i);

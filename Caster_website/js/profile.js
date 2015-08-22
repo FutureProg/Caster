@@ -20,10 +20,31 @@ $(document).ready(function(){
 	}
 	//If the url is in the form caster.media/user/podcast
 	_podcast = urlAsString.match(/\/\/.*\/(.*)/);
-	_username = urlAsString.match(/\/\/.*\/(.*)\//);
-
+	if (urlAsString.indexOf("podcast.php") != -1){
+		myuserid = urlAsString.match(/user=[0-9]*/);
+		$.ajax({
+			url: "../php/user_info.php",
+			type: "POST",
+			data: { "q" : "UN", "id" : _username}
+		}).done(function(res){
+			if(res != "UNDERFINED"){
+				_username = res.trim();
+			}
+			else{
+				console.log("Error turning user id into username, userid : " + myuserid);
+			}
+			console.log("username : " + res);
+		});
+	}
+	else{
+		_username = urlAsString.match(/\/\/.*\/(.*)\//);
+	}
+	_podcast = _podcast[1];
+	console.log("podcast : " + _podcast);
+	console.log("user : " + _username);
+	console.log("userid : " + myuserid);
 	//If the url is in the form caster.media/nick
-	if (_username === ''){
+	if (_username === '' || _username === null){
 		_username = _podcast;
 		//The old PHP you had before
 		$("#profile-user-name h1").html(_username);
@@ -43,6 +64,24 @@ $(document).ready(function(){
 		});      
 	}
 	else{
+	  _username = _username[1];
+	  //Load user information
+	  $("#profile-user-name h1").html(_username);
+		document.title = "Caster - "+_username;
+		$.ajax({
+			url: "../php/user_info.php",
+			type: "POST",
+			data: { "q" : "UI"}
+		}).done(function(res){
+		   if(res != "NO"){              
+			   myuserid = parseInt(res.trim());           
+		   }else{
+			   myuserid = -1;       
+		   }
+			console.log("muid : " + res);
+			getProfileID();
+		});      	
+		
 	  //podcast urlid function
 	  $.ajax({
 		url: "../php/podcast.php",
@@ -50,10 +89,10 @@ $(document).ready(function(){
 		data: {"q" : "URLIDTOPID", "id" : _podcast}
 	  }).done(function(res){
 		if (res !== null){
-		  mypodcastid = res.trim();
+			mypodcastid = res.trim();
 		}
 		else{
-		  mypodcastid = -1;
+			mypodcastid = -1;
 		}
 		console.log("pdid : " + res);
 
@@ -65,13 +104,13 @@ $(document).ready(function(){
 		data: {"q" : "TTL", "id" : mypodcastid}
 	  }).done(function(res){
 		if (res !== null){
-		  //call playSound(mypodcastid, res.trim());
-		  playSound(mypodcastid, res.trim());
+		 	//call playSound(mypodcastid, res.trim());
+		 	playSound(mypodcastid, res.trim());
 		}
 		else{
-		  //error getting podcast title
+		  	//error getting podcast title
 		}
-
+		console.log("podcast title : " + res.trim());
 	  });
 	}    
 });
@@ -80,10 +119,10 @@ function init(){
     //change user picture    
     subscribed(function(res){
         if(res == true){
-            $("#profile-subscribe-button img").attr("src","images/unsubscribe_button.png");
+            $("#profile-subscribe-button img").attr("src","/images/unsubscribe_button.png");
         }
         else{
-            $("#profile-subscribe-button img").attr("src","images/subscribe_button.png");    
+            $("#profile-subscribe-button img").attr("src","/images/subscribe_button.png");    
         }
     });
     console.log("COMPARE " + myuserid  + " TO " + userid);
@@ -171,7 +210,7 @@ function refreshProfileImage(){
     }).done(function(result){   
         newsrc = "";
         if(result == "UNDEFINED" || result == ""){
-            newsrc = "images/default_profile.png";
+            newsrc = "/images/default_profile.png";
         }
         else{
             newsrc = "../users/" + userid + "/images/"+result;

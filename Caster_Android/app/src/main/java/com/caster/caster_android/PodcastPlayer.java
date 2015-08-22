@@ -88,6 +88,34 @@ public class PodcastPlayer extends Activity {
                 }
             }
         }
+        //Still need to load the player functions
+        else if(getIntent() != null && getIntent().getType() != null){
+            String url = (String)getIntent().getStringExtra(Intent.EXTRA_TEXT);
+            url = url.replace(MainActivity.site, "");
+            Log.d("Share Intent : ", url);
+            String[] parts = url.split("/");
+            //For when the share intent is site/user/podcast
+            try{
+                podcast = Podcast.makeFromUrlid(parts[2]);
+                initializeViews();
+                Log.d("Share Intent : ", "Made podcast from share intent");
+            }
+            //For when the share intent is site/user
+            catch (Exception e){
+                Log.d("Share Intent : ", "Url was not of the form site/user/podcast, trying site/user");
+                try{
+                    e.printStackTrace();
+                    Integer user_id = User.makeFromUsername(parts[1]).getId();
+                    podcast = Bin.getMostRecentPodcast(user_id);
+                    initializeViews();
+                    Log.d("Share Intent : ", "Made podcast from user profile from share intent");
+                }
+                catch (Exception ex) {
+                    e.printStackTrace();
+                    Log.d("Share Intent : ", "Couldn't make anything, abort");
+                }
+            }
+        }
     }
 
     @Override

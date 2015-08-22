@@ -34,6 +34,9 @@ else if($q == "USR_JSN"){
 else if($q == "UID"){
     userid();
 }
+else if($q == "UNAMETOUID"){
+	print username_to_userid();
+}
 
 function user_json($userid){
     $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the server");
@@ -81,7 +84,7 @@ function username(){
 function userid(){
     $username = filter_input(INPUT_POST,"name");
     $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to server");
-    $query = "SELECT `user_id` FROM `".TABLE_USERS."` WHERE `username`='$username'";
+    $query = "SELECT `user_id` FROM `".TABLE_USERS."` WHERE `username`='$username'";    
     $result = mysqli_query($link,$query) or die("Error querying database");
     if(mysqli_num_rows($result) >= 1){
         $row = mysqli_fetch_array($result);
@@ -139,4 +142,13 @@ function set_description(){
     $result = mysqli_query($link,$query) or die("Error queerying the database");
     echo "OKAY";
     mysqli_close($link);
+}
+
+function username_to_userid(){
+	$username = filter_input(INPUT_POST, "id");
+	$link = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME) or die("Error connecting to the server");
+	$query = "SELECT `user_id` FROM `".TABLE_USERS."` WHERE `username`='$username'";
+	$result = mysqli_query($link, $query) or die("Error querying the database");
+	$row = mysqli_fetch_array($result);
+	return $row[user_id];
 }

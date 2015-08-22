@@ -4,18 +4,21 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
 import com.caster.caster_android.CasterRequest;
 import com.caster.caster_android.MainActivity;
 import com.caster.caster_android.Podcast;
 import com.caster.caster_android.User;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
@@ -144,5 +147,23 @@ public class Bin {
         else{
             return false;
         }
+    }
+
+    public static Podcast getMostRecentPodcast(Integer user_id){
+        CasterRequest req = new CasterRequest(MainActivity.site + "/php/podcast.php");
+        req.addParam("q", "BY_USR").addParam("id", "" +user_id);
+        ArrayList<Podcast> recents = new ArrayList<>();
+        try{
+            String res = (String)req.execute().get();
+            JSONArray jsonArray = new JSONArray(res);
+            for(int i = 0; i< jsonArray.length(); i++){
+                JSONObject obj = jsonArray.getJSONObject(i);
+                recents.add(Podcast.makeFromJson(obj));
+            }
+            return recents.get(0);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }

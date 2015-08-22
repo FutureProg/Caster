@@ -16,7 +16,7 @@ elseif(filter_input(INPUT_POST,"t") == "RUJSON"){
     print recentPodcastsJson();
 }
 else if(filter_input(INPUT_POST,"m") == "MOBI"){
-	mobi_loadPodcasts();
+	print mobi_loadPodcasts();
 }
 
 
@@ -183,6 +183,7 @@ function userpicture($userid){
 }
 
 function mobi_loadPodcasts(){
+	echo $search;
 	$search = str_replace("%20"," ",filter_input(INPUT_GET,"mq"));
     $search = trim($search);
     if($search == ""){
