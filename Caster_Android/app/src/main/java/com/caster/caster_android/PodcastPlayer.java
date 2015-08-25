@@ -2,6 +2,8 @@ package com.caster.caster_android;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -16,12 +18,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.caster.caster_android.utils.Bin;
 import com.caster.caster_android.utils.CommentListAdapter;
+import com.caster.caster_android.views.SearchResults;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -116,6 +120,7 @@ public class PodcastPlayer extends Activity {
                 }
             }
         }
+        getActionBar().setTitle(podcast.getTitle());
     }
 
     @Override
@@ -128,7 +133,39 @@ public class PodcastPlayer extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         //getMenuInflater().inflate(R.menu.menu_play_podcast, menu);
-        return false;
+        getMenuInflater().inflate(R.menu.menu, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+
+        if (null != searchView) {
+            searchView.setSearchableInfo(searchManager
+                    .getSearchableInfo(getComponentName()));
+            searchView.setIconifiedByDefault(false);
+        }
+
+        SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+            public boolean onQueryTextChange(String newText) {
+                // this is your adapter that will be filtered
+                return true;
+            }
+
+            public boolean onQueryTextSubmit(String query) {
+                //Create intent to start podcast list activity
+                //From there you can see the results of your search and pick one to listen to
+                //Toast.makeText(MainActivity.this, query,Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(getApplicationContext(), SearchResults.class);
+                i.putExtra("query", query);
+                startActivity(i);
+                return true;
+            }
+        };
+        searchView.setOnQueryTextListener(queryTextListener);
+
+
+        //return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -192,7 +229,7 @@ public class PodcastPlayer extends Activity {
 
         playButton = (Button)findViewById(R.id.playButton);
 
-        setTitle(podcast.getTitle());
+        //setTitle(podcast.getTitle()); setTitle isn't a function so idk how it was compiling..
 
         //Load Comments
         reloadComments();
@@ -385,6 +422,16 @@ public class PodcastPlayer extends Activity {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void share(View v){
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("text/plain");
+        share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        share.putExtra(Intent.EXTRA_SUBJECT, podcast.getTitle());
+        //Change description to direct link to podcast when available
+        share.putExtra(Intent.EXTRA_TEXT, MainActivity.site + "/" + podcast.getCreator().getUsername() + "/" + podcast.getUrlid());
+        startActivity(Intent.createChooser(share, "Share link"));
     }
 
 
