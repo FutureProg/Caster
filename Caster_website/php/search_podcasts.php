@@ -1,6 +1,7 @@
 <?php
 include_once '../phpreq/start_session.php';
 include 'php_vars.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'/php/podcast_box.php';
 
 if(filter_input(INPUT_GET,"q") !== null){
     loadPodcasts();
@@ -61,12 +62,16 @@ function recentPodcasts(){
     $query = "SELECT * FROM `".TABLE_PODCASTS."` ORDER BY `post_date` DESC LIMIT 5";        
     $result = mysqli_query($link,$query) or die("Error querying the database: ".mysqli_errno($link)." : ".mysqli_error($link));    
     mysqli_close($link);    
-    if(mysqli_num_rows($result) >= 1){          
-        while($row = mysqli_fetch_row($result)){
-            $userid = $row[1];
-            $username = username($userid);    
-            createPodcastBar($row,$username);            
+    if(mysqli_num_rows($result) >= 1){   
+        echo "<div id='wplt'>\n";
+        echo "<div id='wplt-inner'>\n";
+        while($row = mysqli_fetch_array($result)){
+            //$userid = $row[1];
+            //$username = username($userid);    
+            //createPodcastBar($row,$username);            
+            echo podcastBox($row);
         }
+        echo "</div></div>";
     }
     else{
         echo "<h3 style='text-align:center;font-style:bold;'>NO RESULTS FOUND</h3>";        

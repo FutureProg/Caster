@@ -35,6 +35,13 @@ $(document).ready(function(){
         data: {"t":"RU"}
     }).done(function(res){
         $("#recent-uploads").html(res);
+        $(".wplt .wplt-inner .podcast-object").hover(function(){
+    		$(this).children(".podcast-info").slideDown("fast");
+		},
+		function(){
+    		$(this).children(".podcast-info").slideUp("fast");
+		});
+		$(".wplt .wplt-inner .podcast-object .podcast-info").slideUp(0); 
     });
     $.ajax({
         url: "../php/search_podcasts.php",
@@ -46,15 +53,14 @@ $(document).ready(function(){
         }
         else{
             $("#subscriptions").html(res);
-        }
-        $("#wplt #wplt-inner .podcast-object .podcast-info").slideUp(0);    
-        $("#wplt #wplt-inner .podcast-object").hover(function(){
+        }        
+        $(".wplt .wplt-inner .podcast-object").hover(function(){
     		$(this).children(".podcast-info").slideDown("fast");
 		},
 		function(){
     		$(this).children(".podcast-info").slideUp("fast");
 		});
-
+		$(".wplt .wplt-inner .podcast-object .podcast-info").slideUp(0);    
     });        
     restartTimer();
     /*$.ajax({

@@ -1,7 +1,6 @@
 <?php
 
 include_once $_SERVER['DOCUMENT_ROOT'].'/phpreq/start_session.php';
-include_once $_SERVER['DOCUMENT_ROOT'].'/php/user_info.php';
 include_once $_SERVER['DOCUMENT_ROOT'].'/php/php_vars.php';
 
 
@@ -21,13 +20,12 @@ function podcastBox($podcast){
 	$re .= "<div class='podcast-info'>\n";
 	$re .= $podcast['description']."\n";
 	$re .= "</div>\n";
-//	$re .="<img class='podcast_image' src='/images/dummy_podcast_img.jpg'/>
 	$re .= "<img class='podcast_image' src='/users/".$podcast['user_id']."/images/podcast/".$podcast['image_file']."'/>\n";
 	$re .= "</div>\n";
 	return $re;
 }
 
-echo '<head>';
+/*echo '<head>';
 echo '<link href="/style.css" rel="stylesheet"/>';
 echo '<script src="/jquery/jquery/jquery.min.js"></script>';
 echo '</head>';
@@ -42,4 +40,4 @@ echo '<script>$("#wplt #wplt-inner .podcast-object .podcast-info").slideUp(0);$(
 function(){
     $(this).children(".podcast-info").slideUp("fast");
 });</script>';
-echo '</body>';
+echo '</body>';*/
