@@ -13,7 +13,7 @@ $("#image-uploader").on('change',function(){
 });
 
 $.ajax({
-        url: "../php/user_info.php",
+        url: "/php/user_info.php",
         type: "POST",
         data: { "q" : "UI"}
     }).done(function(res){
@@ -25,7 +25,7 @@ $.ajax({
         console.log("muid : " + res);
     }); 
 
-function submit(){
+function submit2(){
     var title = $("#upload-title-area").val();    
     var desc = $("#upload-description-area").val();
     var tags = $("#upload-tags-area").val();
@@ -44,7 +44,7 @@ function submit(){
     data.append('sharing',""+sharing);
     data.append("downloadable",""+downloadable);
     $.ajax({
-        url: "../php/upload_audio.php?q=CHECK",
+        url: "/php/upload_audio.php?q=CHECK",
         type:"POST",
         data:data,
         cache:false,
@@ -76,7 +76,7 @@ function submit(){
         data.append(i,file);
     }*/
     $.ajax({
-        url: "../php/upload_audio.php?q=UPLOAD",
+        url: "/php/upload_audio.php?q=UPLOAD",
         type:"POST",
         data:data,
         cache:false,
@@ -107,7 +107,7 @@ $("#image-uploader").on('change',function(){
 });
 
 $.ajax({
-        url: "../php/user_info.php",
+        url: "/php/user_info.php",
         type: "POST",
         data: { "q" : "UI"}
     }).done(function(res){
@@ -170,19 +170,20 @@ function submit(){
         data.append(i,file);
     }*/
     $.ajax({
-        url: "../php/upload_audio.php?q=UPLOAD",
+        url: "/php/upload_audio.php?q=UPLOAD",
         type:"POST",
         data:data,
         cache:false,
         processData: false,
         contentType:false
     }).done(function(result){
+    	console.log(result);
         if(result != "OKAY"){
             alert("ERROR: " + result);
             console.log(result);
             return;
         }
-        else{
+        else{        
             window.location.href="index.php";    
         }
     });

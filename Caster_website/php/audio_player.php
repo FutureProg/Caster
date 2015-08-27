@@ -21,8 +21,7 @@
         </div>
     </div>
     <div id="audio-player-content">              
-        <div class="audio-player-comment-area">
-            
+        <div id="audio-player-comment-area">            
         </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>

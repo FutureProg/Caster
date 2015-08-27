@@ -20,9 +20,6 @@ elseif ($q == "CMNT"){
 elseif ($q == "CMNTS_JSON"){
     print get_comments_json(filter_input(INPUT_POST,"id"));
 }
-else if($q == "CMNTS_HTML"){
-	get_comments_html();
-}
 elseif ($q == "TTL"){
 	print get_podcast(filter_input(INPUT_POST,"id"))['title'];
 }
@@ -65,8 +62,8 @@ function comment(){
     $podcast_id = filter_input(INPUT_POST,"id");
     $message = addslashes(filter_input(INPUT_POST,"msg"));
     $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the server");    
-    $query = "INSERT INTO `".TABLE_COMMENTS."` (`comment_id`,`user_id`,`podcast_id`,`message`) VALUES (0,$user_id,$podcast_id,'$message');";
-    $result = mysqli_query($link,$query) or die("Error querying the database: ");
+    $query = "INSERT INTO `".TABLE_COMMENTS."` (`comment_id`,`user_id`,`podcast_id`,`message`,`post_date`) VALUES (0,$user_id,$podcast_id,$message,NOW())";
+    $result = mysqli_query($link,$query) or die("Error querying the database");
     echo "OKAY";
 }
 
@@ -79,28 +76,6 @@ function get_comments_json($podcast_id){
         $re[] = $r;
     }
     return json_encode($re);
-}
-
-function get_comments_html(){
-	$podcast_id = filter_input(INPUT_POST,"id");
-	$link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the server");
-	$query = "SELECT * FROM `".TABLE_COMMENTS."` WHERE `podcast_id`=$podcast_id";
-	$result = mysqli_query($link,$query) or die ("Error querying server for comments");
-	while($comment = mysqli_fetch_array($result)){
-		$query = "SELECT * FROM `".TABLE_USERS."` WHERE `user_id`=".$comment['user_id'];
-		$result2 = mysqli_query($link,$query) or die ("Error querying server for user info" . mysqli_error($link));
-		$user = mysqli_fetch_array($result2);
-		$profpic = $user['picture'];
-		if($profpic == ""){
-			$profpic = "/images/default_profile.png";		
-		}else{
-			$profpic = "/users/".$user['user_id']."/images/".$profpic;		
-		}
-		echo "<div onclick=loadPage('/profile.php?user=".$user['username']."') style='cursor:pointer;float:left;'>\n";
-		echo "<img style='width:20px;height;20px' src='$profpic' /></div>";
-		echo "<div>".$comment['post_date'].": ".$comment['message']."</div><br/>";		
-	};
-	echo "OKAY";
 }
 
 function get_podcast($podcast_id){    
@@ -187,7 +162,7 @@ function update(){
     $data = addslashes($data);
     $podcast_id = filter_input(INPUT_POST,"podcast_id");
     $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the server.");
-    $query = "UPDATE `".TABLE_PODCASTS."` SET `$col`='$data' WHERE `podcast_id`=$podcast_id";
+    $query = "UPDATE `".TABLE_PODCASTS."` SET `$col`='$data'";
     mysqli_query($link,$query) or die("Unable to query database");
     echo "OKAY";
     return;

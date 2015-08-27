@@ -23,7 +23,7 @@ else if(filter_input(INPUT_POST,"m") == "MOBI"){
 
 function createPodcastBar($podcast,$username){
     echo "<div class='podcast-bar' title='$podcast[4]' id='$podcast[0]'>";
-    echo "<div class='image-container' onclick=playSound($podcast[0],'".str_replace(' ','\%20',addslashes($podcast[5]))."');>";
+    echo "<div class='image-container' onclick=playSound($podcast[0],'".str_replace(' ','\%20',addslashes($podcast['title']))."');>";
     echo "<img src='/users/".$podcast[1]."/images/podcast/".$podcast[7]."'/>";
     echo " <p style='text-decoration: underline'>".$podcast[4]."</p>";
     echo "</div>";
@@ -45,13 +45,27 @@ function subsPodcasts(){
         $query = "SELECT * FROM `".TABLE_PODCASTS."` WHERE `user_id`=$user ORDER BY `post_date` DESC LIMIT 5";
         $result = mysqli_query($link,$query) or die("Error querying database:");
         $username = username($user);
+        $userpic = userpicture($user);		
+		if($userpic == ""){	 
+			$userpic = "/images/default_profile.png";
+        }else{
+        	$userpic = "/users/$user/images/$userpic";
+        }
         if(mysqli_num_rows($result) >= 1){
-            echo "<div style=width:100%;text-align:center;cursor:pointer' onclick=loadPage('profile.php?user=$user') ><img src=/users/$user/images/".userpicture($user)." style='display:inline-block;width:20px;height:20px;'>";
-            echo "<h3 style=display:inline-block; class=subscription-user-title>$username</h3>";
-            echo "</div><br/>";
-            while($row = mysqli_fetch_row($result)){                                
-                createPodcastBar($row,$username);
+            echo "<div style='width=100%;'>\n";
+            echo "<div onclick=loadPage('profile.php?user=$username') style='cursor:pointer;margin-bottom:0;padding:10px;width=20%;height:50%;float:left;border-right:1px solid gray';text-align:center;>\n";
+            echo "<div style='text-transform:uppercase;text-align:center;color:red;'><strong>$username</strong></div><br/>";
+            echo "<img width='150px' style='border: 1px solid gray;' src='".$userpic."'/><br/>";
+            echo "</div>\n";
+            //echo "<div style=width:100%;text-align:center;cursor:pointer' onclick=loadPage('profile.php?user=$user') ><img src=/users/$user/images/".userpicture($user)." style='display:inline-block;width:20px;height:20px;'>";
+            //echo "<h3 style=display:inline-block; class=subscription-user-title>$username</h3>";
+            //echo "</div><br/>";
+            echo "<div class='wplt' style='padding-bottom:0;margin-bottom:15px;'>\n";
+        	echo "<div class='wplt-inner' style='-webkit-justify-content:flex-start;justify-content:flex-start;'>\n";
+            while($row = mysqli_fetch_array($result)){             
+                echo podcastBox($row);
             }
+            echo "</div></div>";
         }
     }
     mysqli_close($link);
@@ -63,8 +77,8 @@ function recentPodcasts(){
     $result = mysqli_query($link,$query) or die("Error querying the database: ".mysqli_errno($link)." : ".mysqli_error($link));    
     mysqli_close($link);    
     if(mysqli_num_rows($result) >= 1){   
-        echo "<div id='wplt'>\n";
-        echo "<div id='wplt-inner'>\n";
+        echo "<div class='wplt'>\n";
+        echo "<div class='wplt-inner'>\n";
         while($row = mysqli_fetch_array($result)){
             //$userid = $row[1];
             //$username = username($userid);    

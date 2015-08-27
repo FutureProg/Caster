@@ -110,7 +110,7 @@ function submit(username,password,email){
 
 function login(email,password){
     $.ajax({
-        url: "/php/signin.php",
+        ufffzrl: "php/signin.php",
         type: "POST",
         data: { "q" : "LOGIN",
                 "e" : email,

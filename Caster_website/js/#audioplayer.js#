@@ -3,7 +3,6 @@ var drag = {
     x: 0
 };
 var dx;
-var currentPID;
 
 $("#audio-player #play-button").click(function(evt){
     if($("#audio-player audio").trigger('paused')){
@@ -18,6 +17,14 @@ function playAudio(evt){
     $("#audio-player #play-button img").attr("src","/images/pause_button.png");
     $("#audio-player audio").trigger('play');
     $("#audio-player #play-button").click(pauseAudio);  
+    /*if($("#audio-player-comment-area").html() == null){
+        $(".audio-player-comment-area").html("<?php if(isset($_SESSION['user_id'])){ ?>"+
+            "<div id='audio-player-comment-box'>"+
+                "<textarea rows='3' cols='40'></textarea>"+
+                "<button onclick='comment()'>Submit</button>"+                
+            "</div>"+            
+            "<?php } ?>");
+    }*/
 }
 
 function pauseAudio(evt){
@@ -106,36 +113,7 @@ function secondstoTimeStamp(seconds){
 
 function comment(){
     var msg = $("#audio-player-comment-box textarea").val();  
-	$.ajax({
-		type: "POST",
-		url: "/php/podcast.php",
-		data: {"q":"CMNT","id":currentPID,"msg":msg}
-	}).done(function(res){
-		loadComments();
-	});
-}
-
-function loadComments(){
-	$("#audio-player-comment-area").html("");
-	if(signedIn){
-		$("#audio-player-comment-area").html("<div id='audio-player-comment-box'>"+
-				"<textarea rows='3' cols='40'></textarea>"+
-				"<button onclick='comment()'>Submit</button>"+                
-			"</div>");  	
-	}	  
-	$.ajax({
-		type: "POST",
-		url: "/php/podcast.php",
-		data: {"q":"CMNTS_HTML","id":currentPID}	
-	}).done(function(res){
-		if(res.endsWith("OKAY")){
-			res = res.substring(0,res.length-4);
-			$("#audio-player-comment-area").html($("#audio-player-comment-area").html() +
-				"<br/>" + res);		
-		}else{
-			console.log(res);		
-		}
-	});    
+    console.log(msg);
 }
 
 $("#audio-player audio").on("loadeddata",function(){    
@@ -147,7 +125,7 @@ $("#audio-player audio").on("timeupdate",updateTime).on('ended',function(){
     this.play();
 });
 
-setTimeout(function(){
+nsetTimeout(function(){
     $("#audio-player audio").load();
     $("#audio-player #audio-player-content").slideToggle(0);
     $("#audio-player #audio-player-scrubber").slideToggle(0);

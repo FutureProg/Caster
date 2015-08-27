@@ -1,5 +1,6 @@
 var token;
 var podcast;
+var onnav = null;
 $(".inner-link").click(function(evt){
     evt.preventDefault();
     loadPage(this.getAttribute("href"));
@@ -27,9 +28,12 @@ $(document).ready(function(){
 })
 
 function loadPage(url,scroll){
+	if(onnav != null){	
+		onnav();
+	}
     $.ajax({
         type: "GET",
-        url: "php/page_content/" + url.split("/").pop()       
+        url: "/php/page_content/" + url.split("/").pop()       
     }).done(function(html){
         scroll = scroll || true;
         if(scroll)
@@ -43,6 +47,9 @@ function loadPage(url,scroll){
 }
 
 function backPage(url){
+	if(onnav != null){	
+		onnav();
+	}
     if(url.indexOf("error403.php") < 0 || url.indexOf("index.php") < 0 || url.indexOf("profile_podcasts.php") < 0 ||
        url.indexOf("profile.php") < 0 || url.indexOf("search.php") < 0){
         window.location.href = url;
@@ -105,18 +112,20 @@ function playSound(id,title){
                 data: {"q":"USR_JSN","id":podcast.user_id}
             }).done(function(res){
                 var user = JSON.parse(res);                
-                var imgtag = "<p><img style='border-radius:25%' width='25%' src='/users/"+podcast.user_id+"/images/"+user.picture+"'>";
-                imgtag += "<a style='font-size:2em;margin-left:10px' href='/profile.php?user="+podcast.user_id+"'>"+user.username+"</a>";
-                $("#audio-player #audio-player-content").html(imgtag + "<br/><br/>"+podcast.description+"</p>"); 
-                var title = podcast.title;
+                var imgtag = "<p><img style='cursor:pointer;border-radius:25%' width='25%' onclick=loadPage('profile.php?user="+user.username+"') src='/users/"+podcast.user_id+"/images/"+user.picture+"'>";
+                imgtag += "<a style='font-size:2em;margin-left:10px;cursor:pointer' onclick=loadPage('profile.php?user="+user.username+"')>"+user.username+"</a>";
+                $("#audio-player-comment-area").html("");
+                $("#audio-player #audio-player-content").html(imgtag + "<br/><br/>"+podcast.description+"</p>" + "<br/>" + "<div id='audio-player-comment-area'></div>"); 
+                /*var title = podcast.title;
                 title = title.replace(/\%20/g," ");
-                $("#now-playing").html(title);
+                $("#now-playing").html(title);*/
                 playSound(id,title);
             });            
         });
         return;
     }
-
+	title = title.replace(/\%20/g," ");
+	$("#now-playing").html(title);
     $("#audio-player").show();
     window.setTimeout(function(){
         $("#audio-player #audio-player-content").slideToggle(100);
@@ -130,10 +139,12 @@ function playSound(id,title){
     $("#audio-player audio").trigger("load").on("canplay",function(){$("#audio-player #play-button img").attr("src","images/pause_button.png");
                                                                      $("#audio-player audio").trigger('play');
                                                                      $("#audio-player #play-button").click(pauseAudio);    });
+    currentPID = podcast.podcast_id;                                                                  
     token = null;
     podcast = null;
+    loadComments();
 }
 
 if(window.mobilecheck() == true){
-    window.location.href = "mobile.php";
+    window.location.href = "/mobile.php";
 }

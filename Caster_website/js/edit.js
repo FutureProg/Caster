@@ -24,7 +24,7 @@ $("#upload-description-area").on('change',function(){
 $("#title-save").click(function(){
     var title = $("#upload-title-area").val();
     $.ajax({
-        url: "../php/podcast.php",
+        url: "/php/podcast.php",
         type: "POST",
         data:{"q" : "UPDATE","col":"title","data":title,"podcast_id":podcast_id}        
     }).done(function(res){
@@ -38,7 +38,7 @@ $("#title-save").click(function(){
 $("#desc-save").click(function(){
     var desc = $("#upload-description-area").val();
     $.ajax({
-        url: "../php/podcast.php",
+        url: "/php/podcast.php",
         type: "POST",
         data:{"q" : "UPDATE","col":"description","data":desc,"podcast_id":podcast_id}        
     }).done(function(res){
@@ -52,7 +52,7 @@ $("#desc-save").click(function(){
 $("#tags-save").click(function(){
     var tags = $("#upload-tags-area").val();
     $.ajax({
-        url: "../php/podcast.php",
+        url: "/php/podcast.php",
         type: "POST",
         data:{"q" : "UPDATE","col":"tags","data":tags,"podcast_id":podcast_id}        
     }).done(function(res){
@@ -75,7 +75,7 @@ $("#image-save").click(function(){
     data.append("podcast_id",podcast_id);
     data.append("q","UPDATE_IMG");
     $.ajax({
-        url: "../php/podcast.php",
+        url: "/php/podcast.php",
         type: "POST",
         data:data,
         cache:false,

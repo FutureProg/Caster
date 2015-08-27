@@ -137,9 +137,14 @@ function init(){
     }
     
     var headerhtml = $("head").html();
-    headerhtml = headerhtml + "\n <link rel=\"altername\" type=\"application/xml\" title=\"RSS 2.0\" href=\"http://istrat.ddns.net/users/"+userid+"/audio/feed.rss\"/>";
+    headerhtml = headerhtml + "\n <link rel=\"altername\" type=\"application/xml\" title=\"RSS 2.0\" href=\"http://istrat.ddns.net/users/"+userid+"/audio/feed.rss\"/>";    
     $("head").html(headerhtml);
-    
+    onnav = function(){
+    	$("head").html($("head").html().replace("<link rel=\"altername\" type=\"application/xml\" title=\"RSS 2.0\" href=\"http://istrat.ddns.net/users/"+userid+"/audio/feed.rss\"/>",
+    		    ""));
+    	onnav = null;
+    };
+    window.onbeforeunload = onnav;
     refreshProfileImage();        
     
     var desc = "";
