@@ -87,6 +87,42 @@ $("#search-box").keyup(function(evt){
     }
 });*/
 
+function like(){
+	if(currentPID != 0){
+		$.ajax({
+			type: "POST",
+			url: "/php/podcast.php",
+			data: {"q":"LK","id":currentPID}
+		}).done(function(res){		
+			console.log(res);
+		});
+	}
+	updateLikeButton(); // defined in audioplayer
+}
+
+function unlike(){
+	if(currentPID != 0){
+		$.ajax({
+			type: "POST",
+			url: "/php/podcast.php",
+			data: {"q":"UN_LK","id":currentPID}
+		}).done(function(res){		
+			console.log(res);
+		});
+	}
+	updateLikeButton(); // defined in audioplayer
+}
+
+function likeList(){
+	$.ajax({
+		type:"POST",
+		url: "/php/user_info.php",
+		data: {"q":"LKD","id":-1}	
+	}).done(function(res){
+		return res.split(",");			
+	});
+}
+
 function playSound(id,title){    
     if(token == null){
         $.ajax({
@@ -112,10 +148,15 @@ function playSound(id,title){
                 data: {"q":"USR_JSN","id":podcast.user_id}
             }).done(function(res){
                 var user = JSON.parse(res);                
-                var imgtag = "<p><img style='cursor:pointer;border-radius:25%' width='25%' onclick=loadPage('profile.php?user="+user.username+"') src='/users/"+podcast.user_id+"/images/"+user.picture+"'>";
-                imgtag += "<a style='font-size:2em;margin-left:10px;cursor:pointer' onclick=loadPage('profile.php?user="+user.username+"')>"+user.username+"</a>";
+                var imgtag = "<div style='float:left'><img style='cursor:pointer;border-radius:25%' width='25%' onclick=loadPage('profile.php?user="+user.username+"') src='/users/"+podcast.user_id+"/images/"+user.picture+"'>";
+                imgtag += "<a style='font-size:2em;margin-left:10px;cursor:pointer' onclick=loadPage('profile.php?user="+user.username+"')>"+user.username+"</a></div>";
+                var sidebar = "<div style='position: absolute;right:10px;'>";
+                var likebutton = "<img class='like-button' src='/images/heart.png'/><p class='like-counter'>0 Likes</p>";
+                sidebar += likebutton;
+                sidebar += "</div>";
                 $("#audio-player-comment-area").html("");
-                $("#audio-player #audio-player-content").html(imgtag + "<br/><br/>"+podcast.description+"</p>" + "<br/>" + "<div id='audio-player-comment-area'></div>"); 
+                $("#audio-player #audio-player-content").html(imgtag + sidebar + "<br/><br/><br/><br/><div style='float:left'><p>"+podcast.description+"</p></div>" + "<br/>" + "<div id='audio-player-comment-area'></div>"); 
+                updateLikeButton();
                 /*var title = podcast.title;
                 title = title.replace(/\%20/g," ");
                 $("#now-playing").html(title);*/
@@ -143,6 +184,7 @@ function playSound(id,title){
     token = null;
     podcast = null;
     loadComments();
+    updateLikeButton();
 }
 
 if(window.mobilecheck() == true){

@@ -115,6 +115,28 @@ function comment(){
 	});
 }
 
+function updateLikeButton(){
+	$.ajax({
+		type:"POST",
+		url: "/php/user_info.php",
+		data: {"q":"LKD","id":-1}	
+	}).done(function(res){
+		var likes = res.split(",");			
+		if($.inArray(currentPID,likes) >= 0){
+			$("#audio-player-content .like-button").css("background-color","black")[0].onclick = unlike;
+		}else{
+			$("#audio-player-content .like-button").css("background-color","#F9F7F7")[0].onclick = like;
+		}		
+	});	
+	$.ajax({
+		type:"POST",
+		url: "/php/podcast.php",
+		data: {"q":"LKS","id":currentPID}
+	}).done(function(res){
+		$("#audio-player-content .like-counter").html(res + " likes");	
+	});
+}
+
 function loadComments(){
 	$("#audio-player-comment-area").html("");
 	if(signedIn){

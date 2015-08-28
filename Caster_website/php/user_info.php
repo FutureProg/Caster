@@ -37,6 +37,19 @@ else if($q == "UID"){
 else if($q == "UNAMETOUID"){
 	print username_to_userid();
 }
+else if($q == "LKD"){
+	get_liked(filter_input(INPUT_POST,'id'));
+}
+
+function get_liked($userid){
+	if($userid == -1){
+		$userid = $_SESSION['user_id'];
+	}
+	$link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the database");
+	$query = "SELECT `liked` FROM `".TABLE_USERS."` WHERE `user_id`=$userid";
+	$result = mysqli_query($link,$query) or die("Error querying the database");
+	echo mysqli_fetch_array($result)['liked'];
+}
 
 function user_json($userid){
     $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the server");

@@ -56,6 +56,72 @@ elseif ($q == "PDCST_JSN"){
 elseif ($q == "URLIDTOPID"){
  	print get_podcast_by_urlid(filter_input(INPUT_POST, "id"))['podcast_id'];
 }
+elseif ($q == "LK"){
+	like_podcast();
+}
+elseif ($q == "UN_LK"){
+	unlike_podcast();
+}
+elseif ($q == "LKS"){
+	print get_likes(filter_input(INPUT_POST,"id"));
+}
+
+function get_likes($id){
+	$link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the server");
+	$query = "SELECT `likes` FROM `".TABLE_PODCASTS."` WHERE `podcast_id`=$id";
+	$result = mysqli_query($link,$query) or die("Error querying the server");
+	return mysqli_fetch_array($result)['likes'];
+}
+
+function like_podcast(){
+	$pid = filter_input(INPUT_POST,"id");
+	if(isset($_SESSION['user_id'])){
+		$userid = $_SESSION['user_id'];
+	}else{
+		$userid = filter_input(INPUT_POST,"uid");	
+	}
+	$link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the database");
+	$query = "UPDATE `".TABLE_PODCASTS."` SET likes=likes+1 where `podcast_id`=$pid";
+	$result = mysqli_query($link,$query) or die("Error quering the database");
+	$query = "UPDATE `".TABLE_USERS."` SET liked=CONCAT(liked,$pid,',') WHERE `user_id`=$userid";
+	$result = mysqli_query($link,$query) or die("Error quering the database");
+	mysqli_close($link);
+	echo "OKAY";
+}
+
+function unlike_podcast(){
+	$pid = filter_input(INPUT_POST,"id");
+	if(isset($_SESSION['user_id'])){
+		$userid = $_SESSION['user_id'];
+	}else{
+		$userid = filter_input(INPUT_POST,"uid");	
+	}
+	$link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the database");
+	$query = "UPDATE `".TABLE_PODCASTS."` SET likes=likes-1 where `podcast_id`=$pid";
+	$result = mysqli_query($link,$query) or die("Error quering the database");
+	mysqli_close($link);
+	
+	$link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the database");
+	$query = "SELECT `liked` FROM `".TABLE_USERS."` WHERE `user_id`=$userid";
+	$result = mysqli_query($link,$query) or die("Error querying the database");
+	if(mysqli_num_rows($result) >= 1){
+		$row = mysqli_fetch_array($result);
+		$array = explode(",",$row['likes']);
+		$final = array();
+		for($i = 0; $i < count($array);$i++){
+			if(intval($array[$i]) != $pid){
+				$final[] = $array[$i];
+			}		
+		}
+		$finaljoined = implode(",",$final);
+		$query = "UPDATE `".TABLE_USERS."` SET liked='$finaljoined' WHERE `user_id`=$userid";
+		$result = mysqli_query($link,$query) or die("Error quering the database to update liked");
+		echo "OKAY";	
+	}else{
+		echo "NO";
+	}	
+	mysqli_close($link);
+}
 
 function comment(){
     $user_id = "";
