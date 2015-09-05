@@ -17,12 +17,13 @@ function podcastBoxByID($podcast_id){
 
 function podcastBox($podcast){
 	$re = "<div class='podcast-object' style='cursor:pointer' onclick=playSound($podcast[0],'".str_replace(' ','\%20',addslashes($podcast['title']))."');>\n";
+	$re .= "<div class='podcast-title'>\n";
+	$re .= $podcast['title']."\n";
+	$re .= "</div>\n";
 	$re .= "<div class='podcast-info'>\n";
 	$re .= $podcast['description']."\n";
 	$re .= "</div>\n";
-	$re .= "<img class='podcast_image' src='/users/".$podcast['user_id']."/images/podcast/".$podcast['image_file']."'/>\n";
-	$re .= "<br/>";
-	$re .= "<div style='padding-top:150px;background-color:none'><p>".$podcast['title']."</p></div>";
+	$re .= "<img class='podcast_image' src='/users/".$podcast['user_id']."/images/podcast/".$podcast['image_file']."'/>\n";	
 	$re .= "</div>\n";
 	return $re;
 }

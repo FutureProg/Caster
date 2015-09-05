@@ -56,10 +56,13 @@ $(document).ready(function(){
         }        
         $(".wplt .wplt-inner .podcast-object").hover(function(){
     		$(this).children(".podcast-info").slideDown("fast");
+    		$(this).children(".podcast-title").slideUp("fast");
 		},
 		function(){
     		$(this).children(".podcast-info").slideUp("fast");
+    		$(this).children(".podcast-title").slideDown("fast");
 		});
+				
 		$(".wplt .wplt-inner .podcast-object .podcast-info").slideUp(0);    
     });        
     restartTimer();

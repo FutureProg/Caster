@@ -262,6 +262,19 @@ h1{
     margin: 5px 20px 5px 20px;
     color: white;
 }
+
+.wplt .wplt-inner .podcast-object .podcast-title{
+	z-index: 1;
+    color: white;
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+    width: 100%;
+    text-shadow: -1px 1px rgba(90, 89, 89, 0.9);
+    background-color: gray;
+    padding: 10px 0;
+    background: linear-gradient(180deg,rgba(0,0,0,0.0),rgba(0,0,0,0.60));
+}
 .wplt .wplt-inner .podcast-object .podcast-info{
     position: absolute;
     bottom: 0;
