@@ -65,6 +65,16 @@ elseif ($q == "UN_LK"){
 elseif ($q == "LKS"){
 	print get_likes(filter_input(INPUT_POST,"id"));
 }
+elseif ($q == "LSTN"){
+	print listen_to_podcast(filter_input(INPUT_POST,"id"));
+}
+
+function listen_to_podcast($id){
+	$link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting ot the server");
+	$query = "UPDATE `".TABLE_PODCASTS."` SET listens=listens+1 WHERE `podcast_id`=$id";
+	$result = mysqli_query($link,$query) or die("Error querying the server");
+	echo "OKAY";
+}
 
 function get_likes($id){
 	$link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the server");

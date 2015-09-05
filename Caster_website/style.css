@@ -222,7 +222,7 @@ h1{
 }
 
 
-#wplt{
+.wplt{
     background-color: white;    
     width: 100%;    
     border-top: 1px #ccc solid;
@@ -242,7 +242,7 @@ h1{
     border-radius: 30px;
     text-transform: capitalize;
 }
-#wplt #wplt-inner{
+.wplt .wplt-inner{
     display: flex;
     display: -webkit-flex;
     flex-flow: row wrap;
@@ -252,7 +252,7 @@ h1{
     -webkit-justify-content: center;
     -moz-justify-content: center;    
 }
-#wplt #wplt-inner .podcast-object{
+.wplt .wplt-inner .podcast-object{
     position: relative;
     border: 1px black solid;
     flex-grow: 0;
@@ -262,7 +262,7 @@ h1{
     margin: 5px 20px 5px 20px;
     color: white;
 }
-#wplt #wplt-inner .podcast-object .podcast-info{
+.wplt .wplt-inner .podcast-object .podcast-info{
     position: absolute;
     bottom: 0;
     /*background-color: rgba(10,10,10,0.75);*/
@@ -273,7 +273,7 @@ h1{
     height: 30%;
     z-index: 1;
 }
-#wplt #wplt-inner .podcast-object .podcast_image{
+.wplt .wplt-inner .podcast-object .podcast_image{
     position: absolute;
     bottom: 0;
     width: 100%;
@@ -551,6 +551,7 @@ h1{
     padding-bottom: 4px;        
 }
 #audio-player #audio-player-content{
+	position:relative;
     background-color: white;
     padding: 10px;
     margin: 0;
@@ -799,8 +800,33 @@ h3.subscription-user-title{
     cursor: pointer;
 }
 
+.like-button{
+	border: 1px solid #C1BCBC;
+	border-radius: 5px;
+	background-color: #F9F7F7;
+	padding: 0 0;
+	cursor: pointer;
+	width:20px;
+	height: 20px;
+}
 
+.like-button:hover{
+	background-color: #C4C1C1;
+}
 
+#audio-player-content .like-counter{
+	display: inline-block;
+    text-align: center;
+    padding-left: 10px;
+    text-align: -webkit-center;
+    font-size: 2em;	
+}
+
+#audio-player-content .listen-counter{
+	font-size: 2em;
+	position: absolute;
+	top: 50px;
+}
 
 #side-image {  
     padding-top: 5%;
@@ -809,8 +835,6 @@ h3.subscription-user-title{
     text-align:center;
     vertical-align: middle;    
 }
-
-
 
 
 

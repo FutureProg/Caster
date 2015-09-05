@@ -147,12 +147,18 @@ function playSound(id,title){
                 url: "/php/user_info.php",
                 data: {"q":"USR_JSN","id":podcast.user_id}
             }).done(function(res){
+            	$.ajax({
+            		type: "POST",
+            		url: "/php/podcast.php",
+            		data: {"q":"LSTN","id":podcast.podcast_id}        	
+            	});
                 var user = JSON.parse(res);                
                 var imgtag = "<div style='float:left'><img style='cursor:pointer;border-radius:25%' width='25%' onclick=loadPage('profile.php?user="+user.username+"') src='/users/"+podcast.user_id+"/images/"+user.picture+"'>";
                 imgtag += "<a style='font-size:2em;margin-left:10px;cursor:pointer' onclick=loadPage('profile.php?user="+user.username+"')>"+user.username+"</a></div>";
                 var sidebar = "<div style='position: absolute;right:10px;'>";
                 var likebutton = "<img class='like-button' src='/images/heart.png'/><p class='like-counter'>0 Likes</p>";
-                sidebar += likebutton;
+                var viewSection = "<div class='listen-counter'>10 listens</div>";
+                sidebar += likebutton + viewSection;
                 sidebar += "</div>";
                 $("#audio-player-comment-area").html("");
                 $("#audio-player #audio-player-content").html(imgtag + sidebar + "<br/><br/><br/><br/><div style='float:left'><p>"+podcast.description+"</p></div>" + "<br/>" + "<div id='audio-player-comment-area'></div>"); 
@@ -167,6 +173,7 @@ function playSound(id,title){
     }
 	title = title.replace(/\%20/g," ");
 	$("#now-playing").html(title);
+	$("#audio-player-content .listen-counter").html(podcast.listens + " Listens");
     $("#audio-player").show();
     window.setTimeout(function(){
         $("#audio-player #audio-player-content").slideToggle(100);
