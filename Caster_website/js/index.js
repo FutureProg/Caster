@@ -1,4 +1,4 @@
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -15,7 +15,7 @@ Showcase.prototype = {
         if(this.currentImage >= this.imgList.length){
             this.currentImage = 0;
         }
-        return this.imgList[this.currentImage];        
+        return this.imgList[this.currentImage];
     },
     prevImage:function(){
         this.currentImage--;
@@ -41,7 +41,7 @@ $(document).ready(function(){
 		function(){
     		$(this).children(".podcast-info").slideUp("fast");
 		});
-		$(".wplt .wplt-inner .podcast-object .podcast-info").slideUp(0); 
+		$(".wplt .wplt-inner .podcast-object .podcast-info").slideUp(0);
     });
     $.ajax({
         url: "../php/search_podcasts.php",
@@ -53,8 +53,8 @@ $(document).ready(function(){
         }
         else{
             $("#subscriptions").html(res);
-        }        
-        $(".wplt .wplt-inner .podcast-object").hover(function(){
+        }
+        $(".podcast-object").hover(function(){
     		$(this).children(".podcast-info").slideDown("fast");
     		$(this).children(".podcast-title").slideUp("fast");
 		},
@@ -62,29 +62,29 @@ $(document).ready(function(){
     		$(this).children(".podcast-info").slideUp("fast");
     		$(this).children(".podcast-title").slideDown("fast");
 		});
-				
-		$(".wplt .wplt-inner .podcast-object .podcast-info").slideUp(0);    
-    });        
+
+		$(".wplt .wplt-inner .podcast-object .podcast-info").slideUp(0);
+    });
     restartTimer();
     /*$.ajax({
        url: "gettitle.php",
        type: "POST",
        data: {q:"title"},
        dataType: "JSON"
-    }).success(function(result){                
-        $("#top-bar h1").html(result.main);        
-        $("#wplt h1").html(result.wplt);        
+    }).success(function(result){
+        $("#top-bar h1").html(result.main);
+        $("#wplt h1").html(result.wplt);
     });*/
 });
 
 
-$(".showcase-left").click(function(){  
+$(".showcase-left").click(function(){
     clearInterval(timer);
-    imageBack(); 
+    imageBack();
 });
-$(".showcase-right").click(function(){  
+$(".showcase-right").click(function(){
     clearInterval(timer);
-    imageNext();     
+    imageNext();
 });
 
 
@@ -92,20 +92,20 @@ $(".showcase-right").click(function(){
 function imageBack(){
     $(".showcase-object").fadeOut("medium", function(){
            $(this).children(".showcase-image").attr("src","images/" + showcase.prevImage());
-           $(this).fadeIn("medium",restartTimer)           
-    }); 
+           $(this).fadeIn("medium",restartTimer)
+    });
 }
 function imageNext(){
     $(".showcase-object").fadeOut("medium", function(){
            $(this).children(".showcase-image").attr("src","images/" + showcase.nextImage());
-           $(this).fadeIn("medium",restartTimer)           
-    }); 
+           $(this).fadeIn("medium",restartTimer)
+    });
 }
 function restartTimer(){
-    timer = setInterval(function(){      
+    timer = setInterval(function(){
        $(".showcase-object").fadeOut("medium", function(){
            $(this).children(".showcase-image").attr("src","images/" + showcase.nextImage());
            $(this).fadeIn("medium");
-       });       
+       });
     },10000);
 }

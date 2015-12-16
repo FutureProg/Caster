@@ -122,6 +122,11 @@ function updateLikeButton(){
 		data: {"q":"LKD","id":-1}	
 	}).done(function(res){
 		var likes = res.split(",");			
+        if(res == "NULL"){
+            $("#audio-player-content .like-button").css("background-color","#F9F7F7")[0].onclick = function(){
+                window.href = "login.php";
+            };
+        }
 		if($.inArray(currentPID,likes) >= 0){
 			$("#audio-player-content .like-button").css("background-color","black")[0].onclick = unlike;
 		}else{

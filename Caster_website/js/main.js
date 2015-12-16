@@ -162,6 +162,7 @@ function playSound(id,title){
                 sidebar += "</div>";
                 $("#audio-player-comment-area").html("");
                 $("#audio-player #audio-player-content").html(imgtag + sidebar + "<br/><br/><br/><br/><div style='float:left'><p>"+podcast.description+"</p></div>" + "<br/>" + "<div id='audio-player-comment-area'></div>"); 
+                currentPID = podcast.podcast_id;  
                 updateLikeButton();
                 /*var title = podcast.title;
                 title = title.replace(/\%20/g," ");
@@ -187,11 +188,10 @@ function playSound(id,title){
     $("#audio-player audio").trigger("load").on("canplay",function(){$("#audio-player #play-button img").attr("src","images/pause_button.png");
                                                                      $("#audio-player audio").trigger('play');
                                                                      $("#audio-player #play-button").click(pauseAudio);    });
-    currentPID = podcast.podcast_id;                                                                  
+                                                                    
     token = null;
     podcast = null;
     loadComments();
-    updateLikeButton();
 }
 
 if(window.mobilecheck() == true){

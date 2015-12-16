@@ -42,9 +42,13 @@ else if($q == "LKD"){
 }
 
 function get_liked($userid){
+    if($userid == -1 && !isset($_SESSION['user_id'])){
+        echo "NULL";
+        return;
+    }
 	if($userid == -1){
 		$userid = $_SESSION['user_id'];
-	}
+	}    
 	$link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the database");
 	$query = "SELECT `liked` FROM `".TABLE_USERS."` WHERE `user_id`=$userid";
 	$result = mysqli_query($link,$query) or die("Error querying the database");

@@ -7,7 +7,7 @@
  */
 define("DB_HOST", "127.0.0.1");
 define("DB_USER", "root");
-define("DB_PASSWORD", "Castr2015");
+define("DB_PASSWORD", "");
 define("DB_NAME", "caster_db");
 
 define("TABLE_USERS","user_list");

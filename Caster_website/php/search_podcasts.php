@@ -23,7 +23,7 @@ else if(filter_input(INPUT_POST,"m") == "MOBI"){
 
 function createPodcastBar($podcast,$username){
     echo "<div class='podcast-bar' title='$podcast[4]' id='$podcast[0]'>";
-    echo "<div class='image-container' onclick=playSound($podcast[0],'".str_replace(' ','\%20',addslashes($podcast['title']))."');>";
+    echo "<div class='image-container' onclick=playSound($podcast[0],'".str_replace(' ','\%20',addslashes($podcast[4]))."');>";
     echo "<img src='/users/".$podcast[1]."/images/podcast/".$podcast[7]."'/>";
     echo " <p style='text-decoration: underline'>".$podcast[4]."</p>";
     echo "</div>";

@@ -79,7 +79,7 @@ function listen_to_podcast($id){
 function get_likes($id){
 	$link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the server");
 	$query = "SELECT `likes` FROM `".TABLE_PODCASTS."` WHERE `podcast_id`=$id";
-	$result = mysqli_query($link,$query) or die("Error querying the server");
+	$result = mysqli_query($link,$query) or die("Error querying the server: $query");
 	return mysqli_fetch_array($result)['likes'];
 }
 
@@ -116,7 +116,7 @@ function unlike_podcast(){
 	$result = mysqli_query($link,$query) or die("Error querying the database");
 	if(mysqli_num_rows($result) >= 1){
 		$row = mysqli_fetch_array($result);
-		$array = explode(",",$row['likes']);
+		$array = explode(",",$row['liked']);
 		$final = array();
 		for($i = 0; $i < count($array);$i++){
 			if(intval($array[$i]) != $pid){

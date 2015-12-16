@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -18,12 +18,12 @@ include 'phpreq/start_session.php';
         <link rel="icon" href="images/logo.png" sizes="32x32" type="image/png"/>
         <title>Caster-Login</title>
     </head>
-    <body>        
-        <div id="body-container">            
+    <body>
+        <div id="body-container">
             <?php include 'phpreq/topbar.php'; ?>
             <div id="content-container" style="margin:10px;margin-left:0;top:70px;height:80%;">
                 <div id="login_container">
-                    <form id="login_form" action="php/signin.php" method="post">                      
+                    <form id="login_form" action="php/signin.php" method="post">
                         <h1 style="text-align:center">Login</h1>
                         <div style="text-align:center"><label >Not a member? Create an account <a href="signup.php">here</a>!</label></div>
                         <div style="text-align:center"><label >Forgot your password? Recover it <a href="iforgot.php">here</a>.</label></div>
@@ -33,17 +33,17 @@ include 'phpreq/start_session.php';
                             }?>
                         </label><br/>
                         <label><h2>*email:</h2></label>
-                        <input type="email" name="e" id="email_form" class="text-input-style-1"/>                        
+                        <input type="email" name="e" id="email_form" class="text-input-style-1"/>
                         <br/><br/>
                         <label><h2>*Password: </h2></label><br/>
-                        <input type="password" name="p" id="password_form" class="text-input-style-1"/>                        
-                        <br/><br/>          
-                        <input style="width:45em;margin-top:1em;" type="submit" class="button-class-2"/>                        
-                    </form>      
-                </div>                
+                        <input type="password" name="p" id="password_form" class="text-input-style-1"/>
+                        <br/><br/>
+                        <input style="width:45em;margin-top:1em;" type="submit" class="button-class-2"/>
+                    </form>
+                </div>
                 <?php include 'phpreq/footer.php' ?>
                 <script src="js/main.js"></script>
-            </div>            
+            </div>
         </div>
     </body>
 </html>
