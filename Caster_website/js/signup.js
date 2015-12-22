@@ -1,4 +1,4 @@
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -7,7 +7,7 @@ var userOkay = -1;
 var emailOkay = -1;
 
 
-function submitForm(){  
+function submitForm(){
     $("#password_error").html("");
     $("#password_form").attr("style","border-color:initial");
     $("#password_form_2").attr("style","border-color:initial");
@@ -17,9 +17,9 @@ function submitForm(){
     $("#user_name_error").html("");
     $("#user_name_form").attr("style","border-color:initial");
     var username = $("#user_name_form").val().trim();
-    var password = $("#password_form").val().trim();    
-    var password2 = $("#password_form_2").val().trim();        
-    var email = $("#email_form").val().trim();      
+    var password = $("#password_form").val().trim();
+    var password2 = $("#password_form_2").val().trim();
+    var email = $("#email_form").val().trim();
     performChecks(username,password,password2,email);
 }
 
@@ -31,52 +31,52 @@ function performChecks(username,password,password2,email){
     }
     if(!validateEmail(email)){
         $("#email_error").html("please enter a valid email address");
-        $("#email_form").attr("style","border-color:red");     
+        $("#email_form").attr("style","border-color:red");
         re = false;
     }
-    if(password !== password2){            
+    if(password !== password2){
         $("#password_error").html("Passwords do not match!");
         $("#password_form").attr("style","border-color:red");
         $("#password_form_2").attr("style","border-color:red");
         return false;
     }
-    free(username,password,email);    
+    free(username,password,email);
     return re;
 }
 
-function validateEmail(email) { 
+function validateEmail(email) {
     var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
-} 
+}
 
-function free(username,password,email){    
+function free(username,password,email){
     $.ajax({
         url: "/php/register.php",
         type: "POST",
-        data: {"q" : "USERNAME", "data" : username},        
+        data: {"q" : "USERNAME", "data" : username},
     }).done(function(msg){
         if(msg !== "OKAY"){
             console.log(msg);
             $("#user_name_error").html("Username is already taken");
             $("#user_name_form").attr("style","border-color:red");
-            userOkay = 0;                
+            userOkay = 0;
             return;
-        }else{               
+        }else{
             emailFree(username,password,email);
         }
-    });        
+    });
 }
 
 function emailFree(username,password,email){
     $.ajax({
         url: "/php/register.php",
         type: "POST",
-        data: {"q" : "EMAIL", "data" : email},        
-    }).done(function(msg){        
-        if(msg !== "OKAY"){            
+        data: {"q" : "EMAIL", "data" : email},
+    }).done(function(msg){
+        if(msg !== "OKAY"){
             $("#email_error").html("email address is already taken");
             $("#email_form").attr("style","border-color:red");
-            emailOkay = 0;            
+            emailOkay = 0;
             return;
         }else{
             emailOkay = 1;
@@ -84,7 +84,7 @@ function emailFree(username,password,email){
         }
     }).fail(function(jqXHR,status){
         alert("Request failed: " + status);
-    });      
+    });
 }
 
 function submit(username,password,email){
@@ -96,7 +96,7 @@ function submit(username,password,email){
                 "username" : username,
                 "password" : password,
                 "email" : email}
-    }).done(function(msg){        
+    }).done(function(msg){
         if(msg === "OKAY"){
             console.log(msg);
             login(email,password);
@@ -118,9 +118,10 @@ function login(email,password){
     }).done(function(msg){
         if(/OKAY/.test(msg)){
             console.log(msg)
-            window.location.href="index.php";
+            window.location.href="/index.php";
         }else{
             console.log("Error: "+msg);
+            window.location.href="/login.php?e="+msg;
             return;
         }
     }).fail(function(jqXHR,status){

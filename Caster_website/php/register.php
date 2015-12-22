@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -25,9 +25,9 @@ elseif ($q == "SIGNUP") {
 }
 
 function checkUsername($username) {
-    $link = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD,DB_NAME) or die("Error: ".  mysqli_error($link));    
+    $link = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD,DB_NAME) or die("Error: ".  mysqli_error($link));
     $query = "SELECT user_id FROM ".TABLE_USERS." WHERE username='".$username."'";
-    $result = mysqli_query($link, $query) or die("Error Querying database");
+    $result = mysqli_query($link, $query) or die("Error Querying database ");
     mysqli_close($link);
     if(mysqli_num_rows($result) >= 1){
         echo "NO";
@@ -37,7 +37,7 @@ function checkUsername($username) {
 }
 
 function checkEmail($email){
-    $link = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD,DB_NAME) or die("Error: ".  mysqli_error($link));        
+    $link = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD,DB_NAME) or die("Error: ".  mysqli_error($link));
     $query = "SELECT user_id FROM ".TABLE_USERS." WHERE email='".$email."'";
     $result = mysqli_query($link, $query) or die("Error Querying database");
     mysqli_close($link);
@@ -51,8 +51,8 @@ function checkEmail($email){
 function signUp($username,$password,$email){
     $link = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME) or die("Error connecting to the server");
     $password = password_hash($password,PASSWORD_DEFAULT);
-    $query = "INSERT INTO ".TABLE_USERS." VALUES (0,NOW(),'$username','$password','$email','','','')";   
-    $result = mysqli_query($link, $query) or die("Error querying database");    
+    $query = "INSERT INTO ".TABLE_USERS." VALUES (0,NOW(),'$username','$password','$email','','','','')";   
+    $result = mysqli_query($link, $query) or die("Error querying database");
     mysqli_close($link);
     #$msg = "<html><body><p>Hello there! Welcome to <a href=''>Caster</a>!<p></body></html>";
     /*mail($email,"Welcome to Caster!",$msg,
