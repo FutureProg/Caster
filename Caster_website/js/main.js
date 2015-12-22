@@ -15,7 +15,7 @@ return check;
 window.onload = function(){
     window.setTimeout(function(){
         $(window).on("popstate",function(e){
-            backPage(location.pathname); 
+            backPage(location.pathname);
             return false;
         });
     },1);
@@ -28,26 +28,26 @@ $(document).ready(function(){
 })
 
 function loadPage(url,scroll){
-	if(onnav != null){	
+	if(onnav != null){
 		onnav();
 	}
     $.ajax({
         type: "GET",
-        url: "/php/page_content/" + url.split("/").pop()       
+        url: "/php/page_content/" + url.split("/").pop()
     }).done(function(html){
         scroll = scroll || true;
         if(scroll)
-            $("html,body").scrollTop(0);   
+            $("html,body").scrollTop(0);
         if(url.indexOf("profile.php") != -1){
             url = url.replace("profile.php?user=","");
         }
-        history.pushState(null,null,url);          
-        $("#main-content").html(html);        
-    });    
+        history.pushState(null,null,url);
+        $("#main-content").html(html);
+    });
 }
 
 function backPage(url){
-	if(onnav != null){	
+	if(onnav != null){
 		onnav();
 	}
     if(url.indexOf("error403.php") < 0 || url.indexOf("index.php") < 0 || url.indexOf("profile_podcasts.php") < 0 ||
@@ -64,12 +64,12 @@ function backPage(url){
     console.log("GO " + url);
     $.ajax({
         type: "GET",
-        url: "php/page_content/" + url.split("/").pop()       
-    }).done(function(html){        
-        $("html,body").scrollTop(0);     
+        url: "php/page_content/" + url.split("/").pop()
+    }).done(function(html){
+        $("html,body").scrollTop(0);
         console.log("Loaded " + url);
-        $("#main-content").html(html);        
-    });   
+        $("#main-content").html(html);
+    });
 }
 
 $("#search-button").click(function(evt){
@@ -81,8 +81,8 @@ $("#search-box").keyup(function(evt){
     }
 });
 
-/*$(".podcast-bar").click(function(evt){    
-    if(evt.target == $(".image-container")[0]){        
+/*$(".podcast-bar").click(function(evt){
+    if(evt.target == $(".image-container")[0]){
         playSound(this.getAttribute("id"),this.getAttribute("title"));
     }
 });*/
@@ -93,7 +93,7 @@ function like(){
 			type: "POST",
 			url: "/php/podcast.php",
 			data: {"q":"LK","id":currentPID}
-		}).done(function(res){		
+		}).done(function(res){
 			console.log(res);
 		});
 	}
@@ -106,7 +106,7 @@ function unlike(){
 			type: "POST",
 			url: "/php/podcast.php",
 			data: {"q":"UN_LK","id":currentPID}
-		}).done(function(res){		
+		}).done(function(res){
 			console.log(res);
 		});
 	}
@@ -117,13 +117,13 @@ function likeList(){
 	$.ajax({
 		type:"POST",
 		url: "/php/user_info.php",
-		data: {"q":"LKD","id":-1}	
+		data: {"q":"LKD","id":-1}
 	}).done(function(res){
-		return res.split(",");			
+		return res.split(",");
 	});
 }
 
-function playSound(id,title){    
+function playSound(id,title){
     if(token == null){
         $.ajax({
             type: "POST",
@@ -131,7 +131,7 @@ function playSound(id,title){
             data: {"q":"TKN","t":"PDCST"}
         }).done(function(res){
             token = res;
-            playSound(id,title);            
+            playSound(id,title);
         });
         return;
     }
@@ -141,7 +141,7 @@ function playSound(id,title){
             url: "/php/podcast.php",
             data: {"q":"PDCST_JSN","id":id}
         }).done(function(res){
-            podcast = JSON.parse(res);       
+            podcast = JSON.parse(res);
             $.ajax({
                 type: "POST",
                 url: "/php/user_info.php",
@@ -150,10 +150,14 @@ function playSound(id,title){
             	$.ajax({
             		type: "POST",
             		url: "/php/podcast.php",
-            		data: {"q":"LSTN","id":podcast.podcast_id}        	
+            		data: {"q":"LSTN","id":podcast.podcast_id}
             	});
-                var user = JSON.parse(res);                
-                var imgtag = "<div style='float:left'><img style='cursor:pointer;border-radius:25%' width='25%' onclick=loadPage('profile.php?user="+user.username+"') src='/users/"+podcast.user_id+"/images/"+user.picture+"'>";
+                var user = JSON.parse(res);
+                if(user.picture != ""){
+                  var imgtag = "<div style='float:left'><img style='cursor:pointer;border-radius:25%' width='25%' onclick=loadPage('profile.php?user="+user.username+"') src='/users/"+podcast.user_id+"/images/"+user.picture+"'>";
+                }else{
+                  var imgtag = "<div style='float:left'><img style='cursor:pointer;border-radius:25%' width='25%' onclick=loadPage('profile.php?user="+user.username+"') src='/images/default_profile.png'>";
+                }
                 imgtag += "<a style='font-size:2em;margin-left:10px;cursor:pointer' onclick=loadPage('profile.php?user="+user.username+"')>"+user.username+"</a></div>";
                 var sidebar = "<div style='position: absolute;right:10px;'>";
                 var likebutton = "<img class='like-button' src='/images/heart.png'/><p class='like-counter'>0 Likes</p>";
@@ -161,14 +165,14 @@ function playSound(id,title){
                 sidebar += likebutton + viewSection;
                 sidebar += "</div>";
                 $("#audio-player-comment-area").html("");
-                $("#audio-player #audio-player-content").html(imgtag + sidebar + "<br/><br/><br/><br/><div style='float:left'><p>"+podcast.description+"</p></div>" + "<br/>" + "<div id='audio-player-comment-area'></div>"); 
-                currentPID = podcast.podcast_id;  
+                $("#audio-player #audio-player-content").html(imgtag + sidebar + "<br/><br/><br/><br/><div style='float:left'><p>"+podcast.description+"</p></div>" + "<br/>" + "<div id='audio-player-comment-area'></div>");
+                currentPID = podcast.podcast_id;
                 updateLikeButton();
                 /*var title = podcast.title;
                 title = title.replace(/\%20/g," ");
                 $("#now-playing").html(title);*/
                 playSound(id,title);
-            });            
+            });
         });
         return;
     }
@@ -183,12 +187,12 @@ function playSound(id,title){
             $("#audio-player #audio-player-content").slideToggle(100);
             $("#audio-player #audio-player-scrubber").slideToggle(100);
         },1000);
-    },500);        
+    },500);
     $("#audio-player audio source").attr("src","/php/audio_file.php?q="+id+"$"+token);
     $("#audio-player audio").trigger("load").on("canplay",function(){$("#audio-player #play-button img").attr("src","images/pause_button.png");
                                                                      $("#audio-player audio").trigger('play');
                                                                      $("#audio-player #play-button").click(pauseAudio);    });
-                                                                    
+
     token = null;
     podcast = null;
     loadComments();
