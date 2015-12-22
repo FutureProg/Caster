@@ -22,13 +22,13 @@ function check(){
     if(mysqli_num_rows($result) >= 1){
         echo 'TITLE';
         return;
-    }    
-    echo "OKAY";    
+    }
+    echo "OKAY";
     return;
 }
 
-function upload(){        
-    $title = filter_input(INPUT_POST,"title");    
+function upload(){
+    $title = filter_input(INPUT_POST,"title");
     $description = filter_input(INPUT_POST,"description");
     $tags = filter_input(INPUT_POST,"tags");
     $sharing = filter_input(INPUT_POST,"sharing");
@@ -39,15 +39,15 @@ function upload(){
     //echo var_dump($_FILES);
     $picture_file = $_FILES["image_file"];
     $audio_file = $_FILES["podcast_file"];
-    /* 
+    /*
     TODO: Make picture equal to a default image if not present
     $picture_file = "../images/default_podcast_img.png";
     */
     $link = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME) or die('Error connecting to server');
-    $duration = audioDuration($audio_file);    
-    $image = "";    
-    if(sizeof($picture_file) > 0 && $picture_file['error'] == 0 && $picture_file['size'] <= MAX_PROFILE_PIC_SIZE){   
-        if(($image = uploadFile($link,$picture_file,"image_file","../users/".$_SESSION['user_id']."/images/podcast/"))==null){            
+    $duration = audioDuration($audio_file);
+    $image = "";
+    if(sizeof($picture_file) > 0 && $picture_file['error'] == 0 && $picture_file['size'] <= MAX_PROFILE_PIC_SIZE){
+        if(($image = uploadFile($link,$picture_file,"image_file","../users/".$_SESSION['user_id']."/images/podcast/"))==null){
             echo "Error uploading podcast image";
             return;
         }
@@ -66,12 +66,12 @@ function upload(){
         return;
     }
     $userid = $_SESSION['user_id'];
-    $query = "INSERT INTO `".TABLE_PODCASTS."` (`user_id`,`post_date`,`title`,`description`,`tags`,`image_file`,`audio_file`,`length`,`sharing`,`downloadable`) VALUES (".$userid.",NOW(),'".addslashes($title)."','".addslashes($description)."','".addslashes($tags)."','".addslashes($image)."','".addslashes($audio)."',$duration,'$sharing',$downloadable);";        
-    $result = mysqli_query($link,$query) or die("Error querying database: ".mysqli_errno($link).":".mysqli_error($link).":$query");    
-    
-    if($sharing == "GLOBAL"){            
+    $query = "INSERT INTO `".TABLE_PODCASTS."` (`user_id`,`post_date`,`title`,`description`,`tags`,`image_file`,`audio_file`,`length`,`sharing`,`downloadable`) VALUES (".$userid.",NOW(),'".addslashes($title)."','".addslashes($description)."','".addslashes($tags)."','".addslashes($image)."','".addslashes($audio)."',$duration,'$sharing',$downloadable);";
+    $result = mysqli_query($link,$query) or die("Error querying database: ".mysqli_errno($link).":".mysqli_error($link).":$query");
+    echo $sharing
+    if($sharing == "GLOBAL"){
         $podcastid = mysqli_insert_id($link);
-        $podcast = get_podcast($podcastid);        
+        $podcast = get_podcast($podcastid);
         rss($userid,$podcast);
     }
     mysqli_close($link);
@@ -97,13 +97,13 @@ function uploadFile($link,$file,$column,$dst){
     $basename = basename($file['tmp_name']);
     $fileloc = $dst;
     if(!file_exists($fileloc)){
-        mkdir($fileloc,0777,true) or die("Unable to create directory");            
-    }        
+        mkdir($fileloc,0777,true) or die("Unable to create directory");
+    }
     $filename = $basename . $file['name'];
-    $destination = $fileloc . $filename;  
-    if (move_uploaded_file($file['tmp_name'], $destination)) {                    
+    $destination = $fileloc . $filename;
+    if (move_uploaded_file($file['tmp_name'], $destination)) {
         return $filename;
-    } else {        
+    } else {
         return null;
     }
 }

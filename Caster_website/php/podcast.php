@@ -11,7 +11,7 @@ if($q == "UPDATE_IMG"){
 elseif ($q == "UPDATE"){
     update();
 }
-elseif ($q == "DLT"){        
+elseif ($q == "DLT"){
     delete();
 }
 elseif ($q == "CMNT"){
@@ -88,7 +88,7 @@ function like_podcast(){
 	if(isset($_SESSION['user_id'])){
 		$userid = $_SESSION['user_id'];
 	}else{
-		$userid = filter_input(INPUT_POST,"uid");	
+		$userid = filter_input(INPUT_POST,"uid");
 	}
 	$link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the database");
 	$query = "UPDATE `".TABLE_PODCASTS."` SET likes=likes+1 where `podcast_id`=$pid";
@@ -104,13 +104,13 @@ function unlike_podcast(){
 	if(isset($_SESSION['user_id'])){
 		$userid = $_SESSION['user_id'];
 	}else{
-		$userid = filter_input(INPUT_POST,"uid");	
+		$userid = filter_input(INPUT_POST,"uid");
 	}
 	$link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the database");
 	$query = "UPDATE `".TABLE_PODCASTS."` SET likes=likes-1 where `podcast_id`=$pid";
 	$result = mysqli_query($link,$query) or die("Error quering the database");
 	mysqli_close($link);
-	
+
 	$link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the database");
 	$query = "SELECT `liked` FROM `".TABLE_USERS."` WHERE `user_id`=$userid";
 	$result = mysqli_query($link,$query) or die("Error querying the database");
@@ -121,15 +121,15 @@ function unlike_podcast(){
 		for($i = 0; $i < count($array);$i++){
 			if(intval($array[$i]) != $pid){
 				$final[] = $array[$i];
-			}		
+			}
 		}
 		$finaljoined = implode(",",$final);
 		$query = "UPDATE `".TABLE_USERS."` SET liked='$finaljoined' WHERE `user_id`=$userid";
 		$result = mysqli_query($link,$query) or die("Error quering the database to update liked");
-		echo "OKAY";	
+		echo "OKAY";
 	}else{
 		echo "NO";
-	}	
+	}
 	mysqli_close($link);
 }
 
@@ -140,14 +140,14 @@ function comment(){
     }
     $podcast_id = filter_input(INPUT_POST,"id");
     $message = addslashes(filter_input(INPUT_POST,"msg"));
-    $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the server");    
+    $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the server");
     $query = "INSERT INTO `".TABLE_COMMENTS."` (`comment_id`,`user_id`,`podcast_id`,`message`) VALUES (0,$user_id,$podcast_id,'$message');";
     $result = mysqli_query($link,$query) or die("Error querying the database: ");
     echo "OKAY";
 }
 
 function get_comments_json($podcast_id){
-    $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the server");    
+    $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the server");
     $query = "SELECT * FROM `".TABLE_COMMENTS."` WHERE `podcast_id`=$podcast_id ORDER BY `post_date` DESC";
     $result = mysqli_query($link,$query) or die("Error querying the database");
     $re = array();
@@ -168,18 +168,18 @@ function get_comments_html(){
 		$user = mysqli_fetch_array($result2);
 		$profpic = $user['picture'];
 		if($profpic == ""){
-			$profpic = "/images/default_profile.png";		
+			$profpic = "/images/default_profile.png";
 		}else{
-			$profpic = "/users/".$user['user_id']."/images/".$profpic;		
+			$profpic = "/users/".$user['user_id']."/images/".$profpic;
 		}
 		echo "<div onclick=loadPage('/profile.php?user=".$user['username']."') style='cursor:pointer;float:left;'>\n";
 		echo "<img style='width:20px;height;20px' src='$profpic' /></div>";
-		echo "<div>".$comment['post_date'].": ".$comment['message']."</div><br/>";		
+		echo "<div>".$comment['post_date'].": ".$comment['message']."</div><br/>";
 	};
 	echo "OKAY";
 }
 
-function get_podcast($podcast_id){    
+function get_podcast($podcast_id){
     $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the server");
     $query = "SELECT * FROM `".TABLE_PODCASTS."` WHERE `podcast_id`=$podcast_id";
     $result = mysqli_query($link,$query) or die("Error querying the database");
@@ -190,7 +190,7 @@ function get_podcast($podcast_id){
     return null;
 }
 
-function get_podcast_json($podcast_id){    
+function get_podcast_json($podcast_id){
     $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the server");
     $query = "SELECT * FROM `".TABLE_PODCASTS."` WHERE `podcast_id`=$podcast_id";
     $result = mysqli_query($link,$query) or die("Error querying the database");
@@ -201,7 +201,7 @@ function get_podcast_json($podcast_id){
     return null;
 }
 
-function get_podcast_by_user($user_id){    
+function get_podcast_by_user($user_id){
     $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the server");
     $query = "SELECT * FROM `".TABLE_PODCASTS."` WHERE `user_id`=$user_id";
     $result = mysqli_query($link,$query) or die("Error querying the database");
@@ -214,7 +214,7 @@ function get_podcast_by_user($user_id){
 }
 
 
-function podcast_cover_image($podcast_input,$queryServer = FALSE){    
+function podcast_cover_image($podcast_input,$queryServer = FALSE){
     if($queryServer){
         $podcast = get_podcast($podcast_input);
     }else{
@@ -222,8 +222,8 @@ function podcast_cover_image($podcast_input,$queryServer = FALSE){
     }
     if($podcast == null){
         return null;
-    }else{        
-        return '/users/'.$podcast['user_id'].'/images/podcast/'.$podcast['image_file'];
+    }else{
+        return "/users/".$podcast['user_id'].'/images/podcast/'.$podcast['image_file'];
     }
 }
 
@@ -240,11 +240,11 @@ function update_image(){
             mkdir($fileloc,0777,true) or die("Unable to create directory for image");
         }
         $filename = $basename . $image_file['name'];
-        $destination = $fileloc . $filename;        
+        $destination = $fileloc . $filename;
         if($podcast['image_file'] !== "" && file_exists($_SERVER['DOCUMENT_ROOT'].podcast_cover_image($podcast))){
             unlink($_SERVER['DOCUMENT_ROOT'].podcast_cover_image($podcast));
         }
-        if (!move_uploaded_file($image_file['tmp_name'], $destination)) {                                    
+        if (!move_uploaded_file($image_file['tmp_name'], $destination)) {
             echo "ERROR";
             return;
         }
@@ -253,7 +253,7 @@ function update_image(){
         mysqli_close($link);
         echo "OKAY";
         return;
-    }        
+    }
     echo "ERROR";
 }
 
@@ -271,18 +271,18 @@ function update(){
 
 function delete(){
     $podcast_id = filter_input(INPUT_POST,"podcast_id");
-    $podcast = get_podcast($podcast_id);    
+    $podcast = get_podcast($podcast_id);
     if($podcast == null){
         return;
     }
-    if($podcast['image_file'] != "" && file_exists($_SERVER['DOCUMENT_ROOT'].podcast_cover_image($podcast))){
+    if($podcast['image_file'] != "" && file_exists(podcast_cover_image($podcast))){
         unlink($_SERVER['DOCUMENT_ROOT'].podcast_cover_image($podcast));
     }
-    if(file_exists($_SERVER['DOCUMENT_ROOT']."/users/".$_SESSION['user_id']."/audio/podcast/".$podcast['audio_file'])){
-        unlink($_SERVER['DOCUMENT_ROOT']."/users/".$_SESSION['user_id']."/audio/podcast/".$podcast['audio_file']);
+    if(file_exists("/users/".$_SESSION['user_id']."/audio/podcast/".$podcast['audio_file'])){
+        unlink("/users/".$_SESSION['user_id']."/audio/podcast/".$podcast['audio_file']);
     }
     $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the server.");
-    $query = "DELETE FROM `".TABLE_PODCASTS."` WHERE `podcast_id`=".$podcast_id;    
+    $query = "DELETE FROM `".TABLE_PODCASTS."` WHERE `podcast_id`=".$podcast_id;
     $result = mysqli_query($link,$query) or die("Error querying the database ".mysqli_error($link));
     mysqli_close($link);
     echo "OKAY";
@@ -300,7 +300,7 @@ function get_podcast_by_urlid($urlid){
   else{
     return null;
   }
-  
+
 }
 
 //get_comments_json(3);/
