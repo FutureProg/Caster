@@ -29,7 +29,7 @@ if(filter_input(INPUT_POST,"t") == "mobi"){
  login();
 }
 
-function login(){
+function login($fromSignUp = FALSE){
     $email = trim(filter_input(INPUT_POST, "e"));
     $password = trim(filter_input(INPUT_POST,"p"));
     $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the database");
@@ -43,19 +43,17 @@ function login(){
             $_SESSION['username'] = $row['username'];
             setcookie('user_id',$row['user_id'],time() + (60 * 60 * 24 * 30));
             setcookie('username',$row['username'],time() + (60 * 60 * 24 * 30));
-            //header('Location: ../index.php');
+            if(!$fromSignUp){header('Location: ../index.php');}
             echo "OKAY";
             exit();
             return;
         }else{
-            //header('Location: ../login.php?e=1');
-            echo "1";
+            header('Location: ../login.php?e=1');            
             exit();
             return;
         }
     }else{
-        //header('Location: ../login.php?e=1');
-        echo "1";
+        header('Location: ../login.php?e=1');
         exit();
         return;
     }

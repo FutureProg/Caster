@@ -121,7 +121,7 @@ function login(email,password){
             window.location.href="/index.php";
         }else{
             console.log("Error: "+msg);
-            window.location.href="/login.php?e="+msg;
+            window.location.href="/login.php?e=1";
             return;
         }
     }).fail(function(jqXHR,status){

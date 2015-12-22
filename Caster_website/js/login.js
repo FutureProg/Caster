@@ -1,4 +1,4 @@
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -15,7 +15,7 @@ function login(email,password){
                 "p" : password}
     }).done(function(msg){
         if(msg === "OKAY"){
-            window.location.href="/index.php";           
+            window.location.href="/index.php";
         }else{
             $("#fill_all_error").html("Incorrect email/password");
             if(msg !== "NO"){
