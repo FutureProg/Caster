@@ -12,9 +12,9 @@ function edit_rss($userid,$podcast,$filename){
     $file = fopen($filename,'r');
     if($file == false){
         return;
-    }    
-    $podcastfile = fopen("http://istrat.ddns.net/users/24/audio/podcast/phpRq1X0qMenuBGM.mp3",'r');
-    if($podcast == false){
+    }
+    $podcastfile = fopen("http://istrat.ddns.net/users/$userid/audio/podcast/".$podcast['audio_file'],'r');
+    if($podcastfile == false){
         return;
     }
     $filesize = filesize($podcastfile);
@@ -34,7 +34,7 @@ function edit_rss($userid,$podcast,$filename){
     $contents .= "<description>".$podcast['description']."</description>\n";
     $contents .= "</item>\n";
     $contents .= "</channel>\n</rss>\n";
-    
+
     $file = fopen($filename,'w');
     fwrite($file,$contents);
     fclose($file);
