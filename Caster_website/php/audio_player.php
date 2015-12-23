@@ -13,7 +13,7 @@
         </div>
     </div>
   <div id="audio-bottom-bar">
-    <div style="float:left;width:20%">
+    <div style="float:left;width:60px;height:60px;">
       <image id="podcast-art"></image>
       <!--<div id="audio-player-time-stamp">0:00/0:00</div>-->
     </div>
