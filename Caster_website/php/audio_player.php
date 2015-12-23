@@ -19,7 +19,6 @@
         <div id="audio-player-comment-area">
         </div>
     </div>
-  </div>
   <div id="audio-bottom-bar">
     <image id="podcast-art"></image>
     <button id="play-button"><img src="/images/play_button.png"/></button>
