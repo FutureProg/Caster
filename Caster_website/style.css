@@ -548,11 +548,13 @@ h1{
     border: none;
 }
 #audio-player #audio-bottom-bar{
-
+  background-color: black;
 }
 #audio-player #podcast-art{
   width: 30%;
   height: 90%;
+  background-color: white;
+  float:left;
 }
 #audio-player #play-button{
     border-top-left-radius: inherit;
