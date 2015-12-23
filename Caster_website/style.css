@@ -530,6 +530,7 @@ h1{
     cursor: default;
 }
 #audio-top-bar {
+    border-bottom: 1px solid rgba(90, 89, 89, 0.9);
     background-color: black;
     display: flex;
     display: -webkit-flex;
