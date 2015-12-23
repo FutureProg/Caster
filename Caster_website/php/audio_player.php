@@ -25,7 +25,7 @@
       </div>
       <button id="play-button"><img src="/images/play_button.png"/></button>
       <div id="audio-player-scrubber" style="display:inline">
-          <div id="audio-scrub-bar" style="display:inline-block">
+          <div id="audio-scrub-bar" style="display:inline">
               <div id="audio-scrub-circle">
               </div>
           </div>
