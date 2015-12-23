@@ -67,7 +67,7 @@ function new_rss($userid,$podcast,$filename){
     $contents .= "</rss>\n";
     fwrite($file,$contents);
     fclose($file);
-    edit_rss($userid,$podcast);
+    edit_rss($userid,$podcast,$filename);
 }
 
 function get_user($userid){
