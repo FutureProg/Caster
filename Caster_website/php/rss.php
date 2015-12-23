@@ -1,5 +1,4 @@
 <?php
-$site = "http://ec2-52-35-70-147.us-west-2.compute.amazonaws.com";
 function rss($userid,$podcast){
     $filename = "/var/www/html/users/$userid/audio/feed.rss";
     if(file_exists($filename)){
@@ -10,6 +9,7 @@ function rss($userid,$podcast){
 }
 
 function edit_rss($userid,$podcast,$filename){
+    $site = "http://ec2-52-35-70-147.us-west-2.compute.amazonaws.com";
     $file = fopen($filename,'r');
     if($file == false){
         return;
@@ -42,6 +42,7 @@ function edit_rss($userid,$podcast,$filename){
 }
 
 function new_rss($userid,$podcast,$filename){
+    $site = "http://ec2-52-35-70-147.us-west-2.compute.amazonaws.com";
     $file = fopen($filename,'w');
     if($file == false){
         return;
