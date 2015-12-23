@@ -54,21 +54,21 @@ include 'phpreq/start_session.php';
                 <textarea id="upload-description-area"></textarea>
                 <h2>Category</h2>
                 <select id="category" title="Select a category">
-                	<option value="VEHICLES">Vehicles</option>
+                	<option value="ACTIVISM">Activism</option>
                 	<option value="COMEDY">Comedy</option>
                 	<option value="EDUCATION">Education</option>
                 	<option value="ENTERTAINMENT">Entertainment</option>
                 	<option value="FILM">Film</option>
                 	<option value="GAMING">Gaming</option>
                 	<option value="HOWTO">How To</option>
-                	<option value="NEWS">News</option>
                 	<option value="MUSIC">Music</option>
-                	<option value="ACTIVISM">Activism</option>
+                	<option value="NEWS">News</option>
                 	<option value="PEOPLE">People</option>
                 	<option value="SCIENCE">Science</option>
-                	<option value="TECHNOLOGY">Technology</option>
                 	<option value="SPORTS">Sports</option>
+                	<option value="TECHNOLOGY">Technology</option>
                 	<option value="TRAVEL">Travel</option>
+                	<option value="VEHICLES">Vehicles</option>
                 </select>
                 <h2>Tags</h2>
                 <p>Seperated by spaces</p>
