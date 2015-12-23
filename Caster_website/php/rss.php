@@ -54,7 +54,8 @@ function edit_rss($userid,$podcast,$filename){
     }
     fclose($file);
     $user = get_user($userid);
-    $contents = str_replace("</channel>\n</rss>\n","",$contents);
+    $contents = str_replace("</channel>","",$contents);
+    $contents = str_replace("</rss>","",$contents);
     $contents .= "<item>\n";
     $contents .= "<itunes:image href=\"$site/users/".$userid."/images/podcast/".$podcast['image_file']."\" />\n";
     $contents .= "<title>".$podcast['title']."</title>\n";
