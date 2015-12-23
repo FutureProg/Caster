@@ -549,10 +549,9 @@ h1{
 }
 #audio-player #audio-bottom-bar{
   background-color: black;
+  color: white;
 }
 #audio-player #podcast-art{
-  width: 30%;
-  height: 90%;
   background-color: white;
   float:left;
 }
