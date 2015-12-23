@@ -553,12 +553,13 @@ h1{
 }
 #audio-player #podcast-art{
   background-color: white;
-  width: 20%;
+  width: 100%;
   margin: 5px;
 }
 #audio-player #play-button{
     border-top-left-radius: inherit;
     margin: 0;
+    margin-left:10px;
     padding: 5px;
     padding-left: 15px;
     padding-right: 15px;
@@ -694,6 +695,7 @@ h1{
 }
 
 #audio-player #audio-player-scrubber {
+    display: inline;
     background-color: black;
     width: 80%;
     height: 10px;
@@ -709,7 +711,7 @@ h1{
 #audio-player-time-stamp {
     color: white;
     margin: 0;
-    margin-right: 55px;
+    text-align: center;
 }
 
 #audio-scrub-bar #audio-scrub-circle {
