@@ -181,11 +181,9 @@ function playSound(id,title){
 	$("#audio-player-content .listen-counter").html(podcast.listens + " Listens");
     $("#audio-player").show();
     window.setTimeout(function(){
-        $("#audio-player #audio-player-content").slideToggle(100);
-        $("#audio-player #audio-player-scrubber").slideToggle(100);
+        $("#audio-player #audio-player-content").slideToggle(100);        
         window.setTimeout(function(){
             $("#audio-player #audio-player-content").slideToggle(100);
-            $("#audio-player #audio-player-scrubber").slideToggle(100);
         },1000);
     },500);
     $("#audio-player audio source").attr("src","/php/audio_file.php?q="+id+"$"+token);
