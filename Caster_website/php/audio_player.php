@@ -13,7 +13,10 @@
         </div>
     </div>
   <div id="audio-bottom-bar">
-    <image id="podcast-art" src="/images/default_profile.png"></image>
+    <div style="float:left">
+      <image id="podcast-art" src="/images/default_profile.png"></image>
+      <div id="audio-player-time-stamp">0:00/0:00</div>
+    </div>
     <div>
       <div id="audio-player-title-area">
           <div class="click-area">
@@ -22,7 +25,6 @@
       </div>
       <button id="play-button"><img src="/images/play_button.png"/></button>
       <div id="audio-player-scrubber">
-          <div id="audio-player-time-stamp">0:00/0:00</div>
           <div id="audio-scrub-bar">
               <div id="audio-scrub-circle">
               </div>

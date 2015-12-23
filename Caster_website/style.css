@@ -555,7 +555,6 @@ h1{
   background-color: white;
   width: 20%;
   margin: 5px;
-  float:left;
 }
 #audio-player #play-button{
     border-top-left-radius: inherit;
