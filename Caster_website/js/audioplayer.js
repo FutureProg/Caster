@@ -28,7 +28,6 @@ function pauseAudio(evt){
 
 $("#audio-player .click-area").click(function(evt){
     $("#audio-player #audio-player-content").slideToggle(100);
-    $("#audio-player #audio-player-scrubber").slideToggle(100);
 });
 
 $(document).click(function(evt){
@@ -165,7 +164,7 @@ function loadComments(){
 	});
 }
 
-$("#audio-player audio").on("loadeddata",function(){    
+$("#audio-player audio").on("loadeddata",function(){
     $("#audio-player-time-stamp").html("0:00 / " + secondstoTimeStamp(this.duration));
 });
 $("#audio-player audio").on("timeupdate",updateTime).on('ended',function(){
@@ -177,5 +176,4 @@ $("#audio-player audio").on("timeupdate",updateTime).on('ended',function(){
 setTimeout(function(){
     $("#audio-player audio").load();
     $("#audio-player #audio-player-content").slideToggle(0);
-    $("#audio-player #audio-player-scrubber").slideToggle(0);
 },1);

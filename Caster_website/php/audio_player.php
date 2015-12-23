@@ -13,7 +13,7 @@
         </div>
     </div>
   <div id="audio-bottom-bar">
-    <image id="podcast-art"></image>
+    <image id="podcast-art" src="/images/default_profile.png"></image>
     <div>
       <div id="audio-player-title-area">
           <div class="click-area">
@@ -27,7 +27,7 @@
               <div id="audio-scrub-circle">
               </div>
           </div>
-      </div>      
+      </div>
     </div>
   </div>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
