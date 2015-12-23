@@ -22,7 +22,7 @@ function remove_rss($userid,$podcast){
   $items = explode("<item>", $contents);
   $nContents = "";
   foreach ($items as $item) {
-    if(strpos($item, "<rss>") !== false){
+    if(strpos($item, "<channel>") !== false){
       $nContents .= $item;
       continue;
     }

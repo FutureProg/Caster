@@ -2,8 +2,7 @@
 include 'php_vars.php';
 include_once '../phpreq/start_session.php';
 require_once('getid3/getid3.php');
-include 'podcast.php';
-include 'rss.php';
+include_once 'podcast.php';
 
 $q = filter_input(INPUT_GET,"q");
 if($q == "CHECK" && isset($_SESSION['user_id'])){
