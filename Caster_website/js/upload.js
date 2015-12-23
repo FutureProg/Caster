@@ -122,10 +122,12 @@ $.ajax({
 function submit(){
     var title = $("#upload-title-area").val();    
     var desc = $("#upload-description-area").val();
+    var cat = $("#category").val();
     var tags = $("#upload-tags-area").val();
     var sharing = $("#share-settings :selected").val();
     var downloadable = $("#download-checkbox")[0].checked;
-    if(!tags || !desc || !title || tags.length < 1 || desc.length < 1 || title.length < 1){
+    if(!tags || !desc || !title || tags.length < 1 || desc.length < 1 || title.length < 1 || !cat){
+        if(!cat || cat.length < 1) $("#category").css("border-color","red")
         if(!tags || tags.length < 1) $("#upload-tags-area").css("border-color","red")
         if(!desc || desc.length < 1) $("#upload-description-area").css("border-color","red")
         if(!title || title.length < 1) $("#upload-title-area").css("border-color","red")
@@ -137,6 +139,7 @@ function submit(){
     data.append('tags',tags);
     data.append('sharing',""+sharing);
     data.append("downloadable",""+downloadable);
+    data.append('category', cat);
     $.ajax({
         url: "../php/upload_audio.php?q=CHECK",
         type:"POST",

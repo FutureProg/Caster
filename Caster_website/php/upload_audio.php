@@ -32,6 +32,7 @@ function upload(){
     $tags = filter_input(INPUT_POST,"tags");
     $sharing = filter_input(INPUT_POST,"sharing");
     $downloadable = filter_input(INPUT_POST,"downloadable");
+    $category = filter_input(INPUT_POST,"category");
     if($sharing == "GLOBAL"){
         $downloadable = true;
     }
@@ -65,7 +66,7 @@ function upload(){
         return;
     }
     $userid = $_SESSION['user_id'];
-    $query = "INSERT INTO `".TABLE_PODCASTS."` (`user_id`,`post_date`,`title`,`description`,`tags`,`image_file`,`audio_file`,`length`,`sharing`,`downloadable`) VALUES (".$userid.",NOW(),'".addslashes($title)."','".addslashes($description)."','".addslashes($tags)."','".addslashes($image)."','".addslashes($audio)."',$duration,'$sharing',$downloadable);";
+    $query = "INSERT INTO `".TABLE_PODCASTS."` (`user_id`,`post_date`,`title`,`description`,`tags`,`image_file`,`audio_file`,`length`,`sharing`,`downloadable`,`category`) VALUES (".$userid.",NOW(),'".addslashes($title)."','".addslashes($description)."','".addslashes($tags)."','".addslashes($image)."','".addslashes($audio)."',$duration,'$sharing',$downloadable, $category);";
     $result = mysqli_query($link,$query) or die("Error querying database: ".mysqli_errno($link).":".mysqli_error($link).":$query");
     if($sharing == "GLOBAL"){
         $podcastid = mysqli_insert_id($link);
