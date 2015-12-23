@@ -29,7 +29,7 @@ function createPodcastBar($podcast,$username){
     echo "</div>";
     echo "<div class='description'>";
     echo "<p>$podcast[5]<p><br/>";
-    echo "<p>by: <a href='$username'>$username</a><br/> length: ".secondsToTime($podcast)."<br/> uploaded ".dateDifference($podcast)." ago</p>";     
+    echo "<p>by: <a href='$username'>$username</a><br/> length: ".secondsToTime($podcast)."<br/> uploaded ".dateDifference($podcast)." ago</p>";
     echo "</div>";
     echo "</div>";
 }
@@ -45,8 +45,8 @@ function subsPodcasts(){
         $query = "SELECT * FROM `".TABLE_PODCASTS."` WHERE `user_id`=$user ORDER BY `post_date` DESC LIMIT 5";
         $result = mysqli_query($link,$query) or die("Error querying database:");
         $username = username($user);
-        $userpic = userpicture($user);		
-		if($userpic == ""){	 
+        $userpic = userpicture($user);
+		if($userpic == ""){
 			$userpic = "/images/default_profile.png";
         }else{
         	$userpic = "/users/$user/images/$userpic";
@@ -62,7 +62,7 @@ function subsPodcasts(){
             //echo "</div><br/>";
             echo "<div class='wplt' style='padding-bottom:0;margin-bottom:15px;'>\n";
         	echo "<div class='wplt-inner' style='-webkit-justify-content:flex-start;justify-content:flex-start;'>\n";
-            while($row = mysqli_fetch_array($result)){             
+            while($row = mysqli_fetch_array($result)){
                 echo podcastBox($row);
             }
             echo "</div></div>";
@@ -72,29 +72,29 @@ function subsPodcasts(){
 }
 
 function recentPodcasts(){
-    $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Unable to connect to the database");    
-    $query = "SELECT * FROM `".TABLE_PODCASTS."` ORDER BY `post_date` DESC LIMIT 5";        
-    $result = mysqli_query($link,$query) or die("Error querying the database: ".mysqli_errno($link)." : ".mysqli_error($link));    
-    mysqli_close($link);    
-    if(mysqli_num_rows($result) >= 1){   
+    $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Unable to connect to the database");
+    $query = "SELECT * FROM `".TABLE_PODCASTS."` ORDER BY `post_date` DESC LIMIT 5";
+    $result = mysqli_query($link,$query) or die("Error querying the database: ".mysqli_errno($link)." : ".mysqli_error($link));
+    mysqli_close($link);
+    if(mysqli_num_rows($result) >= 1){
         echo "<div class='wplt'>\n";
         echo "<div class='wplt-inner'>\n";
         while($row = mysqli_fetch_array($result)){
             //$userid = $row[1];
-            //$username = username($userid);    
-            //createPodcastBar($row,$username);            
+            //$username = username($userid);
+            //createPodcastBar($row,$username);
             echo podcastBox($row);
         }
         echo "</div></div>";
     }
     else{
-        echo "<h3 style='text-align:center;font-style:bold;'>NO RESULTS FOUND</h3>";        
+        echo "<h3 style='text-align:center;font-style:bold;'>NO RESULTS FOUND</h3>";
     }
 }
 
 function recentPodcastsJson(){
-    $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Unable to connect to the database");    
-    $query = "SELECT * FROM `".TABLE_PODCASTS."` ORDER BY `post_date` DESC LIMIT 5";        
+    $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Unable to connect to the database");
+    $query = "SELECT * FROM `".TABLE_PODCASTS."` ORDER BY `post_date` DESC LIMIT 5";
     $result = mysqli_query($link,$query) or die("Error querying the database: ".mysqli_errno($link)." : ".mysqli_error($link));
     mysqli_close($link);
     $re = array();
@@ -104,33 +104,33 @@ function recentPodcastsJson(){
     return json_encode($re);
 }
 
-function loadPodcasts(){    
+function loadPodcasts(){
     $search = str_replace("%20"," ",filter_input(INPUT_GET,"q"));
     $search = trim($search);
     if($search == ""){
-        echo "<h3 style='text-align:center;font-style:bold;'>NO RESULTS FOUND</h3>";        
+        echo "<h3 style='text-align:center;font-style:bold;'>NO RESULTS FOUND</h3>";
         return;
-    }    
+    }
     $list = explode(' ',$search);
     $str = join('* +',$list);
-    $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Unable to connect to the database");    
-    $query = "SELECT *,MATCH(tags) AGAINST('*$str+') AS `relevance` FROM `".TABLE_PODCASTS."` WHERE MATCH(tags) AGAINST('+$str*') ORDER BY relevance DESC;";        
+    $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Unable to connect to the database");
+    $query = "SELECT *,MATCH(tags) AGAINST('*$str+') AS `relevance` FROM `".TABLE_PODCASTS."` WHERE MATCH(tags) AGAINST('+$str*') ORDER BY relevance DESC;";
     /*$sqlOpt = array();
     foreach($list as $key){
         $sqlOpt[] = "tags LIKE '%".addslashes($key)."%'";
     }
-    $query .= " ".join(' OR ',$sqlOpt).";";*/    
-    $result = mysqli_query($link,$query) or die("Error querying the database: ".mysqli_errno($link));    
-    mysqli_close($link);    
-    if(mysqli_num_rows($result) >= 1){                
+    $query .= " ".join(' OR ',$sqlOpt).";";*/
+    $result = mysqli_query($link,$query) or die("Error querying the database: ".mysqli_errno($link));
+    mysqli_close($link);
+    if(mysqli_num_rows($result) >= 1){
         while($row = mysqli_fetch_row($result)){
             $userid = $row[1];
-            $username = username($userid);    
-            createPodcastBar($row,$username);            
+            $username = username($userid);
+            createPodcastBar($row,$username);
         }
     }
     else{
-        echo "<h3 style='text-align:center;font-style:bold;'>NO RESULTS FOUND</h3>";        
+        echo "<h3 style='text-align:center;font-style:bold;'>NO RESULTS FOUND</h3>";
     }
 }
 
@@ -166,7 +166,12 @@ function dateDifference($podcast){
         return $delta->m." month".$end;
     }
     else if($delta->d == 0){
-        return "under 24 hours";
+        if($delta->h > 0){
+          $end = "";
+          if($delta->d > 1) $end="s";
+          return $delta->h." hour".$end;
+        }
+        return "under an hour";
     }
     else{
         $end = "";
@@ -175,9 +180,9 @@ function dateDifference($podcast){
     }
 }
 
-function username($userid){    
+function username($userid){
     $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to server");
-    $query = "SELECT * FROM `".TABLE_USERS."` WHERE `user_id`=".$userid;    
+    $query = "SELECT * FROM `".TABLE_USERS."` WHERE `user_id`=".$userid;
     $result = mysqli_query($link,$query) or die("Error querying database");
     if(mysqli_num_rows($result) >= 1){
         $row = mysqli_fetch_array($result);
@@ -190,7 +195,7 @@ function username($userid){
 
 function userpicture($userid){
     $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to server");
-    $query = "SELECT * FROM `".TABLE_USERS."` WHERE `user_id`=".$userid;    
+    $query = "SELECT * FROM `".TABLE_USERS."` WHERE `user_id`=".$userid;
     $result = mysqli_query($link,$query) or die("Error querying database");
     if(mysqli_num_rows($result) >= 1){
         $row = mysqli_fetch_array($result);
@@ -206,19 +211,19 @@ function mobi_loadPodcasts(){
 	$search = str_replace("%20"," ",filter_input(INPUT_GET,"mq"));
     $search = trim($search);
     if($search == ""){
-        print "No results found";        
+        print "No results found";
         return;
-    }    
+    }
     $list = explode(' ',$search);
     $str = join('* +',$list);
-    $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Unable to connect to the database");    
-    $query = "SELECT *,MATCH(tags) AGAINST('*$str+') AS `relevance` FROM `".TABLE_PODCASTS."` WHERE MATCH(tags) AGAINST('+$str*') ORDER BY relevance DESC;";        
+    $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Unable to connect to the database");
+    $query = "SELECT *,MATCH(tags) AGAINST('*$str+') AS `relevance` FROM `".TABLE_PODCASTS."` WHERE MATCH(tags) AGAINST('+$str*') ORDER BY relevance DESC;";
     /*$sqlOpt = array();
     foreach($list as $key){
         $sqlOpt[] = "tags LIKE '%".addslashes($key)."%'";
     }
-    $query .= " ".join(' OR ',$sqlOpt).";";*/    
-    $result = mysqli_query($link,$query) or die("Error querying the database: ".mysqli_errno($link));    
+    $query .= " ".join(' OR ',$sqlOpt).";";*/
+    $result = mysqli_query($link,$query) or die("Error querying the database: ".mysqli_errno($link));
     mysqli_close($link);
     $re = array();
     while($r = mysqli_fetch_array($result)){
