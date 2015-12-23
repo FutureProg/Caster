@@ -20,10 +20,29 @@ and open the template in the editor.
     <body>
         <?php include 'php/audio_player.php'; ?>
         <div id="body-container">
-            <?php include 'phpreq/topbar.php';?>
+          <div id="top-bar">
+              <a href='/index.php'><img src="../images/title.png"/></a>
+              <div id="search-form">
+                  <label>
+                      <input id="search-box" class="tb" size="50" type="text"/>
+                  </label>
+                  <button id="search-button" type="submit">Search</button>
+              </div>
+              <div id="button-set" style="margin-right: 10px;">
+                  <button class="top-bar-buttons" onclick="window.location.href='opinion.php';" style="margin-left:50px">!?   </button>
+                  <?php if(!isset($_SESSION['user_id'])){ ?>
+                          <button class="top-bar-buttons" onclick="window.location.href='login.php';" style="margin-left:50px;">Log in</button>
+                          <button class="top-bar-buttons" onclick="window.location.href='signup.php'" style="margin-left:50px;">Sign up</button>
+                  <?php }else{?>
+                          <button class="top-bar-buttons" onclick="loadPage('profile.php<?php echo "?user=".$_SESSION['username'];?>');" ><?php echo $_SESSION['username']; ?></button>
+                          <button class="top-bar-buttons" onclick="window.location.href='/upload.php'">Upload</button>
+                          <button class="top-bar-buttons" onclick="window.location.href='../php/signout.php'">Sign Out</button>
+                  <?php } ?>
+              </div>
+          </div>
             <div id="main-content">
                 <!--Start Content Here-->
-                <div id="content-container" style="margin:10px;margin-left:0;top:90px;height:80%;">    
+                <div id="content-container" style="margin:10px;margin-left:0;top:90px;height:80%;">
                     <div style="background-color:white;margin: 20px 20px;border: 1px solid black;min-height:100%;">
                         <form style="text-align:center;" method="post" action="php/o.php">
                             <h1>!?</h1>
@@ -43,19 +62,24 @@ and open the template in the editor.
                             <small>
                                 *The provided email address will remain confidential,
                                 meaning that we will not share it with any third parties.<br/>
-                                By providing an email address, you give us permission to send you a follow up for any suggestion 
+                                By providing an email address, you give us permission to send you a follow up for any suggestion
                                 or bug you report.
                             </small>
                         </form>
-                    </div>                    
+                    </div>
                             <script src="js/index.js"></script>
                     <?php include 'phpreq/footer.php'; ?>
                 </div>
                 <!--End Content Here------>
-           
+
             </div>
-            
-        </div>        
+
+        </div>
     </body>
     <script src="js/main.js"></script>
+    <script>
+      $("#search-button").click(function(evt){
+          window.location.href='search.php?q='+$("#search-box").val();
+      });
+    </script>
 </html>
