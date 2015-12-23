@@ -243,7 +243,7 @@ function update_image(){
         $filename = $basename . $image_file['name'];
         $destination = $fileloc . $filename;
         if($podcast['image_file'] !== "" && file_exists($_SERVER['DOCUMENT_ROOT'].podcast_cover_image($podcast))){
-            unlink("/var/www/html".podcast_cover_image($podcast));
+            unlink($_SERVER['DOCUMENT_ROOT'].podcast_cover_image($podcast));
         }
         if (!move_uploaded_file($image_file['tmp_name'], $destination)) {
             echo "ERROR";
@@ -277,9 +277,9 @@ function delete(){
         return;
     }
     if($podcast['image_file'] != "" && file_exists(podcast_cover_image($podcast))){
-        unlink($_SERVER['DOCUMENT_ROOT'].podcast_cover_image($podcast));
+        unlink("/var/www/html/users".podcast_cover_image($podcast));
     }
-    if(file_exists("/users/".$_SESSION['user_id']."/audio/podcast/".$podcast['audio_file'])){
+    if(file_exists("/var/www/html/users/".$_SESSION['user_id']."/audio/podcast/".$podcast['audio_file'])){
         unlink("/var/www/html/users/".$_SESSION['user_id']."/audio/podcast/".$podcast['audio_file']);
     }
     $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the server.");
