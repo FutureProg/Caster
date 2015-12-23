@@ -2,6 +2,7 @@
 
 include_once $_SERVER['DOCUMENT_ROOT'].'/phpreq/start_session.php';
 include_once $_SERVER['DOCUMENT_ROOT'].'/php/user_info.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'/php/rss.php';
 include_once $_SERVER['DOCUMENT_ROOT'].'/php/php_vars.php';
 
 $q = filter_input(INPUT_POST,"q");
@@ -285,6 +286,7 @@ function delete(){
     $query = "DELETE FROM `".TABLE_PODCASTS."` WHERE `podcast_id`=".$podcast_id;
     $result = mysqli_query($link,$query) or die("Error querying the database ".mysqli_error($link));
     mysqli_close($link);
+    remove_rss($podcast['user_id'],$podcast);
     echo "OKAY";
     return;
 }

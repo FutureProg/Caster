@@ -8,6 +8,35 @@ function rss($userid,$podcast){
     }
 }
 
+function remove_rss($userid,$podcast){
+  $filename = "/var/www/html/users/$userid/audio/feed.rss";
+  if(!file_exists($filename)) return;
+  $file = fopen($filename, 'r');
+  if(!$file) return;
+  $contents = "";
+  while(($line = fgets($file))){
+    $contents .= $line;
+  }
+  fclose($file);
+  $contents = str_replace("</channel>\n</rss>\n","",$contents);
+  $items = explode("<item>", $contents);
+  $nContents = "";
+  foreach ($items as $item) {
+    if(strpos($item, "<rss>") !== false){
+      $nContents .= $item;
+      continue;
+    }
+    if(strpos($item,$podcast['audio_file']) == false){
+      $nContents .="<item>\n";
+      $nContents .= $item;
+    }
+  }
+  $nContents .= "</channel>\n</rss>";
+  $file = fopen($filename, 'w');
+  fwrite($file, $nContents);
+  fclose($file);
+}
+
 function edit_rss($userid,$podcast,$filename){
     $site = "http://ec2-52-35-70-147.us-west-2.compute.amazonaws.com";
     $file = fopen($filename,'r');
