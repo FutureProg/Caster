@@ -2,5 +2,5 @@ RewriteEngine On
 
 RewriteCond %{request_filename} !-f
 #RewriteCond %{request_filename} !-d
-#RewriteRule ^(.*)/(.*)/?$  /profile.php?user=$1&podcast=$2    [L]
+RewriteRule ^(.*)/(.*)/?$  /profile.php?user=$1&podcast=$2    [L]
 RewriteRule ^([^/]+)/?$  /profile.php?user=$1    [L]
