@@ -207,10 +207,10 @@ function userpicture($userid){
 }
 
 function mobi_loadPodcasts(){
-	  $search = str_replace("%20"," ",filter_input(INPUT_GET,"mq"));
+	  $search = str_replace("%20"," ",filter_input(INPUT_POST,"mq"));
     $search = trim($search);
     if(empty($search)){
-        print "No results found: empty search";
+        print "No results found: empty search $search";
         return;
     }
     $list = explode(' ',$search);
