@@ -5,7 +5,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -14,10 +13,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridLayout;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.caster.caster_android.CasterRequest;
@@ -32,7 +29,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -161,11 +157,12 @@ public class SearchResults extends Activity {
             Log.d("Search Results result: ", res);
             if (res.contains("No results found")){
                 Toast.makeText(getApplicationContext(), "No Results Found :(", Toast.LENGTH_SHORT);
-            }
-            JSONArray jsonArray = new JSONArray(res);
-            for(int i = 0; i< jsonArray.length(); i++){
-                JSONObject obj = jsonArray.getJSONObject(i);
-                results.add(Podcast.makeFromJson(obj));
+            }else {
+                JSONArray jsonArray = new JSONArray(res);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject obj = jsonArray.getJSONObject(i);
+                    results.add(Podcast.makeFromJson(obj));
+                }
             }
             //Pass array into listview adapter
             PodcastListAdapter adapter = new PodcastListAdapter(this, R.layout.search_results_listview_item_row, results.toArray(new Podcast[results.size()]));
