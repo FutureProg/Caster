@@ -9,10 +9,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
-import static com.caster.caster_android.utils.Bin.*;
+import static com.caster.caster_android.utils.Bin.podcasts;
 
 /**
  * Created by Nick on 15-05-05.
@@ -26,7 +25,8 @@ import static com.caster.caster_android.utils.Bin.*;
 public class Podcast {
 
     public final static int COVER_PHOTO = 0, TITLE = 1, DESCRIPTION = 2, VIEWS = 3, LIKES = 4,
-                            LENGTH = 5, ID=6,CREATOR_ID=7, AUDIO_FILE = 8, URLID = 9;
+                            LENGTH = 5, ID=6,CREATOR_ID=7, AUDIO_FILE = 8, URLID = 9,
+                            DOWNLOADABLE = 10, CATEGORY = 11;
 
     HashMap<Integer, Object> metadata; //image,title, descriptions, views, likes, length, etc.
     User creator;
@@ -83,6 +83,8 @@ public class Podcast {
             data.put(COVER_PHOTO,jsonObject.getString("image_file"));
             data.put(AUDIO_FILE,jsonObject.getString("audio_file"));
             data.put(URLID, jsonObject.getString("urlid"));
+            data.put(DOWNLOADABLE,jsonObject.getString("downloadable"));
+            data.put(CATEGORY,jsonObject.getString("category"));
             re = new Podcast(data);
         } catch (JSONException e) {
             e.printStackTrace();

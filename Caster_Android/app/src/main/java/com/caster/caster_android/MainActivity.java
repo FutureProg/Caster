@@ -37,7 +37,7 @@ import java.util.concurrent.ExecutionException;
 
 
 public class MainActivity extends Activity {
-    public final static String site = "http://istrat.ddns.net";
+    public final static String site = "http://ec2-52-35-70-147.us-west-2.compute.amazonaws.com/";
     public static MainActivity instance;
 
     private ActionBarDrawerToggle drawerToggle;
