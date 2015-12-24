@@ -217,7 +217,7 @@ function mobi_loadPodcasts(){
     $list = explode(' ',$search);
     $str = join('* +',$list);
     $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Unable to connect to the database");
-    $query = "SELECT *,MATCH(tags) AGAINST('*$str+') AS `relevance` FROM `".TABLE_PODCASTS."` WHERE MATCH(tags) AGAINST('+$str*') ORDER BY relevance DESC;";
+    $query = "SELECT *,MATCH(tags) AGAINST('$str' IN BOOLEAN MODE) AS `relevance` FROM `".TABLE_PODCASTS."` WHERE MATCH(tags) AGAINST('$str' IN BOOLEAN MODE) ORDER BY relevance DESC;";
     /*$sqlOpt = array();
     foreach($list as $key){
         $sqlOpt[] = "tags LIKE '%".addslashes($key)."%'";
