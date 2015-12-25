@@ -4,13 +4,13 @@ var mypodcastid;
 var ismyprofile;
 var _username;
 var _podcast;
-$(document).ready(function(){  
+$(document).ready(function(){
 	/* OLD PHP
     if(document.URL.indexOf("profile.php") != -1){
-        _username = document.URL.match(/user=(.*)/)[1];               
+        _username = document.URL.match(/user=(.*)/)[1];
     }else{
-        _username = document.URL.match(/\/\/.*\/(.*)/)[1];               
-    }    
+        _username = document.URL.match(/\/\/.*\/(.*)/)[1];
+    }
 	*/
 	//Get URL as String
 	urlAsString = document.URL.toString()
@@ -54,14 +54,14 @@ $(document).ready(function(){
 			type: "POST",
 			data: { "q" : "UI"}
 		}).done(function(res){
-		   if(res != "NO"){              
-			   myuserid = parseInt(res.trim());           
+		   if(res != "NO"){
+			   myuserid = parseInt(res.trim());
 		   }else{
-			   myuserid = -1;       
+			   myuserid = -1;
 		   }
 			console.log("muid : " + res);
 			getProfileID();
-		});      
+		});
 	}
 	else{
 	  _username = _username[1];
@@ -73,18 +73,18 @@ $(document).ready(function(){
 			type: "POST",
 			data: { "q" : "UI"}
 		}).done(function(res){
-		   if(res != "NO"){              
-			   myuserid = parseInt(res.trim());           
+		   if(res != "NO"){
+			   myuserid = parseInt(res.trim());
 		   }else{
-			   myuserid = -1;       
+			   myuserid = -1;
 		   }
 			console.log("muid : " + res);
 			getProfileID();
-		});      	
-		
+		});
+
 	  //podcast urlid function
 	  $.ajax({
-		url: "../php/podcast.php",
+		url: "/php/podcast.php",
 		type: "POST",
 		data: {"q" : "URLIDTOPID", "id" : _podcast}
 	  }).done(function(res){
@@ -99,7 +99,7 @@ $(document).ready(function(){
 	  });
 
 	  $.ajax({
-		url: "../php/podcast.php",
+		url: "/php/podcast.php",
 		type: "POST",
 		data: {"q" : "TTL", "id" : mypodcastid}
 	  }).done(function(res){
@@ -112,17 +112,17 @@ $(document).ready(function(){
 		}
 		console.log("podcast title : " + res.trim());
 	  });
-	}    
+	}
 });
 
 function init(){
-    //change user picture    
+    //change user picture
     subscribed(function(res){
         if(res == true){
             $("#profile-subscribe-button img").attr("src","/images/unsubscribe_button.png");
         }
         else{
-            $("#profile-subscribe-button img").attr("src","/images/subscribe_button.png");    
+            $("#profile-subscribe-button img").attr("src","/images/subscribe_button.png");
         }
     });
     console.log("COMPARE " + myuserid  + " TO " + userid);
@@ -131,13 +131,13 @@ function init(){
         $("#profile-subscribe-button").hide();
         ismyprofile = true;
     }else{
-        $("#profile-image-camera").hide();  
-        console.log("Hide camera");          
+        $("#profile-image-camera").hide();
+        console.log("Hide camera");
         ismyprofile = false;
     }
-    
+
     var headerhtml = $("head").html();
-    headerhtml = headerhtml + "\n <link rel=\"altername\" type=\"application/xml\" title=\"RSS 2.0\" href=\"http://istrat.ddns.net/users/"+userid+"/audio/feed.rss\"/>";    
+    headerhtml = headerhtml + "\n <link rel=\"altername\" type=\"application/xml\" title=\"RSS 2.0\" href=\"http://istrat.ddns.net/users/"+userid+"/audio/feed.rss\"/>";
     $("head").html(headerhtml);
     onnav = function(){
     	$("head").html($("head").html().replace("<link rel=\"altername\" type=\"application/xml\" title=\"RSS 2.0\" href=\"http://istrat.ddns.net/users/"+userid+"/audio/feed.rss\"/>",
@@ -145,15 +145,15 @@ function init(){
     	onnav = null;
     };
     window.onbeforeunload = onnav;
-    refreshProfileImage();        
-    
+    refreshProfileImage();
+
     var desc = "";
     $.ajax({
-        url: "../php/user_info.php",
+        url: "/php/user_info.php",
         type: "POST",
         data: { "q" : "DESC" , "id" : userid+""}
     }).done(function(res){
-        desc = res;                
+        desc = res;
         checkDescription(desc);
     });
     var opt = "";
@@ -161,16 +161,16 @@ function init(){
         opt = "MYPROF";
     }
     $.ajax({
-        url: "../php/page_content/profile_podcasts.php",
+        url: "/php/page_content/profile_podcasts.php",
         type: "POST",
-        data: {"q" : "PDCST", "u" : userid, "opt":opt}        
+        data: {"q" : "PDCST", "u" : userid, "opt":opt}
     }).done(function(result){
         $("#profile-activity-area").html(result);
     });
 
-    
-    if(ismyprofile){        
-        $("#my-profile-image-uploader").change(function(evt){            
+
+    if(ismyprofile){
+        $("#my-profile-image-uploader").change(function(evt){
             var files = evt.target.files;
             var data = new FormData();
             $.each(files,function(key,value){
@@ -178,12 +178,12 @@ function init(){
             });
 
             $.ajax({
-                url: "../php/upload_profimg.php?PROFIMG",
+                url: "/php/upload_profimg.php?PROFIMG",
                 type: "POST",
-                data: data,                
-                cache: false,        
+                data: data,
+                cache: false,
                 processData: false,
-                contentType: false,        
+                contentType: false,
             }).done( function(result){
                 if(result === "OKAY"){
                     refreshProfileImage();
@@ -192,12 +192,12 @@ function init(){
                     alert("Size of image must be under 200 KB.");
                 }
                 else{
-                    console.log("Error changing profile picture: " + result);                    
+                    console.log("Error changing profile picture: " + result);
                 }
             });
 
         });
-                
+
     }else{
         $("#settings-link").hide();
         $("#my-profile-image-uploader").click(function(evt){
@@ -209,25 +209,25 @@ function init(){
 
 function refreshProfileImage(){
      $.ajax({
-        url: "../php/user_info.php",
+        url: "/php/user_info.php",
         type: "POST",
         data: {"q" : "IMG","id" : userid}
-    }).done(function(result){   
+    }).done(function(result){
         newsrc = "";
         if(result == "UNDEFINED" || result == ""){
             newsrc = "/images/default_profile.png";
         }
         else{
-            newsrc = "../users/" + userid + "/images/"+result;
-        }        
+            newsrc = "/users/" + userid + "/images/"+result;
+        }
         $("#profile-image,#my-profile-image").attr("src",newsrc);
     });
 }
-    
-    
+
+
 function getUsername(){
     $.ajax({
-        url: "../php/user_info.php",
+        url: "/php/user_info.php",
         data: {"q": "UN","id":parseInt(userid)},
         type: "POST"
     }).done(function(response){
@@ -239,7 +239,7 @@ function getUsername(){
 
 function getProfileID(){
     $.ajax({
-        url: "../php/user_info.php",
+        url: "/php/user_info.php",
         data: {"q": "UID","name":_username},
         type: "POST"
     }).done(function(response){
@@ -249,19 +249,19 @@ function getProfileID(){
     });
 }
 
-$("#profile-activity-item").click(function(evt){    
-    nav(0);    
+$("#profile-activity-item").click(function(evt){
+    nav(0);
     evt.preventDefault();
 });
 
 
-$("#profile-podcasts-item").click(function(evt){   
+$("#profile-podcasts-item").click(function(evt){
     nav(1);
     evt.preventDefault();
 });
 
-$("#profile-playlists-item").click(function(evt){   
-    nav(2); 
+$("#profile-playlists-item").click(function(evt){
+    nav(2);
     evt.preventDefault();
 });
 
@@ -270,16 +270,16 @@ $("#profile-subscribe-button").click(function(evt){
         window.location.href="login.php";
         return;
     }
-   subscribed(function(res){       
-       if( res == false){           
+   subscribed(function(res){
+       if( res == false){
            subscribe();
-        }else{            
+        }else{
             unsub();
         }
    });
 });
 
-$("#profile-login-sub-button").click(function(evt){    
+$("#profile-login-sub-button").click(function(evt){
     window.location.href="login.php";
 });
 
@@ -287,42 +287,42 @@ $("#profile-login-sub-button").click(function(evt){
 
 function subscribe(){
     $.ajax({
-        url: "../php/subscription.php",
+        url: "/php/subscription.php",
         type: "POST",
         data:{
             "q" : "SUB",
             "s" : userid
         }
-    }).done(function(res){          
-        $("#profile-subscribe-button img").attr("src","images/unsubscribe_button.png");                                          
+    }).done(function(res){
+        $("#profile-subscribe-button img").attr("src","images/unsubscribe_button.png");
     });
 }
 
 function unsub(){
     $.ajax({
-        url: "../php/subscription.php",
+        url: "/php/subscription.php",
         type: "POST",
         data:{
             "q" : "UNSUB",
             "s" : userid
         }
-    }).done(function(res){  
+    }).done(function(res){
         console.log(res);
-        $("#profile-subscribe-button img").attr("src","images/subscribe_button.png");                                          
+        $("#profile-subscribe-button img").attr("src","images/subscribe_button.png");
     });
 }
-            
 
-function subscribed(f){    
+
+function subscribed(f){
     $.ajax({
         url: "../php/subscription.php",
         type: "POST",
         data: {
             "q" : "CHECK",
             "s" : (userid)
-        }        
-    }).done(function(res){              
-        if(res.indexOf("OKAY") >= 0){                        
+        }
+    }).done(function(res){
+        if(res.indexOf("OKAY") >= 0){
             f(res.indexOf("YES") >= 0);
         }else{
             console.log("Error checking if subscribed: " + res);
@@ -340,7 +340,7 @@ function nav(choice){
     if(choice == 0){
         $("#profile-activity-item").css("background-color","red").css("color","white")
                                                                  .css("text-shadow","0 1px 0 gray");
-    }    
+    }
     else if(choice == 1){
         $("#profile-podcasts-item").css("background-color","red").css("color","white")
                                                                  .css("text-shadow","0 1px 0 gray");
@@ -351,8 +351,8 @@ function nav(choice){
     }
 }
 
-function checkDescription(desc){    
-    if(ismyprofile){        
+function checkDescription(desc){
+    if(ismyprofile){
         $("#profile-description").replaceWith(function(){
             var re = "";
             re += "<label id='profile-description-label'></label>";
@@ -364,8 +364,8 @@ function checkDescription(desc){
             re += "\n";
             re += "<br/><button id='profile-description-button'>Save Changes</button>";
             return re;
-        });        
-        $("#profile-description-button")[0].disabled = true;  
+        });
+        $("#profile-description-button")[0].disabled = true;
         $("#profile-description-button").click(function(evt){
             $.ajax({
                 url: "../php/user_info.php",
@@ -382,11 +382,11 @@ function checkDescription(desc){
                 }
             });
         });
-        $("textarea#profile-description").bind('input propertychange',function(){                   
-            if(desc != $("#profile-description").val()){                
+        $("textarea#profile-description").bind('input propertychange',function(){
+            if(desc != $("#profile-description").val()){
                 $("#profile-description-button")[0].disabled = false;
             }
-        });        
+        });
     }
     else{
         $("#profile-description").html(desc);

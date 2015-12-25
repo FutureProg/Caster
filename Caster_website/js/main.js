@@ -188,7 +188,7 @@ function playSound(id,title){
         },1000);
     },500);
     $("#audio-player audio source").attr("src","/php/audio_file.php?q="+id+"$"+token);
-    $("#audio-player audio").trigger("load").on("canplay",function(){$("#audio-player #play-button img").attr("src","images/pause_button.png");
+    $("#audio-player audio").trigger("load").on("canplay",function(){$("#audio-player #play-button img").attr("src","/images/pause_button.png");
                                                                      $("#audio-player audio").trigger('play');
                                                                      $("#audio-player #play-button").click(pauseAudio);    });
 
