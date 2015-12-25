@@ -41,6 +41,7 @@ function loadPage(url,scroll){
         if(url.indexOf("profile.php") != -1){
             url = url.replace("profile.php?user=","");
         }
+        url = "/" + url;
         history.pushState(null,null,url);
         $("#main-content").html(html);
     });
