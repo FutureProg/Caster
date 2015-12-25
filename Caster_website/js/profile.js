@@ -95,10 +95,7 @@ $(document).ready(function(){
 			mypodcastid = -1;
 		}
 		console.log("pdid : " + res);
-
-	  });
-
-	  $.ajax({
+		$.ajax({
 		url: "/php/podcast.php",
 		type: "POST",
 		data: {"q" : "TTL", "id" : mypodcastid}
@@ -111,6 +108,7 @@ $(document).ready(function(){
 		  	//error getting podcast title
 		}
 		console.log("podcast title : " + res.trim());
+	  });
 	  });
 	}
 });
