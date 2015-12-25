@@ -25,6 +25,9 @@ $(document).ready(function(){
     if($("#audio-player audio source").attr("src") == ""){
         $("#audio-player").hide();
     }
+    $.ajaxPrefilter(function( options, originalOptions, jqXHR ) {
+      options.async = true;
+    });
 })
 
 function loadPage(url,scroll){
