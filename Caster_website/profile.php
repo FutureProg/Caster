@@ -1,5 +1,5 @@
 <?php
-include_once 'phpreq/start_session.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'/phpreq/start_session.php';
 $profile_username = filter_input(INPUT_GET,"user");
 $myprofile =  (isset($_SESSION['username']) && $profile_username == $_SESSION['username']);
 
@@ -20,9 +20,9 @@ and open the template in the editor.
         <title>Caster-Profile</title>
     </head>
     <body>
-        <?php include '/php/audio_player.php'; ?>
+        <?php include $_SERVER['DOCUMENT_ROOT'].'/php/audio_player.php'; ?>
         <div id="body-container">
-            <?php include '/phpreq/topbar.php'?>
+            <?php include $_SERVER['DOCUMENT_ROOT'].'/phpreq/topbar.php'?>
             <div id="main-content">
                 <div id="content-container" style="margin:10px;margin-left:0;top:90px;height:80%;">
     <div id="profile-page">
