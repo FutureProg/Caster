@@ -16,7 +16,7 @@ if(isset($_SESSION['user_id'])){
         <meta charset="UTF-8">
         <meta name="author" content="Nickolas Morrison">
         <meta name="description" content="Share your podcasts with the world.">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
         <link href="style.css" rel="stylesheet"/>
         <link rel="icon" href="images/logo.png" sizes="32x32" type="image/png"/>
         <title>Caster-Login</title>

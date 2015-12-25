@@ -6,7 +6,7 @@ include 'phpreq/start_session.php';
         <meta charset="UTF-8">
         <meta name="author" content="Nickolas Morrison">
         <meta name="description" content="Cast your voice">
-        <script src="jquery/jquery/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
         <link href="style.css" rel="stylesheet"/>
         <title>Caster - Upload</title>
     </head>
@@ -15,19 +15,19 @@ include 'phpreq/start_session.php';
             <?php include 'phpreq/topbar.php';?>
             <div id="main-content">
                 <div id="content-container" style="margin:10px;margin-left:0;top:90px;height:80%;">
-                    <div id="upload-container">                
+                    <div id="upload-container">
                         <h1 style="text-align:center">Upload</h1>
-                        <div style="display:inline">                            
+                        <div style="display:inline">
                             <div style="display:inline-text">
-                                <h2>Cover image</h2>                                
-                                <span style="position: relative;">                                    
-                                    <img id="podcast-upload-image-preview" src=""></img>    
+                                <h2>Cover image</h2>
+                                <span style="position: relative;">
+                                    <img id="podcast-upload-image-preview" src=""></img>
                                 <span style="position:absolute;margin-left:2px;width:100%;">
                                     <label>400x400px recommended</label>
                                     <input type="file" id="image-uploader" class="button-class-1" name="file[]" accept="image/png, image/jpg, image/jpeg" type="file"></input><br/><br/><br/>
                                 <span>
                                     <input type="checkbox" id="download-checkbox" name="dc"/>
-                                    <label for="download-checkbox"> Allow Downloads</label><br/><br/>                                    
+                                    <label for="download-checkbox"> Allow Downloads</label><br/><br/>
                                 </span>
                                 <select id="share-settings" title="Global - Share with the world. We'll make an rss feed for you.
                                                                    Local - Share with only the people on Caster. This gives you access to things like stats (not yet available)&#013;
@@ -41,7 +41,7 @@ include 'phpreq/start_session.php';
                                         class="button-class-2 tooltip"
                                         title="oh boy">
                                     ?
-                                </button>-->                             
+                                </button>-->
                                 </span>
                             </span>
                         <br/>
@@ -73,15 +73,15 @@ include 'phpreq/start_session.php';
                 <h2>Tags</h2>
                 <p>Seperated by spaces</p>
                 <input type="text" id="upload-tags-area"></input>
-        </div>                                                
+        </div>
         </div>
     <br/>
     <button class="button-class-2" onclick="submit()">SUBMIT</button>
-    </div>                     
+    </div>
 <?php include 'phpreq/footer.php' ?>
 </div>
-</div>            
-</div>   
+</div>
+</div>
 <script src="js/main.js"></script>
 <script src="js/upload.js"></script>
 </body>

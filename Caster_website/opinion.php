@@ -12,7 +12,7 @@ and open the template in the editor.
         <meta charset="UTF-8">
         <meta name="author" content="Nickolas Morrison">
         <meta name="description" content="Cast your voice">
-        <script src="jquery/jquery/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
         <link href="style.css" rel="stylesheet"/>
         <link rel="icon" href="images/logo.png" sizes="32x32" type="image/png"/>
         <title>Caster</title>
