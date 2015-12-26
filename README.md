@@ -2,6 +2,8 @@
 Repository for Caster Apps (Android, iOS, Windows) <br/>
 The android app design can be found here: <a href="https://docs.google.com/presentation/d/1mL2SCdt58fwieVYCdFVPcE_G-W3EwfM3spEyMYp2hkk/edit?usp=sharing">App Design Slides</a>
 
+The website is hosted on amazon ec2 services here: <a href="http://ec2-52-35-70-147.us-west-2.compute.amazonaws.com/">Caster Test Website</a>
+
 #TODO Before Release
 
 * Views bug
@@ -12,7 +14,13 @@ The android app design can be found here: <a href="https://docs.google.com/prese
 * Trending by views
 * Searching by category
 * Legal
+* Android App
 
 #TODO Later
+
 * Analytics
 * Monetization (ads)
+* Rework the Search Engine
+* Recommendations 
+* Widget
+* iOS App
