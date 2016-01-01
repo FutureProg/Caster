@@ -6,6 +6,7 @@ The website is hosted on amazon ec2 services here: <a href="http://ec2-52-35-70-
 
 #TODO Before Release
 
+* Report Button
 * Views bug
   * Clicking continuously adds views
 * Likes bug
