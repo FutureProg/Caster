@@ -17,6 +17,7 @@ The website is hosted on amazon ec2 services here: <a href="http://ec2-52-35-70-
 * Searching by category
 * Legal
 * Android App
+* Playlists
 
 #TODO Later
 
@@ -27,3 +28,5 @@ The website is hosted on amazon ec2 services here: <a href="http://ec2-52-35-70-
 * Widget
 * iOS App
 * Android Auto
+* Download to
+   * Download to phone, download to computer, download to car, ...
