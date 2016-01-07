@@ -18,7 +18,7 @@ The website is hosted on amazon ec2 services here: <a href="http://ec2-52-35-70-
 * Legal
 * Android App
 * Playlists
-* Shorten bottom bar on website (that currently contains lega)
+* Shorten bottom bar on website (that currently contains legal)
 
 #TODO Later
 
@@ -29,5 +29,5 @@ The website is hosted on amazon ec2 services here: <a href="http://ec2-52-35-70-
 * Widget
 * iOS App
 * Android Auto
-* Download to
+* Sync Downloads
    * Download to phone, download to computer, download to car, ...
