@@ -1,34 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
-    tools:context="com.Caster.caster_android.SearchResults"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context="com.Caster.caster_android.MainActivity"
+    >
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme">
+        android:theme="@style/ActionbarTheme">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
+            android:titleTextAppearance="@android:color/white"
             app:popupTheme="@style/AppTheme.PopupOverlay"></android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
     <RelativeLayout
-        android:paddingTop="@dimen/abc_action_bar_default_height_material"
+        android:paddingTop="?attr/actionBarSize"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <FrameLayout
+            android:id="@+id/content_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
         <GridLayout
-            android:layout_weight="1.5"
             android:elevation="12dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/podcast_bar_height"
             android:rowCount="1"
             android:columnCount="4"
             android:layout_alignParentBottom="true"
@@ -74,12 +81,5 @@
 
         </GridLayout>
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@id/content_frame"/>
-
-
     </RelativeLayout>
-
 </android.support.design.widget.CoordinatorLayout>

@@ -4,4 +4,13 @@
     <color name="Caster_Colour_Red_Dark">#C62828</color>
     <color name="play_screen_grey">#E6E6E6</color>
     <color name="track_bar_bg">#be2e2e2e</color>
+    <color name="primary_text_material_dark">#ffffff</color>
+    <color name="primary_text_material_light">#ffffff</color>
+    <color name="background_material_light">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="foreground_material_light">#ffffff</color>
+    <color name="background_material_dark">#ffffff</color>
+    <color name="accent_material_dark">#dd2c00</color>
+    <color name="accent_material_light">#dd2c00</color>
+    <color name="secondary_text_material_light">#ffffff</color>
 </resources>

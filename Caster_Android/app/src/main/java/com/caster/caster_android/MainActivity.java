@@ -1,67 +1,86 @@
 package com.caster.caster_android;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridLayout;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.SearchView;
+import android.widget.Toast;
 
+import com.caster.caster_android.fragments.DownloadsFragment;
+import com.caster.caster_android.fragments.MainFragment;
+import com.caster.caster_android.fragments.ProgressFragment;
 import com.caster.caster_android.utils.Bin;
-import com.caster.caster_android.views.PodcastBox;
+import com.caster.caster_android.utils.PodcastDownloader;
 import com.caster.caster_android.views.SearchResults;
-import com.caster.caster_android.views.SignUpActivity;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 
-public class MainActivity extends Activity {
-    public final static String site = "http://ec2-52-35-70-147.us-west-2.compute.amazonaws.com/";
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener, PodcastDownloader.OnChangeListener{
+    public final static String site = "http://ec2-52-35-70-147.us-west-2.compute.amazonaws.com";
     public static MainActivity instance;
 
-    private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
     private ListView drawerList;
     private GridLayout podcastBar;
-
-    private ArrayList<Podcast> recents;
+    private Fragment currentFragment;
+    int current_nav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_page);
+        setContentView(R.layout.activity_main);
         instance = this;
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar, R.string.drawer_open,R.string.drawer_close);
+        drawerLayout.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView)findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
         podcastBar = (GridLayout)findViewById(R.id.podcast_bar);
         Bin.init();
+        if(findViewById(R.id.content_frame) != null){
+            if(savedInstanceState == null){
+                MainFragment mainFragment = new MainFragment();
+                mainFragment.setArguments(getIntent().getExtras());
+                ProgressFragment progressFragment = new ProgressFragment();
+                getSupportFragmentManager().beginTransaction().add(R.id.content_frame,progressFragment)
+                        .commit();
+                currentFragment = progressFragment;
+                current_nav = R.id.nav_home;
+            }
+        }
         updatePlayerBar();
-        final ActionBar actionBar = getActionBar();
+
+        //final ActionBar actionBar = getActionBar();
         //actionBar.setDisplayShowTitleEnabled(false);
         //actionBar.setDisplayShowCustomEnabled(true);
         //actionBar.setDisplayShowHomeEnabled(false);
 
         //actionBar.setCustomView(R.layout.actionbar_layout);
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE );
+        //actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE );
         /*actionBar.setHomeButtonEnabled(true);
 
         NavigationView navview = (NavigationView)findViewById(R.id.navigation_view);
@@ -74,8 +93,7 @@ public class MainActivity extends Activity {
                 return true;
             }
         });*/
-        setupNavDrawer();
-        getRecents();
+        //setupNavDrawer();
     }
 
     @Override
@@ -87,45 +105,20 @@ public class MainActivity extends Activity {
     public void updatePlayerBar(){
         if (PodcastPlayer.podcast == null){
             podcastBar.setVisibility(View.INVISIBLE);
+            View view = currentFragment.getView();
+            if(view != null) view.setPadding(view.getPaddingLeft(), view.getPaddingTop(),
+                    view.getPaddingRight(), 0);
         }else{
             ((Button)podcastBar.findViewById(R.id.podcast_bar_img)).setBackground(
-                    new BitmapDrawable(getResources(),PodcastPlayer.podcast.getCoverPhoto()));
+                    new BitmapDrawable(getResources(), PodcastPlayer.podcast.getCoverPhoto()));
             podcastBar.setVisibility(View.VISIBLE);
+            int height = podcastBar.getHeight();
+            View view = currentFragment.getView();
+            if(view != null) view.setPadding(view.getPaddingLeft(),view.getPaddingTop(),
+                    view.getPaddingRight(),height);
         }
     }
-
-    private void getRecents(){
-        recents = new ArrayList<>();
-        CasterRequest req = new CasterRequest(site + "/php/search_podcasts.php");
-        req.addParam("t","RUJSON");
-        try {
-            String res = (String)req.execute().get();
-            if(res == null){
-                return;
-            }
-            JSONArray jsonArray = new JSONArray(res);
-            GridLayout gl = (GridLayout) findViewById(R.id.recent_uploads);
-            for(int i = 0;i < jsonArray.length();i++){
-                JSONObject obj = jsonArray.getJSONObject(i);
-                recents.add(Podcast.makeFromJson(obj));
-                PodcastBox podcastBox = new PodcastBox(this,null,recents.get(i));
-                /*GridLayout.LayoutParams param = new GridLayout.LayoutParams();
-                param.height = GridLayout.LayoutParams.WRAP_CONTENT;
-                param.width = GridLayout.LayoutParams.WRAP_CONTENT;
-                param.rowSpec = GridLayout.spec(0);
-                param.columnSpec = GridLayout.spec(0);
-                podcastBox.setLayoutParams(param);*/
-                gl.addView(podcastBox);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-    }
-
+    /*
     private void setupNavDrawer(){
         final ActionBar actionBar = getActionBar();
         actionBar.setHomeButtonEnabled(true);
@@ -203,7 +196,7 @@ public class MainActivity extends Activity {
             }
         }
     }
-
+*/
     public void openPlayer(View view){
         Intent intent = new Intent(this,PodcastPlayer.class);
         startActivity(intent);
@@ -212,15 +205,7 @@ public class MainActivity extends Activity {
     @Override
     public void onPostCreate(Bundle savedInstanceState){
         super.onPostCreate(savedInstanceState);
-        drawerToggle.syncState();
     }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig){
-        super.onConfigurationChanged(newConfig);
-        drawerToggle.onConfigurationChanged(newConfig);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -229,31 +214,33 @@ public class MainActivity extends Activity {
 
         // Associate searchable configuration with the SearchView
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        MenuItem menuItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
+        Log.v("Caster_DEBUG","create options menu: " + searchView);
 
         if (null != searchView) {
             searchView.setSearchableInfo(searchManager
                     .getSearchableInfo(getComponentName()));
             searchView.setIconifiedByDefault(false);
+            SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+                public boolean onQueryTextChange(String newText) {
+                    // this is your adapter that will be filtered
+                    return true;
+                }
+
+                public boolean onQueryTextSubmit(String query) {
+                    //Create intent to start podcast list activity
+                    //From there you can see the results of your search and pick one to listen to
+                    //Toast.makeText(MainActivity.this, query,Toast.LENGTH_SHORT).show();
+                    Intent i = new Intent(getApplicationContext(), SearchResults.class);
+                    i.putExtra("query", query);
+                    startActivity(i);
+                    return true;
+                }
+            };
+            searchView.setOnQueryTextListener(queryTextListener);
         }
 
-        SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
-            public boolean onQueryTextChange(String newText) {
-                // this is your adapter that will be filtered
-                return true;
-            }
-
-            public boolean onQueryTextSubmit(String query) {
-                //Create intent to start podcast list activity
-                //From there you can see the results of your search and pick one to listen to
-                //Toast.makeText(MainActivity.this, query,Toast.LENGTH_SHORT).show();
-                Intent i = new Intent(getApplicationContext(), SearchResults.class);
-                i.putExtra("query", query);
-                startActivity(i);
-                return true;
-            }
-        };
-        searchView.setOnQueryTextListener(queryTextListener);
 
 
         //return true;
@@ -267,15 +254,6 @@ public class MainActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if(drawerToggle.onOptionsItemSelected(item)){
-            return true;
-        }
-
-        if (id == android.R.id.home){
-            drawerLayout.openDrawer(GravityCompat.START);
-            return true;
-        }
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
@@ -286,5 +264,43 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem menuItem) {
+        int id = menuItem.getItemId();
+        FragmentManager manager = getSupportFragmentManager();
+        if (id == R.id.nav_downloads && id != current_nav){
+            DownloadsFragment fragment = new DownloadsFragment();
+            manager.beginTransaction().replace(R.id.content_frame, fragment).addToBackStack(null).commit();
+            currentFragment = fragment;
+            current_nav = R.id.nav_downloads;
+        }
+        else if(id == R.id.nav_home && id != current_nav){
+            MainFragment fragment = new MainFragment();
+            ProgressFragment progressFragment = new ProgressFragment();
+            manager.beginTransaction().replace(R.id.content_frame, progressFragment).addToBackStack(null).commit();
+            currentFragment = progressFragment;
+            current_nav = R.id.nav_home;
+        }
+        DrawerLayout drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onDownloadStateChange(int progress, int podcast_id, PodcastDownloader.State state) {
+        if (state == PodcastDownloader.State.QUEUED){
+            Toast.makeText(getApplicationContext(), "Queued", Toast.LENGTH_SHORT).show();
+        }
+        else if(state == PodcastDownloader.State.DOWNLOADING){
+            //Toast.makeText(getApplicationContext(),"Downloading " + progress + "%",Toast.LENGTH_SHORT).show();
+            Log.v("CASTER_TEST","Downloading " + progress + "%");
+            View view = findViewById(R.id.featured_view);
+            view.setBackgroundColor(progress);
+        }
+        else if(state == PodcastDownloader.State.FINISHED){
+            Toast.makeText(getApplicationContext(),"Finished",Toast.LENGTH_SHORT).show();
+        }
     }
 }

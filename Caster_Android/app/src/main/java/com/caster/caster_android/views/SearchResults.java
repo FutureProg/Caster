@@ -1,76 +1,74 @@
 package com.caster.caster_android.views;
 
-import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridLayout;
-import android.widget.ListView;
-import android.widget.SearchView;
-import android.widget.Toast;
 
-import com.caster.caster_android.CasterRequest;
 import com.caster.caster_android.MainActivity;
 import com.caster.caster_android.Podcast;
 import com.caster.caster_android.PodcastPlayer;
 import com.caster.caster_android.R;
-import com.caster.caster_android.utils.PodcastListAdapter;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.caster.caster_android.fragments.ProgressFragment;
+import com.caster.caster_android.fragments.SearchFragment;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Teo on 8/9/2015.
  */
-public class SearchResults extends Activity {
+public class SearchResults extends AppCompatActivity {
     private ArrayList<Podcast> results;
     private String query;
     private GridLayout podcastBar;
+    Fragment currentFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_results_layout);
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         Bundle search_query = getIntent().getExtras();
+
         if (search_query != null){
             query = search_query.getString("query");
             newSearch();
         }
-        getActionBar().setDisplayShowTitleEnabled(true);
-        podcastBar = (GridLayout)findViewById(R.id.podcast_bar_search_results);
-
-        //Open Podcast on item click
-        ListView listview = ((ListView)findViewById(R.id.search_results_listview));
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //Open profile view, or player view and play podcast
-                podcastBar.setVisibility(View.VISIBLE);
-                PodcastPlayer.podcast = results.toArray(new Podcast[results.size()])[position];
-                updatePlayerBar();
-            }
-        });
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        podcastBar = (GridLayout)findViewById(R.id.podcast_bar);
 
     }
 
     public void updatePlayerBar(){
         if (PodcastPlayer.podcast == null){
             podcastBar.setVisibility(View.INVISIBLE);
+
+            View view = currentFragment.getView();
+            if(view != null)
+                view.setPadding(view.getPaddingLeft(), view.getPaddingTop(),
+                        view.getPaddingRight(), 0);
         }else{
+            Log.v("Caster_DEBUG","Showing search podcast bar");
             ((Button)podcastBar.findViewById(R.id.podcast_bar_img)).setBackground(
-                    new BitmapDrawable(getResources(),PodcastPlayer.podcast.getCoverPhoto()));
+                    new BitmapDrawable(getResources(), PodcastPlayer.podcast.getCoverPhoto()));
             podcastBar.setVisibility(View.VISIBLE);
+            int height = podcastBar.getHeight();
+            View view = currentFragment.getView();
+            if(view != null)
+                view.setPadding(view.getPaddingLeft(), view.getPaddingTop(),
+                        view.getPaddingRight(), height);
         }
     }
 
@@ -88,7 +86,9 @@ public class SearchResults extends Activity {
         share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         share.putExtra(Intent.EXTRA_SUBJECT, toshare.getTitle());
         //Change description to direct link to podcast when available
-        share.putExtra(Intent.EXTRA_TEXT, MainActivity.site + "/" + toshare.getUrlid());
+        String text = "Check out this podcast!\n";
+        text += MainActivity.site + "/" + toshare.getCreator().getUsername() + "/" + toshare.getUrlid();
+        share.putExtra(Intent.EXTRA_TEXT, text);
         startActivity(Intent.createChooser(share, "Share link"));
     }
 
@@ -130,6 +130,11 @@ public class SearchResults extends Activity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    public void openPlayer(View view){
+        Intent intent = new Intent(this,PodcastPlayer.class);
+        startActivity(intent);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -146,7 +151,12 @@ public class SearchResults extends Activity {
     }
 
     private void newSearch(){
-        results = new ArrayList<>();
+        currentFragment = new ProgressFragment();
+        getSupportFragmentManager().beginTransaction().
+                replace(R.id.content_frame,currentFragment).commit();
+        SearchFragment fragment = new SearchFragment();
+        fragment.init(query,getSupportFragmentManager());
+        /*results = new ArrayList<>();
         CasterRequest req = new CasterRequest(MainActivity.site + "/php/search_podcasts.php");
         req.addParam("m", "MOBI").addParam("mq", query);
         try{
@@ -168,13 +178,13 @@ public class SearchResults extends Activity {
             PodcastListAdapter adapter = new PodcastListAdapter(this, R.layout.search_results_listview_item_row, results.toArray(new Podcast[results.size()]));
             ListView lv = ((ListView)findViewById(R.id.search_results_listview));
             lv.setAdapter(adapter);
-            getActionBar().setTitle("Results found for: " + query);
+            getSupportActionBar().setTitle("Results found for: " + query);
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 }

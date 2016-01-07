@@ -9,7 +9,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/CasterTheme">
+        android:theme="@style/AppTheme">
 
         <receiver android:name=".AudioBroadcastReceiver">
             <intent-filter>
@@ -19,7 +19,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/CasterTheme" >
+            android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,18 +30,19 @@
             android:name=".PodcastPlayer"
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/title_activity_play_podcast"
-            android:theme="@style/CasterTheme"
+            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.SEND"/>
                 <category android:name="android.intent.category.default"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:host="istrat.ddns.net"/>
+                <data android:scheme="caster" android:host="http://ec2-52-35-70-147.us-west-2.compute.amazonaws.com/"/>
                 <data android:mimeType="text/plain"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".ProfileActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:label="Profile" >
         </activity>
         <activity
@@ -52,7 +53,14 @@
             android:label="Sign Up">
         </activity>
         <activity android:name=".views.SearchResults"
-            android:label="Search Results">
+            android:label="Search Results"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+            </intent-filter>
         </activity>
     </application>
 

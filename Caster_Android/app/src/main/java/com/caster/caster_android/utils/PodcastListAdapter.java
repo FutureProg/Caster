@@ -2,7 +2,6 @@ package com.caster.caster_android.utils;
 
 import android.app.Activity;
 import android.content.Context;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +34,7 @@ public class PodcastListAdapter extends ArrayAdapter<Podcast>{
         PodcastHolder holder = null;
 
         if (row == null){
-            LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+            LayoutInflater inflater = ((Activity)parent.getContext()).getLayoutInflater();
             row = inflater.inflate(layoutResourceId, parent, false);
 
             holder = new PodcastHolder();

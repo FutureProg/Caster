@@ -1,9 +1,10 @@
 package com.caster.caster_android;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 /**
  * Created by Nick on 15-06-01.
  */
-public class ProfileActivity extends Activity{
+public class ProfileActivity extends AppCompatActivity{
 
     public static User user;
 
@@ -32,6 +33,8 @@ public class ProfileActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_view);
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         if (user == null){
             return;
         }
@@ -41,8 +44,8 @@ public class ProfileActivity extends Activity{
         ((TextView)findViewById(R.id.profile_bio)).setText(user.getDescription());
         podcastArea = (LinearLayout)findViewById(R.id.podcast_area);
         podcasts = new ArrayList<>(user.getPodcasts());
-        this.getActionBar().setTitle(user.getUsername());
-        this.getActionBar().setDisplayShowTitleEnabled(true);
+        this.getSupportActionBar().setTitle(user.getUsername());
+        this.getSupportActionBar().setDisplayShowTitleEnabled(true);
         for (Podcast podcast : podcasts){
             Log.v("caster_profile",podcast.getTitle());
             PodcastBar bar = new PodcastBar(this,null,podcast);

@@ -1,14 +1,13 @@
 package com.caster.caster_android;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -18,14 +17,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.caster.caster_android.fragments.PlayerFragment;
+import com.caster.caster_android.fragments.ProgressFragment;
 import com.caster.caster_android.utils.Bin;
 import com.caster.caster_android.utils.CommentListAdapter;
-import com.caster.caster_android.views.SearchResults;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,7 +41,7 @@ TODO
 */
 
 
-public class PodcastPlayer extends Activity {
+public class PodcastPlayer extends AppCompatActivity implements Runnable{
 
     public static final String KEY_COMMAND = "com.caster.caster_android.PodcastPlayer.COMMAND";
     public static final byte COMMAND_PLAY = 0x0;
@@ -54,17 +53,18 @@ public class PodcastPlayer extends Activity {
 
     private int[] podcastList = {R.raw.sample, R.raw.sample_2};
     private int currentPodcast = 0;
+    boolean subscribed;
 
-    private TextView author,descriptionBox;
-    private ImageView coverImage;
+    public static TextView author,descriptionBox;
+    public static ImageView coverImage;
 
     public static MediaPlayer mp;
-    private SeekBar seekBar;
+    public static SeekBar seekBar;
     private Handler durationHandler = new Handler();
     private Handler playlistHandler = new Handler();
-    private TextView length;
-    private double timeElapsed, endTime;
-    private Button playButton;
+    public static TextView length;
+    public static double timeElapsed, endTime;
+    public static Button playButton;
 
 
     @Override
@@ -72,7 +72,33 @@ public class PodcastPlayer extends Activity {
         overridePendingTransition(R.anim.slide_up, R.anim.abc_fade_out);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_podcast);
-        initializeViews();
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if(podcast != null)getSupportActionBar().setTitle(podcast.getTitle());
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame,new ProgressFragment()).commit();
+        new Thread(this).start();
+    }
+
+    public void run(){
+        if (Bin.getSignedInUser() != null){
+            CasterRequest req = new CasterRequest(MainActivity.site + "/php/subscription.php");
+            req.addParam("t","CHECK").addParam("q","MOBI").addParam("u",Bin.getSignedInUser().getId() + "")
+                    .addParam("s",podcast.getCreatorId() + "");
+            try {
+                String res = (String) req.execute().get();
+                if (res != null){
+                    Log.v("caster CHECK",res);
+                    subscribed = res.endsWith("YES");
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
+        }
+        comments = Comment.makeFromID(podcast.getId());
         if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(KEY_COMMAND)) {
             if (getIntent().getExtras().getByte(KEY_COMMAND) == COMMAND_PLAY) {
                 mp = new MediaPlayer();
@@ -81,12 +107,8 @@ public class PodcastPlayer extends Activity {
                 try {
                     mp.setDataSource(url);
                     mp.prepareAsync();
-                    endTime = mp.getDuration();
-                    length = (TextView) findViewById(R.id.elapsed_time);
-                    seekBar = (SeekBar) findViewById(R.id.seekbar);
-                    seekBar.setMax((int) endTime);
-                    seekBar.setClickable(false);
-                    play(null);
+                }catch (IllegalStateException exc){
+                    exc.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -120,7 +142,14 @@ public class PodcastPlayer extends Activity {
                 }
             }
         }
-        getActionBar().setTitle(podcast.getTitle());
+        PlayerFragment fragment = new PlayerFragment();
+        fragment.setComments(comments);
+        fragment.setMediaPlayer(mp);
+        fragment.setSubscribed(subscribed);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame,fragment).commit();
+        //initializeViews();
+        //play(null);
     }
 
     @Override
@@ -133,7 +162,7 @@ public class PodcastPlayer extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         //getMenuInflater().inflate(R.menu.menu_play_podcast, menu);
-        getMenuInflater().inflate(R.menu.menu, menu);
+        /*getMenuInflater().inflate(R.menu.menu, menu);
 
         // Associate searchable configuration with the SearchView
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -161,7 +190,7 @@ public class PodcastPlayer extends Activity {
                 return true;
             }
         };
-        searchView.setOnQueryTextListener(queryTextListener);
+        searchView.setOnQueryTextListener(queryTextListener);*/
 
 
         //return true;
@@ -194,23 +223,10 @@ public class PodcastPlayer extends Activity {
 
         if (Bin.getSignedInUser() != null){
             Button subbutton = (Button)findViewById(R.id.subscribe);
-            CasterRequest req = new CasterRequest(MainActivity.site + "/php/subscription.php");
-            req.addParam("t","CHECK").addParam("q","MOBI").addParam("u",Bin.getSignedInUser().getId() + "")
-                    .addParam("s",podcast.getCreatorId() + "");
-            try {
-                String res = (String) req.execute().get();
-                if (res != null){
-                    Log.v("caster CHECK",res);
-                    if (res.endsWith("YES")) {
-                        subbutton.setBackgroundResource(R.drawable.unsubscribe);
-                    }else{
-                        subbutton.setBackgroundResource(R.drawable.subscribe);
-                    }
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            if (subscribed) {
+                subbutton.setBackgroundResource(R.drawable.unsubscribe);
+            }else{
+                subbutton.setBackgroundResource(R.drawable.subscribe);
             }
 
         }
@@ -232,7 +248,9 @@ public class PodcastPlayer extends Activity {
         //setTitle(podcast.getTitle()); setTitle isn't a function so idk how it was compiling..
 
         //Load Comments
-        reloadComments();
+        ListView lv = (ListView)findViewById(R.id.play_podcast_comments_list);
+        CommentListAdapter adapter = new CommentListAdapter(this, R.layout.comment_layout, comments.toArray(new Comment[comments.size()]));
+        lv.setAdapter(adapter);
 
         //Listen for comments
         ((EditText)findViewById(R.id.comment_box)).setOnEditorActionListener(
@@ -262,7 +280,12 @@ public class PodcastPlayer extends Activity {
                 }
         );
         //Media Player
-        mp = new MediaPlayer();
+        endTime = mp.getDuration();
+        length = (TextView) findViewById(R.id.elapsed_time);
+        seekBar = (SeekBar) findViewById(R.id.seekbar);
+        seekBar.setMax((int) endTime);
+        seekBar.setClickable(false);
+        play(null);
         /*mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
             mp.setDataSource(podcast.getAudioURL());

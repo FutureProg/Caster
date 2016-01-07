@@ -5,7 +5,8 @@
     android:background="@android:color/white"
     android:elevation="2dp"
     android:layout_marginTop="5dp"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    >
 
     <ImageButton
         android:id="@+id/cover_image"
@@ -45,6 +46,31 @@
             android:textStyle="bold"
             android:text="by: blabla"
             android:id="@+id/author_name"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginLeft="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ProgressBar
+            android:id="@+id/podcast_bar_progress_wheel"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:progressDrawable="@drawable/circular_progress_bar"
+            android:visibility="gone"
+            android:indeterminate="false"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+        <ImageButton
+            android:id="@+id/podcast_bar_download_button"
+            android:background="@drawable/ic_download"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            />
 
     </LinearLayout>
     

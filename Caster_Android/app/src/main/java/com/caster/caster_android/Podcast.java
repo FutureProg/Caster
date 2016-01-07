@@ -92,13 +92,14 @@ public class Podcast {
         return re;
     }
 
-    public Podcast(User creator,HashMap<Integer, Object> metadata){
+    private Podcast(User creator,HashMap<Integer, Object> metadata){
+        if(Bin.podcasts == null)Bin.podcasts = new HashMap<>();
         this.creator = creator;
         this.metadata = metadata;
-        podcasts.put(getId(), this);
+        Bin.podcasts.put(getId(), this);
     }
 
-    public Podcast(HashMap<Integer, Object> metadata){
+    private Podcast(HashMap<Integer, Object> metadata){
         this(null, metadata);
     }
 

@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-<group android:checkableBehavior="single">
-    <item
-        android:title="@string/lorem_ipsum"
-        android:icon="@android:drawable/ic_menu_add"
-        android:checked="true"/>
-    <item
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:title="Home"
+            android:icon="@drawable/ic_home"/>
+        <item android:title="Sign In"/>
+        <item android:title="Sign Up" />
+        <item
+            android:id="@+id/nav_downloads"
+            android:title="Downloads"
+            android:icon="@drawable/ic_download"/>
+    </group>
 
-        android:title="@string/lorem_ipsum"
-        android:checked="false"
-        android:icon="@android:drawable/ic_menu_add"/>
-</group>
+    <item android:title="Other">
+        <menu>
+            <item android:title="App Settings"/>
+        </menu>
+    </item>`
 </menu>
