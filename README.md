@@ -18,6 +18,7 @@ The website is hosted on amazon ec2 services here: <a href="http://ec2-52-35-70-
 * Legal
 * Android App
 * Playlists
+* Shorten bottom bar on website (that currently contains lega)
 
 #TODO Later
 
