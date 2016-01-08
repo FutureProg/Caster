@@ -27,10 +27,20 @@ int main(int argc, char* argv[]){
 	vector<vector<string>> temp_trending_views; //[[podcast_id, #views], [podcast_id, #views], [podcast_id, #likes]]
 
 	try{
+		string db_name;
+		string uname;
+		string passw;
+
+		ifstream credentials ("credentials.txt");
+		getline(credentials, db_name);
+		getline(credentials, uname);
+		getline(credentials, passw);
+		credentials.close();
+
 		con.Connect(
-			"database name",
-			"username",
-			"password",
+			db_name,
+			uname,
+			passw,
 			SA_SQL_Client);
 
 		printf("Connected\n");
@@ -66,7 +76,7 @@ int main(int argc, char* argv[]){
 					listens);
 
 				//write the row value to trending.txt
-				trending << podcast_id << likes << cmd.Field("tags").asString() << listens << endl;
+				trending << podcast_id << " " << likes << " " << cmd.Field("tags").asString() << " " << listens << endl;
 
 				//create vectors that keep podcast id with their respective stays together
 				vector<string> temp_listens;
@@ -131,8 +141,10 @@ int main(int argc, char* argv[]){
 
 			trending.close();
 		}
-		else if(trending.is_open() && getline(trending, line)){
-
+		else if(trending.is_open() && line){
+			//trending.txt has values
+			vector<string> line_split = line.split(' ');
+			
 		}
 		else{
 			cout << "trending.txt went wrong" << endl;
@@ -162,5 +174,11 @@ vector<string> sort_likes(vector<vector<string>> &v){
 }
 
 void clear_table(SACommand &cmd){
-
+	cmd->setCommandText("UPDATE trending_list SET first = 0");
+	cmd->setCommandText("UPDATE trending_list SET second = 0");
+	cmd->setCommandText("UPDATE trending_list SET third = 0");
+	cmd->setCommandText("UPDATE trending_list SET fourth = 0");
+	cmd->setCommandText("UPDATE trending_list SET fifth = 0");
+	cmd->Execute();
+	cmd->Commit();
 }
