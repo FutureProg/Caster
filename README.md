@@ -19,6 +19,7 @@ The website is hosted on amazon ec2 services here: <a href="http://ec2-52-35-70-
 * Android App
 * Playlists
 * Shorten bottom bar on website (that currently contains legal)
+* Cache as much static content as possible on the website to speed up performance
 
 #TODO Later
 
