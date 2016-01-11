@@ -12,6 +12,8 @@ import android.widget.RemoteViews;
  */
 public class PlayerNotification extends Notification{
 
+
+    //TODO: IMPLEMENT THIS SHIT
     public static int NOTIFICATION_ID = 32457567;
 
     private Context ctx;

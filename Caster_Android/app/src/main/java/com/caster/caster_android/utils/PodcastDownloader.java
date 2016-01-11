@@ -26,6 +26,9 @@ import java.util.Queue;
 
 /**
  * Created by Nick on 2016-01-03.
+ *
+ * Used to manage the downloading of Podcasts (as can be seen in the name). Get the global instance
+ * of the object by calling the getDownloader(Context) method.
  */
 public class PodcastDownloader implements Runnable {
 
@@ -46,6 +49,11 @@ public class PodcastDownloader implements Runnable {
     boolean threadAlive;
 
 
+    /**
+     * Returns the running instance of the Podcast Downloader class
+     * @param context
+     * @return the running instance
+     */
     public static PodcastDownloader getDownloader(Context context){
         if(instance == null){
             instance = new PodcastDownloader(context);
@@ -64,11 +72,20 @@ public class PodcastDownloader implements Runnable {
     }
 
 
+    /**
+     * Cancel the download of the specified ID
+     * @param podcast_id the podcast to cancel
+     */
     public void cancelDownload(int podcast_id){
         Log.v("CASTER_DOWNLOAD","Cancel Download");
         toCancel.add(podcast_id);
     }
 
+    /**
+     * Returns an enumerator depicting whether the Podcast was downloaded, is being downloaded or not
+     * @param podcast_id
+     * @return the state of the podcast download (complete, downloading, cancelled, dne)
+     */
     public State getState(int podcast_id) {
         if (!states.containsKey(podcast_id)) {
             return State.DNE;
@@ -76,6 +93,10 @@ public class PodcastDownloader implements Runnable {
         return states.get(podcast_id);
     }
 
+    /**
+     * Get a list of the downloaded podcasts by their ids
+     * @return a list of the downloaded podcasts
+     */
     public ArrayList<Integer> getDownloaded(){
         ArrayList<Integer> list = new ArrayList<>();
         for (int podcast_id:states.keySet()) {
@@ -86,6 +107,11 @@ public class PodcastDownloader implements Runnable {
         return list;
     }
 
+    /**
+     * Add a podcast to the download queue
+     * @param podcast_id the podcast to be added
+     * @param listener the object to call when progress is made on the download
+     */
     public void queueDownload(int podcast_id, OnChangeListener listener){
         Item item = new Item();
         item.listener = listener;
@@ -104,16 +130,27 @@ public class PodcastDownloader implements Runnable {
         }
     }
 
+    /**
+     * Delete the Podcast from the file system if it's downloaded
+     * @param podcast_id
+     * @return
+     */
     public boolean deletePodcast(int podcast_id){
         if(states.containsKey(podcast_id) && states.get(podcast_id) == State.FINISHED){
             Log.v("CASTER_DOWNLOAD","Delete Podcast " + podcast_id);
             String basePath = context.getFilesDir().getAbsolutePath() + "/podcast_"+podcast_id;
             String audioPath = basePath + "/audio_file";
-            return context.deleteFile(audioPath);
+            boolean re =  new File(audioPath).delete();
+            states.put(podcast_id,State.DNE);
+            return re;
         }
         return true;
     }
 
+    /**
+     * Save a list of all the downloaded podcasts.
+     * This is simpler than going through the file system and checking that way
+     */
     public void saveDownloadLog(){
         Log.v("CASTER_SAVE","SAVE");
         try {
@@ -134,6 +171,9 @@ public class PodcastDownloader implements Runnable {
         }
     }
 
+    /**
+     * Load the list of downloaded podcasts
+     */
     public void loadDownloadLog(){
         Log.v("CASTER_LOAD","LOAD");
         try {
@@ -152,14 +192,17 @@ public class PodcastDownloader implements Runnable {
         }
     }
 
+    /**
+     * The run loop used to download the podcasts in a seperate thread
+     */
     @Override
     public void run() {
         Looper.prepare();
-
+        while(true) {
             while (items.size() > 0) {
                 final Item item = items.poll();
-                if (toCancel.contains(item.podcast_id)){
-                    states.put(item.podcast_id,State.CANCELLED);
+                if (toCancel.contains(item.podcast_id)) {
+                    states.put(item.podcast_id, State.CANCELLED);
                     MainActivity.instance.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -169,17 +212,17 @@ public class PodcastDownloader implements Runnable {
                     });
                     continue;
                 }
-                states.put(item.podcast_id,State.DOWNLOADING);
-                if (item.listener != null){
+                states.put(item.podcast_id, State.DOWNLOADING);
+                if (item.listener != null) {
                     MainActivity.instance.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            item.listener.onDownloadStateChange(0, item.podcast_id,State.DOWNLOADING);
+                            item.listener.onDownloadStateChange(0, item.podcast_id, State.DOWNLOADING);
                         }
                     });
                 }
                 final Podcast podcast = Podcast.makeFromID(item.podcast_id);
-                Log.v("CASTER_DOWNLOAD","Downloading " + podcast.getTitle());
+                Log.v("CASTER_DOWNLOAD", "Downloading " + podcast.getTitle());
                 String url = MainActivity.site + "/php/audio_file.php?q=" + podcast.getId() + "$" + Bin.getPodcastToken();
                 String basePath = context.getFilesDir().getAbsolutePath() + "/podcast_" + podcast.getId();
                 String audioPath = basePath + "/audio_file";
@@ -191,26 +234,26 @@ public class PodcastDownloader implements Runnable {
                     OutputStream outputStream = new FileOutputStream(file);
                     URLConnection con = new URL(url).openConnection();
                     final int size = Integer.parseInt(con.getHeaderField("Content-Length"));
-                    BufferedInputStream bis = new BufferedInputStream(con.getInputStream(),1024);
+                    BufferedInputStream bis = new BufferedInputStream(con.getInputStream(), 1024);
                     byte[] buffer = new byte[1024];
 
                     int current = 0;
                     int count = current;
-                    while((current = bis.read(buffer)) != -1){
+                    while ((current = bis.read(buffer)) != -1) {
                         count += current;
                         //Log.v("CASTER_CURRENT","Count: " + count + " Size: " + size + " Ratio: " + ((float)count/size));
-                        outputStream.write(buffer,0,current);
+                        outputStream.write(buffer, 0, current);
                         final int c = count;
-                        if (item.listener != null){
+                        if (item.listener != null) {
                             MainActivity.instance.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    item.listener.onDownloadStateChange((int)((float)c*100/size), item.podcast_id, State.DOWNLOADING);
-                                    states.put(item.podcast_id,State.DOWNLOADING);
+                                    item.listener.onDownloadStateChange((int) ((float) c * 100 / size), item.podcast_id, State.DOWNLOADING);
+                                    states.put(item.podcast_id, State.DOWNLOADING);
                                 }
                             });
                         }
-                        if (toCancel.contains(item.podcast_id)){
+                        if (toCancel.contains(item.podcast_id)) {
                             toCancel.remove(item.podcast_id);
                             states.put(item.podcast_id, State.CANCELLED);
                             outputStream.flush();
@@ -222,7 +265,7 @@ public class PodcastDownloader implements Runnable {
                                 @Override
                                 public void run() {
                                     if (item.listener != null)
-                                        item.listener.onDownloadStateChange((int)((float)c*100/size), item.podcast_id,State.CANCELLED);
+                                        item.listener.onDownloadStateChange((int) ((float) c * 100 / size), item.podcast_id, State.CANCELLED);
                                 }
                             });
                             continue;
@@ -240,7 +283,7 @@ public class PodcastDownloader implements Runnable {
                 }
                 //TODO: Save the metadata, coverimage, user metadata and profile pic
                 states.put(item.podcast_id, State.FINISHED);
-                if (item.listener != null){
+                if (item.listener != null) {
                     MainActivity.instance.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -248,25 +291,25 @@ public class PodcastDownloader implements Runnable {
                         }
                     });
                 }
-                MainActivity.instance.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        saveDownloadLog();
-                    }
-                });
+                saveDownloadLog();
                 Log.v("CASTER_DOWNLOAD", "Finished downloading");
             }
-        threadAlive = false;
-        Log.v("CASTER_DOWNLOAD","Thread Dead");
-
-        return;
+        }
     }
 
+    /**
+     * The class that hols information such as the id of the podcast in the queue and the
+     * listener object
+     */
     class Item{
         public OnChangeListener listener;
         public int podcast_id;
     }
 
+    /**
+     * Delegate interface that is called when there is a change in the state of the download
+     * of a desired podcast.
+     */
     public interface OnChangeListener{
         public void onDownloadStateChange(int progress, int podcast_id, State state);
     }
