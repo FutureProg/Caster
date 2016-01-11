@@ -8,8 +8,8 @@
 
 namespace std;
 
-vector<string> sort_tags(vector<vector<string>> &v);
-vector<string> sort_likes(vector<vector<string>> &v);
+vector<string> sort_tags(const vector<vector<string>> &v);
+vector<string> sort_likes(const vector<vector<string>> &v);
 void clear_table(SACommand &cmd);
 
 int main(int argc, char* argv[]){
@@ -23,8 +23,8 @@ int main(int argc, char* argv[]){
 	vector<string> trending_views; //contains a list of the 5 most viewed podcasts by podcast_id
 
 	vector<vector<string>> temp_trending_tags; //[[tags], [tags], [tags]]
-	vector<vector<string>> temp_trending_likes; //[[podcast_id, #likes], [podcast_id, #likes], [podcast_id, #likes]]
-	vector<vector<string>> temp_trending_views; //[[podcast_id, #views], [podcast_id, #views], [podcast_id, #likes]]
+	vector<vector<string>> temp_trending_likes; //[[#likes ,podcast_id], [#likes ,podcast_id], [#likes ,podcast_id]]
+	vector<vector<string>> temp_trending_views; //[[#views ,podcast_id], [#views ,podcast_id], [#views ,podcast_id]]
 
 	try{
 		string db_name;
@@ -80,12 +80,12 @@ int main(int argc, char* argv[]){
 
 				//create vectors that keep podcast id with their respective stays together
 				vector<string> temp_listens;
-				temp_listens.push_back(podcast_id);
 				temp_listens.push_back(listens);
+				temp_listens.push_back(podcast_id);
 
 				vector<string> temp_likes;
-				temp_likes.push_back(podcast_id);
 				temp_likes.push_back(likes);
+				temp_likes.push_back(podcast_id);
 
 				//store the current row
 				temp_trending_tags.push_back(tags);
@@ -101,18 +101,13 @@ int main(int argc, char* argv[]){
 				temp_trending_tags.push_back(v);
 			}
 
-			//reverse the vectors
-			reverse(temp_trending_tags.begin(), temp_trending_tags.end());
-			reverse(temp_trending_likes.begin(), temp_trending_likes.end());
-			reverse(temp_trending_views.begin(), temp_trending_views.end());
-
 			//clear table
-			clear_table(&cmd);
+			clear_table(cmd);
 
 			//sort the vectors
-			trending_tags = sort_tags(&temp_trending_tags);
-			trending_likes = sort_likes(&temp_trending_likes);
-			trending_views = sort_likes(&temp_trending_views);
+			trending_tags = sort_tags(temp_trending_tags);
+			trending_likes = sort_likes(temp_trending_likes);
+			trending_views = sort_likes(temp_trending_views);
 
 			//insert the values into the table
 
@@ -144,7 +139,7 @@ int main(int argc, char* argv[]){
 		else if(trending.is_open() && line){
 			//trending.txt has values
 			vector<string> line_split = line.split(' ');
-			
+
 		}
 		else{
 			cout << "trending.txt went wrong" << endl;
@@ -165,20 +160,58 @@ int main(int argc, char* argv[]){
 	return 0;
 }
 
-vector<string> sort_tags(vector<vector<string>> &v){
-
+vector<string> sort_tags(const vector<vector<string>> &v){
+	vector<string> type_tags;
+	for (int i = 0; i < v.size(); i++){
+		for (int j = 0; j < v[i].size(); j++){
+			//flatten vectors
+			type_tags.push_back(v[i][j]);
+		}
+	}
+	map<string, int> m;
+	for (auto const & x: type_tags){
+		m[x] += 1;
+	}
+	vector<vector<string>> s;
+	for (map<string, int>::iterator it = m.begin(); it != m.end(); it++){
+		vector<string> i;
+		i.push_back(to_string(it->second));
+		i.push_back(it->first);
+		s.push_back(i);
+	}
+	sort(s.begin(), s.end());
+	type_tags.clear(); //reuse the same vector
+	for (int i = s.size() - 1; i > 0; i--){
+		type_tags.push_back(s[i][1]);	
+	}
+	if (type_tags.size() < 5){
+		for (int i = type_tags.size(); i < 5; i++){
+			type_tags.push_back("");
+		}
+	}
+	return type_tags;
 }
 
-vector<string> sort_likes(vector<vector<string>> &v){
-
+vector<string> sort_likes(const vector<vector<string>> &v){
+	vector<string> most_likes;
+	sort(v.begin(), v.end());
+	for (int i = v.size() - ; i > 0; i--){
+		most_likes.push_back(v[i][1]);
+	}
+	if (most_likes.size() < 5){
+		for (int i = most_likes.size(); i < 5; i++){
+			most_likes.push_back("");
+		}
+	}
+	return most_likes;
 }
 
 void clear_table(SACommand &cmd){
-	cmd->setCommandText("UPDATE trending_list SET first = 0");
-	cmd->setCommandText("UPDATE trending_list SET second = 0");
-	cmd->setCommandText("UPDATE trending_list SET third = 0");
-	cmd->setCommandText("UPDATE trending_list SET fourth = 0");
-	cmd->setCommandText("UPDATE trending_list SET fifth = 0");
-	cmd->Execute();
-	cmd->Commit();
+	cmd.setCommandText("UPDATE trending_list SET first = 0");
+	cmd.setCommandText("UPDATE trending_list SET second = 0");
+	cmd.setCommandText("UPDATE trending_list SET third = 0");
+	cmd.setCommandText("UPDATE trending_list SET fourth = 0");
+	cmd.setCommandText("UPDATE trending_list SET fifth = 0");
+	cmd.Execute();
+	cmd.Commit();
 }
