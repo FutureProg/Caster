@@ -139,6 +139,94 @@ int main(int argc, char* argv[]){
 		else if(trending.is_open() && line){
 			//trending.txt has values
 			vector<string> line_split = line.split(' ');
+			cmd.setCommandText("SELECT * FROM podcast_list WHERE podcast_id = :1");
+			cmd.Param(1).setAsString() = line_split[0];
+			cmd.Execute();
+			cmd.FetchNext();
+			likes = cmd.Field("likes").asInteger() - line_split[1];
+			listens = cmd.Field("listens").asInteger() - line_split[3];
+
+			vector<string> temp_likes;
+			temp_likes.push_back(to_string(likes)); //#likes
+			temp_likes.push_back(line_split[0]);    //podcast_id
+
+			vector<string> temp_listens;
+			temp_listens.push_back(to_string(listens)); //#listens
+			temp_listens.push_back(line_split[0]);      //podcast_id
+
+			vector<string> temp_tags = line_split[2].split(',');
+
+			temp_trending_tags.push_back(temp_tags);
+			temp_trending_likes.push_back(temp_likes);
+			temp_trending_views.push_back(temp_listens);
+
+			//^^^^^^Handle the first line because I had to check if the file had stuff in it
+			while(getline(trending, line)){
+				vector<string> line_split = line.split(' ');
+				cmd.setCommandText("SELECT * FROM podcast_list WHERE podcast_id = :1");
+				cmd.Param(1).setAsString() = line_split[0];
+				cmd.Execute();
+				cmd.FetchNext();
+				likes = cmd.Field("likes").asInteger() - line_split[1];
+				listens = cmd.Field("listens").asInteger() - line_split[3];
+
+				vector<string> temp_likes;
+				temp_likes.push_back(to_string(likes)); //# likes
+				temp_likes.push_back(line_split[0]); //podcast_id
+
+				vector<string> temp_listens;
+				temp_listens.push_back(to_string(listens));
+				temp_listens.push_back(line_split[0]);
+
+				vector<string> temp_tags = line_split[2].split(',');
+
+				temp_trending_tags.push_back(temp_tags);
+				temp_trending_likes.push_back(temp_likes);
+				temp_trending_listens.push_back(temp_listens);
+			}
+
+			//append empty values if we don't make a top 5
+			while(temp_trending_likes.size() < 5){
+				temp_trending_likes.push_back(0);
+				temp_trending_views.push_back(0);
+				vector<string> v;
+				temp_trending_tags.push_back(v);
+			}
+
+			//clear table
+			clear_table(cmd);
+
+			//sort the vectors
+			trending_tags = sort_tags(temp_trending_tags);
+			trending_likes = sort_likes(temp_trending_likes);
+			trending_views = sort_likes(temp_trending_views);
+
+			//insert the values into the table
+
+			cmd.setCommandText("INSERT into trending_list values(:1, :2, :3, :4, :5");
+			for(int i = 0; i < 5; i++){
+				cmd.Param(i+1).setAsString() = trending_tags[i];
+			}
+			//Insert trending tags row
+			cmd.Execute();
+
+			cmd.setCommandText("INSERT into trending_list values(:1, :2, :3, :4, :5");
+			for(int i = 0; i < 5; i++){
+				cmd.Param(i+1).setAsString() = trending_likes[i];
+			}
+			//Insert trending likes row
+			cmd.Execute();
+
+			cmd.setCommandText("INSERT into trending_list values(:1, :2, :3, :4, :5");
+			for(int i = 0; i < 5; i++){
+				cmd.Param(i+1).setAsString() = trending_views[i];
+			}
+			//Insert trending views row
+			cmd.Execute();
+
+			cmd.Commit();
+
+			trending.close();
 
 		}
 		else{
