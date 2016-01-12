@@ -31,6 +31,8 @@ import com.caster.caster_android.utils.Bin;
 import com.caster.caster_android.utils.PodcastDownloader;
 import com.caster.caster_android.views.SearchResults;
 
+import java.util.Stack;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, PodcastDownloader.OnChangeListener{
@@ -40,7 +42,8 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout drawerLayout;
     private ListView drawerList;
     private GridLayout podcastBar;
-    private Fragment currentFragment;
+    Stack<FragmentItem> fragmentItemStack;
+    Fragment currentFragment;
     int current_nav;
 
     @Override
@@ -49,25 +52,26 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         instance = this;
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar); //set the toolbar as the actionbar
 
         DrawerLayout drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar, R.string.drawer_open,R.string.drawer_close);
         drawerLayout.setDrawerListener(toggle);
-        toggle.syncState();
+        toggle.syncState(); //setup the navigation drawer and sync the icon with the drawer state
 
         NavigationView navigationView = (NavigationView)findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setNavigationItemSelectedListener(this); //set the MainActivity to the Item Listener
 
+        fragmentItemStack = new Stack<>();
         podcastBar = (GridLayout)findViewById(R.id.podcast_bar);
-        Bin.init();
+        Bin.init(); //initialize the application
         if(findViewById(R.id.content_frame) != null){
             if(savedInstanceState == null){
                 MainFragment mainFragment = new MainFragment();
                 mainFragment.setArguments(getIntent().getExtras());
                 ProgressFragment progressFragment = new ProgressFragment();
                 getSupportFragmentManager().beginTransaction().add(R.id.content_frame,progressFragment)
-                        .commit();
+                        .commit(); //show the loading circle while the MainFragment does its thing
                 currentFragment = progressFragment;
                 current_nav = R.id.nav_home;
             }
@@ -102,6 +106,10 @@ public class MainActivity extends AppCompatActivity
         updatePlayerBar();
     }
 
+
+    /**
+     * Updates the playerbar, making it visible if a podcast is playing
+     */
     public void updatePlayerBar(){
         if (PodcastPlayer.podcast == null){
             podcastBar.setVisibility(View.INVISIBLE);
@@ -197,6 +205,11 @@ public class MainActivity extends AppCompatActivity
         }
     }
 */
+
+    /**
+     * Opens up the Podcast Player Activity
+     * @param view
+     */
     public void openPlayer(View view){
         Intent intent = new Intent(this,PodcastPlayer.class);
         startActivity(intent);
@@ -206,6 +219,12 @@ public class MainActivity extends AppCompatActivity
     public void onPostCreate(Bundle savedInstanceState){
         super.onPostCreate(savedInstanceState);
     }
+
+    /**
+     * Manages the menu items which presently only includes search.
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -266,20 +285,34 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+
+    /**
+     * Do stuff on navigation
+     * @param menuItem
+     * @return
+     */
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         int id = menuItem.getItemId();
         FragmentManager manager = getSupportFragmentManager();
-        if (id == R.id.nav_downloads && id != current_nav){
+        if (id == R.id.nav_downloads){  //If the navigation item is the download
             DownloadsFragment fragment = new DownloadsFragment();
             manager.beginTransaction().replace(R.id.content_frame, fragment).addToBackStack(null).commit();
+            FragmentItem item = new FragmentItem();
+            item.fragment = currentFragment;
+            item.id = current_nav;
+            fragmentItemStack.push(item);
             currentFragment = fragment;
             current_nav = R.id.nav_downloads;
         }
-        else if(id == R.id.nav_home && id != current_nav){
+        else if(id == R.id.nav_home){ //if it's the home icon
             MainFragment fragment = new MainFragment();
             ProgressFragment progressFragment = new ProgressFragment();
-            manager.beginTransaction().replace(R.id.content_frame, progressFragment).addToBackStack(null).commit();
+            manager.beginTransaction().replace(R.id.content_frame, progressFragment).commit();
+            FragmentItem item = new FragmentItem();
+            item.fragment = currentFragment;
+            item.id = current_nav;
+            fragmentItemStack.push(item);
             currentFragment = progressFragment;
             current_nav = R.id.nav_home;
         }
@@ -288,6 +321,12 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    /**
+     * No longer needed really...just for testing stuff
+     * @param progress
+     * @param podcast_id
+     * @param state
+     */
     @Override
     public void onDownloadStateChange(int progress, int podcast_id, PodcastDownloader.State state) {
         if (state == PodcastDownloader.State.QUEUED){
@@ -303,4 +342,33 @@ public class MainActivity extends AppCompatActivity
             Toast.makeText(getApplicationContext(),"Finished",Toast.LENGTH_SHORT).show();
         }
     }
+
+
+    /**
+     * Override back button behaviour. Keeping track of the pervious fragments loaded
+     */
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0){
+            FragmentItem item = fragmentItemStack.pop();
+            if (item.id == R.id.nav_home){
+                super.onBackPressed();
+                return;
+            }
+            current_nav = item.id;
+            currentFragment = item.fragment;
+            getSupportFragmentManager().popBackStack();
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    /**
+     * Used to store a reference to the fragment in a fragment stack
+     */
+    class FragmentItem{
+        public Fragment fragment;
+        public int id;
+    }
+
 }
