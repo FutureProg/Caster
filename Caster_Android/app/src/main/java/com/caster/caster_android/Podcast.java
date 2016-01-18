@@ -104,10 +104,10 @@ public class Podcast {
     }
 
     /**
-     *
+     * Post a comment to this podcast
      * @param userid
      * @param message
-     * @return
+     * @return a boolean based on whether it was successful or not
      */
     public boolean postComment(int userid,String message) throws InterruptedException,ExecutionException{
         String urlStr = MainActivity.site + "/php/podcast.php";
@@ -144,7 +144,7 @@ public class Podcast {
         return coverPhoto;
     }
 
-    public String getAudioURL(){
+    String getAudioURL(){
         return MainActivity.site + "/users/" + getCreatorId() + "/audio/podcast/"+metadata.get(AUDIO_FILE);
     }
 

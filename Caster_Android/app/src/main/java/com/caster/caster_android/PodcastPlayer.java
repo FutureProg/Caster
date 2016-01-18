@@ -2,7 +2,6 @@ package com.caster.caster_android;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,7 +25,6 @@ import com.caster.caster_android.fragments.ProgressFragment;
 import com.caster.caster_android.utils.Bin;
 import com.caster.caster_android.utils.CommentListAdapter;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -58,7 +56,7 @@ public class PodcastPlayer extends AppCompatActivity implements Runnable{
     public static TextView author,descriptionBox;
     public static ImageView coverImage;
 
-    public static MediaPlayer mp;
+    //public static MediaPlayer mp;
     public static SeekBar seekBar;
     private Handler durationHandler = new Handler();
     private Handler playlistHandler = new Handler();
@@ -99,11 +97,22 @@ public class PodcastPlayer extends AppCompatActivity implements Runnable{
 
         }
         comments = Comment.makeFromID(podcast.getId());
-        if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(KEY_COMMAND)) {
+
+        /*if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(KEY_COMMAND)) {
             if (getIntent().getExtras().getByte(KEY_COMMAND) == COMMAND_PLAY) {
+                if (mp != null){
+                    mp.stop();
+                    mp.reset();
+                    mp.release();
+                }
                 mp = new MediaPlayer();
                 mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                String url = MainActivity.site + "/php/audio_file.php?q=" + podcast.getId() + "$" + Bin.getPodcastToken();
+                String url = "";
+                if (PodcastDownloader.getDownloader(getApplicationContext()).isDownloaded(podcast.getId())) {
+                    url = getFilesDir().getAbsolutePath() + "/podcast_" + podcast.getId() + "/audio_file";
+                }else{
+                    url = MainActivity.site + "/php/audio_file.php?q=" + podcast.getId() + "$" + Bin.getPodcastToken();
+                }
                 try {
                     mp.setDataSource(url);
                     mp.prepareAsync();
@@ -115,7 +124,8 @@ public class PodcastPlayer extends AppCompatActivity implements Runnable{
             }
         }
         //Still need to load the player functions
-        else if(getIntent() != null && getIntent().getType() != null){
+        else*/
+        if(getIntent() != null && getIntent().getType() != null){
             String url = (String)getIntent().getStringExtra(Intent.EXTRA_TEXT);
             url = url.replace(MainActivity.site, "");
             Log.d("Share Intent : ", url);
@@ -142,9 +152,14 @@ public class PodcastPlayer extends AppCompatActivity implements Runnable{
                 }
             }
         }
+        Intent intent = new Intent(getApplicationContext(),MediaPlayerService.class);
+        intent.setAction(MediaPlayerService.ACTION_START);
+        intent.putExtra(MediaPlayerService.PODCAST_ID,podcast.getId());
+        startService(intent);
+
         PlayerFragment fragment = new PlayerFragment();
         fragment.setComments(comments);
-        fragment.setMediaPlayer(mp);
+        //fragment.setMediaPlayer(mp);
         fragment.setSubscribed(subscribed);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_frame,fragment).commit();
@@ -280,7 +295,7 @@ public class PodcastPlayer extends AppCompatActivity implements Runnable{
                 }
         );
         //Media Player
-        endTime = mp.getDuration();
+        endTime = podcast.getLength();
         length = (TextView) findViewById(R.id.elapsed_time);
         seekBar = (SeekBar) findViewById(R.id.seekbar);
         seekBar.setMax((int) endTime);
@@ -313,16 +328,23 @@ public class PodcastPlayer extends AppCompatActivity implements Runnable{
     public void play(View view)
     {
         Log.i(TAG, "play");
+        if (MediaPlayerService.mediaPlayer == null)return;
+        MediaPlayer mp = MediaPlayerService.mediaPlayer;
         //Play
         if(!(mp.isPlaying()))
         {
-            mp.start();
+            Intent intent = new Intent(getApplicationContext(),MediaPlayerService.class);
+            intent.setAction(MediaPlayerService.ACTION_PLAY);
+            startService(intent);
+            //mp.start();
             playButton.setBackground(getDrawable(R.drawable.pause));
         }
         //Pause
         else if(mp.isPlaying())
         {
-            mp.pause();
+            Intent intent = new Intent(getApplicationContext(),MediaPlayerService.class);
+            intent.setAction(MediaPlayerService.ACTION_PAUSE);
+            startService(intent);
             playButton.setBackground(getDrawable(R.drawable.play));
         }
 
@@ -330,9 +352,6 @@ public class PodcastPlayer extends AppCompatActivity implements Runnable{
         timeElapsed = mp.getCurrentPosition();
         seekBar.setProgress((int) timeElapsed);
         durationHandler.postDelayed(updateSeekBarTime, 100);
-
-        //Checks if we've reached the end of the song
-        playlistHandler.postDelayed(playNext, 100);
     }
 
     //Play previous podcast
@@ -343,7 +362,7 @@ public class PodcastPlayer extends AppCompatActivity implements Runnable{
             Log.i(TAG, "previous");
             currentPodcast--;
             //change song
-            mp = MediaPlayer.create(this, podcastList[currentPodcast]);
+            //mp = MediaPlayer.create(this, podcastList[currentPodcast]);
             //Change Author name, description, etc. here once the podcast changes.
         }
     }
@@ -356,7 +375,7 @@ public class PodcastPlayer extends AppCompatActivity implements Runnable{
             currentPodcast++;
             Log.i(TAG, "next");
             //change song
-            mp = MediaPlayer.create(this, podcastList[currentPodcast]);
+            //mp = MediaPlayer.create(this, podcastList[currentPodcast]);
             //Change Author name, description, etc. here once the podcast changes.
         }
     }
@@ -372,31 +391,21 @@ public class PodcastPlayer extends AppCompatActivity implements Runnable{
     private Runnable updateSeekBarTime = new Runnable() {
         @Override
         public void run() {
-            timeElapsed = mp.getCurrentPosition();
-            //seekbar progress
-            seekBar.setProgress((int)timeElapsed);
-            //set remaining time
-            double remainingTime = endTime - timeElapsed;
-            //Hours, minutes, seconds
-            length.setText(String.format("%02d:%02d:%02d",
-                    TimeUnit.MILLISECONDS.toHours((long) remainingTime),
-                    TimeUnit.MILLISECONDS.toMinutes((long) remainingTime) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours((long)remainingTime)),
-                    TimeUnit.MILLISECONDS.toSeconds((long)remainingTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long)remainingTime))));
-            //Repeat in 100 milliseconds
-            durationHandler.postDelayed(this,100);
-        }
-    };
-
-    //Checks if song is over, then plays next song
-    private Runnable playNext = new Runnable() {
-        @Override
-        public void run() {
-            timeElapsed = mp.getCurrentPosition();
-            if(timeElapsed == endTime)
-            {
-                next(null);
+            MediaPlayer mp;
+            if ((mp = MediaPlayerService.mediaPlayer) != null){
+                timeElapsed = mp.getCurrentPosition();
+                //seekbar progress
+                seekBar.setProgress((int)timeElapsed);
+                //set remaining time
+                double remainingTime = endTime - timeElapsed;
+                //Hours, minutes, seconds
+                length.setText(String.format("%02d:%02d:%02d",
+                        TimeUnit.MILLISECONDS.toHours((long) remainingTime),
+                        TimeUnit.MILLISECONDS.toMinutes((long) remainingTime) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours((long)remainingTime)),
+                        TimeUnit.MILLISECONDS.toSeconds((long)remainingTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long)remainingTime))));
             }
-            playlistHandler.postDelayed(this,100);
+            //Repeat in 100 milliseconds
+            durationHandler.postDelayed(this, 100);
         }
     };
 
@@ -457,5 +466,8 @@ public class PodcastPlayer extends AppCompatActivity implements Runnable{
         startActivity(Intent.createChooser(share, "Share link"));
     }
 
-
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
 }

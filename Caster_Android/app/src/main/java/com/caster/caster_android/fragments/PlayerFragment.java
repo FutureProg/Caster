@@ -1,6 +1,5 @@
 package com.caster.caster_android.fragments;
 
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -34,11 +33,6 @@ public class PlayerFragment extends Fragment{
 
     ArrayList<Comment> comments;
     boolean subscribed;
-    MediaPlayer mp;
-
-    public void setMediaPlayer(MediaPlayer mp){
-        this.mp = mp;
-    }
 
     public void setComments(ArrayList<Comment> comments){
         this.comments = comments;
@@ -126,12 +120,11 @@ public class PlayerFragment extends Fragment{
                 }
         );
         //Media Player
-        PodcastPlayer.endTime = mp.getDuration();
+        PodcastPlayer.endTime = podcast.getLength();
         PodcastPlayer.length = (TextView) view.findViewById(R.id.elapsed_time);
         PodcastPlayer.seekBar = (SeekBar) view.findViewById(R.id.seekbar);
         PodcastPlayer.seekBar.setMax((int) PodcastPlayer.endTime);
         PodcastPlayer.seekBar.setClickable(false);
-        ((PodcastPlayer)getActivity()).play(null);
         ((PodcastPlayer)getActivity()).getSupportActionBar().setTitle(podcast.getTitle());
         /*mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {

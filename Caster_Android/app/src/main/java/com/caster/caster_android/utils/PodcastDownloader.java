@@ -1,11 +1,13 @@
 package com.caster.caster_android.utils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Looper;
 import android.util.Log;
 
 import com.caster.caster_android.MainActivity;
 import com.caster.caster_android.Podcast;
+import com.caster.caster_android.User;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -42,6 +44,7 @@ public class PodcastDownloader implements Runnable {
     };
     Queue<Item> items;
     HashSet<Integer> toCancel;
+    HashSet<Integer> downloadedUsers;
     HashMap<Integer,State> states;
     final Object lock;
     final Thread thread;
@@ -67,10 +70,15 @@ public class PodcastDownloader implements Runnable {
         lock = new Object();
         toCancel = new HashSet<>();
         states = new HashMap<>();
+        downloadedUsers = new HashSet<>();
         loadDownloadLog();
         thread = new Thread(this);
     }
 
+
+    public boolean isDownloaded(int podcast_id){
+        return getState(podcast_id) == State.FINISHED;
+    }
 
     /**
      * Cancel the download of the specified ID
@@ -154,13 +162,21 @@ public class PodcastDownloader implements Runnable {
     public void saveDownloadLog(){
         Log.v("CASTER_SAVE","SAVE");
         try {
-            FileOutputStream outputStream = context.openFileOutput("download_list",Context.MODE_PRIVATE);
+            FileOutputStream outputStream = context.openFileOutput("download_list_podcast",Context.MODE_PRIVATE);
             for (int podcast_id : states.keySet()) {
                 if(states.get(podcast_id) == State.FINISHED){
                     String line = podcast_id + "\n";
                     Log.v("CASTER_SAVE",podcast_id+"");
                     outputStream.write(line.getBytes());
                 }
+            }
+            outputStream.flush();
+            outputStream.close();
+            outputStream = context.openFileOutput("download_list_users",Context.MODE_PRIVATE);
+            for (int user_id : downloadedUsers) {
+                String line = user_id+ "\n";
+                Log.v("CASTER_SAVE",user_id+"");
+                outputStream.write(line.getBytes());
             }
             outputStream.flush();
             outputStream.close();
@@ -178,11 +194,19 @@ public class PodcastDownloader implements Runnable {
         Log.v("CASTER_LOAD","LOAD");
         try {
             BufferedReader inputStream = new BufferedReader(
-                    new FileReader(context.getFileStreamPath("download_list")));
+                    new FileReader(context.getFileStreamPath("download_list_podcasts")));
             String line;
             while ((line = inputStream.readLine()) != null){
                 Log.v("CASTER_LOAD",line);
                 states.put(Integer.parseInt(line),State.FINISHED);
+            }
+            inputStream.close();
+
+            inputStream = new BufferedReader(
+                    new FileReader(context.getFileStreamPath("download_list_users")));
+            while ((line = inputStream.readLine()) != null){
+                Log.v("CASTER_LOAD",line);
+                downloadedUsers.add(Integer.parseInt(line));
             }
             inputStream.close();
         } catch (FileNotFoundException e) {
@@ -239,6 +263,7 @@ public class PodcastDownloader implements Runnable {
 
                     int current = 0;
                     int count = current;
+                    states.put(item.podcast_id, State.DOWNLOADING);
                     while ((current = bis.read(buffer)) != -1) {
                         count += current;
                         //Log.v("CASTER_CURRENT","Count: " + count + " Size: " + size + " Ratio: " + ((float)count/size));
@@ -248,8 +273,7 @@ public class PodcastDownloader implements Runnable {
                             MainActivity.instance.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    item.listener.onDownloadStateChange((int) ((float) c * 100 / size), item.podcast_id, State.DOWNLOADING);
-                                    states.put(item.podcast_id, State.DOWNLOADING);
+                                    item.listener.onDownloadStateChange((int) ((float) c * 100 / (size + 10)), item.podcast_id, State.DOWNLOADING);
                                 }
                             });
                         }
@@ -265,7 +289,7 @@ public class PodcastDownloader implements Runnable {
                                 @Override
                                 public void run() {
                                     if (item.listener != null)
-                                        item.listener.onDownloadStateChange((int) ((float) c * 100 / size), item.podcast_id, State.CANCELLED);
+                                        item.listener.onDownloadStateChange((int) ((float) c * 100 / (size+10)), item.podcast_id, State.CANCELLED);
                                 }
                             });
                             continue;
@@ -274,6 +298,70 @@ public class PodcastDownloader implements Runnable {
                     outputStream.flush();
                     outputStream.close();
                     bis.close();
+
+                    //Save the podcast metadata
+                    String metaPath = basePath + "/metadata";
+                    file= new File(metaPath);
+                    file.createNewFile();
+                    outputStream = new FileOutputStream(file);
+                    for (int key: podcast.getMetadata().keySet()) {
+                        outputStream.write((key + "\n").getBytes());
+                        outputStream.write((podcast.getMetadata().get(key) + "\n").getBytes());
+                    }
+                    outputStream.flush();
+                    outputStream.close();
+
+                    //save the cover image
+                    String coverPath = basePath + "/cover_image";
+                    file = new File(coverPath);
+                    file.createNewFile();
+                    outputStream = new FileOutputStream(file);
+                    Bitmap coverimage = podcast.getCoverPhoto();
+                    coverimage.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+                    outputStream.flush();
+                    outputStream.close();
+
+                    //save the user
+                    basePath = context.getFilesDir().getAbsolutePath() + "/user_" + podcast.getCreatorId();
+                    String path = basePath + "/metadata";
+                    file = new File(path);
+                    if (!file.exists()){
+                        file.getParentFile().mkdirs();
+                        file.createNewFile();
+                        User creator = podcast.getCreator();
+                        //Save the metadata
+                        outputStream = new FileOutputStream(file);
+                        for (int key: creator.getMetadata().keySet()){
+                            outputStream.write((key + "\n").getBytes());
+                            outputStream.write((creator.getMetadata().get(key) + "\n").getBytes());
+                        }
+                        outputStream.flush();
+                        outputStream.close();
+                        if (item.listener != null) {
+                            MainActivity.instance.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    item.listener.onDownloadStateChange(99, item.podcast_id, State.DOWNLOADING);
+                                }
+                            });
+                        }
+                        //Save the profile photo
+                        path = basePath + "/profile_picture";
+                        file = new File(path);
+                        file.createNewFile();
+                        outputStream = new FileOutputStream(file);
+                        creator.getImage().compress(Bitmap.CompressFormat.PNG,100,outputStream);
+                        outputStream.flush();
+                        outputStream.close();
+                        if (item.listener != null) {
+                            MainActivity.instance.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    item.listener.onDownloadStateChange(100, item.podcast_id, State.DOWNLOADING);
+                                }
+                            });
+                        }
+                    }
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 } catch (MalformedURLException e) {
@@ -281,7 +369,7 @@ public class PodcastDownloader implements Runnable {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                //TODO: Save the metadata, coverimage, user metadata and profile pic
+                //TODO: Check if metadata update is needed before saving
                 states.put(item.podcast_id, State.FINISHED);
                 if (item.listener != null) {
                     MainActivity.instance.runOnUiThread(new Runnable() {

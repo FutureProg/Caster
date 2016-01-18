@@ -1,5 +1,6 @@
 package com.caster.caster_android;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -19,6 +20,7 @@ public class PlayerNotification extends Notification{
     private Context ctx;
     private NotificationManager notificationManager;
 
+    @SuppressLint("NewApi")
     public PlayerNotification(Context ctx){
         super();
         this.ctx = ctx;

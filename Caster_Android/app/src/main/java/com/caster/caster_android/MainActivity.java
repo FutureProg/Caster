@@ -111,6 +111,7 @@ public class MainActivity extends AppCompatActivity
      * Updates the playerbar, making it visible if a podcast is playing
      */
     public void updatePlayerBar(){
+        if(currentFragment == null)return;
         if (PodcastPlayer.podcast == null){
             podcastBar.setVisibility(View.INVISIBLE);
             View view = currentFragment.getView();
