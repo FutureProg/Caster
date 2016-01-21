@@ -5,7 +5,10 @@
             android:id="@+id/nav_home"
             android:title="Home"
             android:icon="@drawable/ic_home"/>
-        <item android:title="Sign In"/>
+        <item
+            android:title="Sign In"
+            android:id="@+id/nav_sign_in"
+            android:icon="@drawable/ic_account_circle_black_24dp"/>
         <item android:title="Sign Up" />
         <item
             android:id="@+id/nav_downloads"
@@ -17,5 +20,5 @@
         <menu>
             <item android:title="App Settings"/>
         </menu>
-    </item>`
+    </item>
 </menu>
