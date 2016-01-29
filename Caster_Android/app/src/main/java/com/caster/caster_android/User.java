@@ -4,13 +4,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.caster.caster_android.utils.Bin;
+import com.caster.caster_android.utils.PodcastDownloader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -38,6 +42,9 @@ public class User {
     public static User makeFromID(int userid){
         if (Bin.users.containsKey(userid)){
             return Bin.users.get(userid);
+        }
+        if (PodcastDownloader.getDownloader(null).isUserDownloaded(userid)){
+            return loadDownloadedUser(userid);
         }
         HashMap<Integer,Object> data = new HashMap<>();
         User re = null;
@@ -95,12 +102,50 @@ public class User {
         return re;
     }
 
+    private static User loadDownloadedUser(int user_id){
+        User re = null;
+
+        String basePath = MainActivity.instance.getFilesDir().getAbsolutePath() + "/user_" + user_id;
+        String metapath = basePath + "/metadata";
+        String photopath = basePath + "/profile_picture";
+        HashMap<Integer,Object> data = new HashMap<>();
+        File file = new File(metapath);
+        try {
+            Scanner input = new Scanner(file);
+            while (input.hasNextLine()){
+                int key = Integer.parseInt(input.nextLine());
+                String value = input.nextLine();
+                switch (key){
+                    case SUBSCRIBER_COUNT:
+                    case ID:
+                        data.put(key,Integer.parseInt(value));
+                        break;
+                    default:
+                        data.put(key,value);
+                        break;
+                }
+            }
+            Bitmap bitmap = BitmapFactory.decodeFile(photopath);
+            re = new User(data);
+            re.image = bitmap;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return re;
+    }
+
     public User(HashMap<Integer, Object> metadata){
         this.metadata = metadata;
         Bin.users.put(getId(),this);
     }
 
     public ArrayList<Podcast> getPodcasts(){
+        if (!Bin.checkConnection(MainActivity.instance)){
+            ArrayList<Podcast> tempPodcasts = new ArrayList<>();
+            tempPodcasts = Bin.getUsersOfflinePodcasts(getId());
+            return tempPodcasts;
+        }
         if (podcasts == null){
             podcasts = new ArrayList<>();
             CasterRequest req = new CasterRequest(MainActivity.site + "/php/podcast.php");

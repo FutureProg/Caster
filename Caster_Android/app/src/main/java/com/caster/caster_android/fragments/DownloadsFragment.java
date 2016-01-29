@@ -24,7 +24,7 @@ public class DownloadsFragment extends Fragment{
     ArrayList<Podcast> podcasts;
 
     public DownloadsFragment() {
-        PodcastDownloader downloader = PodcastDownloader.getDownloader(MainActivity.instance.getApplicationContext());
+        PodcastDownloader downloader = PodcastDownloader.getDownloader(MainActivity.instance);
         podcasts = new ArrayList<>();
         ArrayList<Integer> podcast_ids = downloader.getDownloaded();
         for (int podcast_id:podcast_ids){

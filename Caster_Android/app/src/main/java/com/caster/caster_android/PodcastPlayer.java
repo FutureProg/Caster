@@ -108,7 +108,7 @@ public class PodcastPlayer extends AppCompatActivity implements Runnable{
                 mp = new MediaPlayer();
                 mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
                 String url = "";
-                if (PodcastDownloader.getDownloader(getApplicationContext()).isDownloaded(podcast.getId())) {
+                if (PodcastDownloader.getDownloader(getApplicationContext()).isPodcastDownloaded(podcast.getId())) {
                     url = getFilesDir().getAbsolutePath() + "/podcast_" + podcast.getId() + "/audio_file";
                 }else{
                     url = MainActivity.site + "/php/audio_file.php?q=" + podcast.getId() + "$" + Bin.getPodcastToken();
@@ -393,6 +393,7 @@ public class PodcastPlayer extends AppCompatActivity implements Runnable{
         public void run() {
             MediaPlayer mp;
             if ((mp = MediaPlayerService.mediaPlayer) != null){
+                
                 timeElapsed = mp.getCurrentPosition();
                 //seekbar progress
                 seekBar.setProgress((int)timeElapsed);

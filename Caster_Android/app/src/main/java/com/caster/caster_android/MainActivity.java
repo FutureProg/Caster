@@ -21,11 +21,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.caster.caster_android.fragments.DownloadsFragment;
 import com.caster.caster_android.fragments.MainFragment;
+import com.caster.caster_android.fragments.NoConnectionFragment;
 import com.caster.caster_android.fragments.ProgressFragment;
 import com.caster.caster_android.utils.Bin;
 import com.caster.caster_android.utils.PodcastDownloader;
@@ -35,12 +35,11 @@ import java.util.Stack;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, PodcastDownloader.OnChangeListener{
+        implements NavigationView.OnNavigationItemSelectedListener, PodcastDownloader.OnChangeListener,
+        NoConnectionFragment.Callback{
     public final static String site = "http://ec2-52-35-70-147.us-west-2.compute.amazonaws.com";
     public static MainActivity instance;
 
-    private DrawerLayout drawerLayout;
-    private ListView drawerList;
     private GridLayout podcastBar;
     Stack<FragmentItem> fragmentItemStack;
     Fragment currentFragment;
@@ -64,14 +63,14 @@ public class MainActivity extends AppCompatActivity
 
         fragmentItemStack = new Stack<>();
         podcastBar = (GridLayout)findViewById(R.id.podcast_bar);
-        Bin.init(); //initialize the application
+        Bin.init(this.getBaseContext()); //initialize the application
         if(findViewById(R.id.content_frame) != null){
             if(savedInstanceState == null){
-                MainFragment mainFragment = new MainFragment();
-                mainFragment.setArguments(getIntent().getExtras());
                 ProgressFragment progressFragment = new ProgressFragment();
                 getSupportFragmentManager().beginTransaction().add(R.id.content_frame,progressFragment)
                         .commit(); //show the loading circle while the MainFragment does its thing
+                MainFragment mainFragment = new MainFragment();
+                mainFragment.setArguments(getIntent().getExtras());
                 currentFragment = progressFragment;
                 current_nav = R.id.nav_home;
             }
@@ -307,9 +306,9 @@ public class MainActivity extends AppCompatActivity
             current_nav = R.id.nav_downloads;
         }
         else if(id == R.id.nav_home){ //if it's the home icon
-            MainFragment fragment = new MainFragment();
             ProgressFragment progressFragment = new ProgressFragment();
             manager.beginTransaction().replace(R.id.content_frame, progressFragment).commit();
+            MainFragment fragment = new MainFragment();
             FragmentItem item = new FragmentItem();
             item.fragment = currentFragment;
             item.id = current_nav;
@@ -362,6 +361,11 @@ public class MainActivity extends AppCompatActivity
             return;
         }
         super.onBackPressed();
+    }
+
+    @Override
+    public void onRetryConnection() {
+
     }
 
     /**

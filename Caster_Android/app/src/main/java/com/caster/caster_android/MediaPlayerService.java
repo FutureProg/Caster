@@ -72,7 +72,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.setOnPreparedListener(this);
             String url = "";
-            if (PodcastDownloader.getDownloader(getApplicationContext()).isDownloaded(podcast.getId())) {
+            if (PodcastDownloader.getDownloader(getApplicationContext()).isPodcastDownloaded(podcast.getId())) {
                 url = getFilesDir().getAbsolutePath() + "/podcast_" + podcast.getId() + "/audio_file";
             }else{
                 url = MainActivity.site + "/php/audio_file.php?q=" + podcast.getId() + "$" + Bin.getPodcastToken();

@@ -39,6 +39,8 @@ public class PodcastBar extends LinearLayout implements View.OnClickListener, Po
         inflater.inflate(R.layout.podcast_bar_layout, this);
         imgButton = (ImageView)findViewById(R.id.cover_image);
         imgButton.setBackground(new BitmapDrawable(getResources(), podcast.getCoverPhoto()));
+        imgButton.setOnClickListener(this);
+        imgButton.setTag("play_tag");
         titleView = (TextView)findViewById(R.id.title);
         titleView.setText(podcast.getTitle());
         descView = (TextView)findViewById(R.id.description);
@@ -57,6 +59,7 @@ public class PodcastBar extends LinearLayout implements View.OnClickListener, Po
             downloadButton.setOnClickListener(this);
             downloadButton.setTag("download_tag");
         }
+        setTag("play_tag");
     }
 
     public PodcastBar(Context context,AttributeSet attrs){

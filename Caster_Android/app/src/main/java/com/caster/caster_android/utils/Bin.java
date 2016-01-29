@@ -1,10 +1,12 @@
 package com.caster.caster_android.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 
 import com.caster.caster_android.CasterRequest;
 import com.caster.caster_android.MainActivity;
@@ -19,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
@@ -32,12 +35,35 @@ public class Bin {
     public static HashMap<Integer,Podcast> podcasts;
     private static String podcastToken = null;
     private static User signedInUser = null;
+    private static boolean networkConnection;
 
-    public static void init(){
+    public static void init(Context context){
         if (users == null){
             users = new HashMap<>();
             podcasts = new HashMap<>();
         }
+        checkConnection(context);
+        PodcastDownloader.getDownloader(context);
+    }
+
+    /**
+     * Uses the Connectivity Manager to check whether the application is connected to the internet
+     * @param context
+     * @return true if connected
+     */
+    public static boolean checkConnection(Context context){
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = connectivityManager.getActiveNetworkInfo();
+        networkConnection = info != null && info.isConnected();
+        return networkConnection;
+    }
+
+    /**
+     *
+     * @return whether the device was connected to the internet during the last call to checkConnection
+     */
+    public static boolean isConnected(){
+        return networkConnection;
     }
 
     public static Bitmap getBitmap(String url) throws ExecutionException, InterruptedException {
@@ -165,5 +191,17 @@ public class Bin {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static ArrayList<Podcast> getUsersOfflinePodcasts(int user_id){
+        ArrayList<Podcast> re = new ArrayList<>();
+        for (int key: podcasts.keySet()){
+            Podcast p = podcasts.get(key);
+            if (p.getCreatorId() == user_id){
+                re.add(p);
+            }
+        }
+        Collections.reverse(re);
+        return re;
     }
 }

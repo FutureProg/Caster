@@ -1,14 +1,19 @@
 package com.caster.caster_android;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.caster.caster_android.utils.Bin;
+import com.caster.caster_android.utils.PodcastDownloader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
+import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 
 import static com.caster.caster_android.utils.Bin.podcasts;
@@ -38,8 +43,14 @@ public class Podcast {
      * @return an instance of the podcast
      */
     public static Podcast makeFromID(int podcastid){
+        if (podcasts == null)
+            podcasts = new HashMap<>();
         if (podcasts.containsKey(podcastid)){
             return podcasts.get(podcastid);
+        }
+        PodcastDownloader.State state = PodcastDownloader.getDownloader(null).getState(podcastid);
+        if (state == PodcastDownloader.State.FINISHED || state == PodcastDownloader.State.METAONLY){
+            return loadDownloadedPodcast(podcastid);
         }
         HashMap<Integer,Object> data = new HashMap<>();
         Podcast re = null;
@@ -89,6 +100,45 @@ public class Podcast {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        return re;
+    }
+
+    private static Podcast loadDownloadedPodcast(int podcast_id){
+        Podcast re = null;
+
+        HashMap<Integer, Object> data = new HashMap<>();
+        String basePath = MainActivity.instance.getFilesDir().getAbsolutePath() + "/podcast_" + podcast_id;
+        String metaPath = basePath + "/metadata";
+        String coverPath = basePath + "/cover_image";
+
+        File file = new File(metaPath);
+        if (!file.exists()) return re;
+        try {
+            Scanner input = new Scanner(file);
+            //read metadata
+            while (input.hasNextLine()){
+                int key = Integer.parseInt(input.nextLine());
+                String value = input.nextLine();
+                switch (key){
+                    case VIEWS:
+                    case LIKES:
+                    case LENGTH:
+                    case ID:
+                    case CREATOR_ID:
+                        data.put(key,Integer.parseInt(value));
+                        break;
+                    default:
+                        data.put(key,value);
+                        break;
+                }
+            }
+            Bitmap image = BitmapFactory.decodeFile(coverPath);
+            re = new Podcast(data);
+            re.coverPhoto = image;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
         return re;
     }
 

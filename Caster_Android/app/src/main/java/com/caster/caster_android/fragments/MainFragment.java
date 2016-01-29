@@ -3,6 +3,7 @@ package com.caster.caster_android.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import com.caster.caster_android.CasterRequest;
 import com.caster.caster_android.MainActivity;
 import com.caster.caster_android.Podcast;
 import com.caster.caster_android.R;
+import com.caster.caster_android.utils.Bin;
 import com.caster.caster_android.views.PodcastBox;
 
 import org.json.JSONArray;
@@ -24,15 +26,26 @@ import java.util.concurrent.ExecutionException;
 /**
  * Created by Nick on 2015-12-26.
  */
-public class MainFragment extends Fragment implements Runnable {
+public class MainFragment extends Fragment implements Runnable, NoConnectionFragment.Callback{
 
     private ArrayList<Podcast> recents;
+    NoConnectionFragment noConnectionFragment;
 
     public MainFragment(){
-        new Thread(this).start();
+        Log.v("CASTER_DEBUG","Starting Main...");
+        if (Bin.checkConnection(MainActivity.instance.getApplicationContext())){
+            new Thread(this).start();
+        }else{
+            noConnectionFragment = new NoConnectionFragment();
+            noConnectionFragment.callback = this;
+            MainActivity.instance.getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame, noConnectionFragment).commit();
+            Log.v("CASTER_DEBUG", "not connected start");
+        }
     }
 
     public void run(){
+        Log.v("CASTER_DEBUG","Running MainFragment");
         recents = new ArrayList<>();
         CasterRequest req = new CasterRequest(MainActivity.site + "/php/search_podcasts.php");
         req.addParam("t", "RUJSON");
@@ -80,4 +93,11 @@ public class MainFragment extends Fragment implements Runnable {
     }
 
 
+    @Override
+    public void onRetryConnection() {
+        if (Bin.checkConnection(MainActivity.instance.getApplicationContext())){
+            new Thread(this).start();
+        }else
+            Log.v("CASTER_DEBUG", "not connected");
+    }
 }

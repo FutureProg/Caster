@@ -34,6 +34,7 @@ public class Comment {
         req.addParam("q","CMNTS_JSON").addParam("id",""+podcastid);
         try {
             String resStr = (String)req.execute().get();
+            if (resStr == null || resStr.isEmpty()) return re;
             JSONArray res = new JSONArray(resStr);
             for (int i = 0; i < res.length();i++){
                 JSONObject obj = res.getJSONObject(i);
