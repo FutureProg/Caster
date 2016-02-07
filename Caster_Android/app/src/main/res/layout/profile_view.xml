@@ -10,69 +10,91 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme">
+        android:theme="@style/ProfileTheme">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay"></android.support.v7.widget.Toolbar>
+            app:popupTheme="@style/ProfileTheme.PopupOverlay"></android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
     <RelativeLayout
-        android:layout_marginTop="?attr/actionBarSize"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:id="@+id/profile_info"
-            android:layout_height="200dp"
-            android:columnCount="2"
-            android:padding="10dp"
-            android:rowCount="2"
-            android:elevation="2dp">
+            android:layout_height="250dp"
+            android:background="#000000"
+            android:orientation="vertical"
+            android:paddingTop="?attr/actionBarSize"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="10dp"
+            android:id="@+id/profile_info">
 
-            <ImageView
-                android:layout_width="130dp"
-                android:layout_height="130dp"
-                android:layout_column="0"
-                android:layout_row="0"
-                android:layout_columnWeight="1"
-                android:background="@drawable/image_border"
-                android:src="@drawable/default_profile"
-                android:id="@+id/profilePicture" />
 
-            <TextView
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_column="1"
-                android:layout_marginLeft="30dp"
-                android:layout_row="0"
-                android:layout_columnWeight="1"
-                android:text="Username"
-                android:textStyle="bold"
-                android:id="@+id/profile_username"
                 android:layout_alignParentTop="true"
-                android:layout_toEndOf="@+id/profilePicture"></TextView>
+                android:gravity="center"
+                android:id="@+id/profile_pic_container">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
+                    android:background="@drawable/image_border"
+                    android:src="@drawable/default_profile"
+                    android:id="@+id/profilePicture" />
+            </LinearLayout>
 
-            <Button
-                android:id="@+id/subscribe_button"
-                android:layout_width="80dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="25dp"
-                android:layout_column="0"
-                android:layout_row="1"
-                android:background="@drawable/subscribe_black"
-                android:layout_below="@+id/profilePicture"
-                android:layout_alignParentStart="true" />
+                <Button
+                    android:id="@+id/subscribe_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/ic_subscribe_dark"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentBottom="true"
+                    />
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="Username"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/abc_text_size_title_material"
+                    android:id="@+id/profile_username"
+                    android:gravity="center"
+                    android:layout_below="@+id/profile_pic_container"
+                    android:layout_centerHorizontal="true" />
+
+                <Button
+                    android:id="@+id/info_button"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/ic_info_dark"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    />
+
+        </RelativeLayout>
+        <LinearLayout
+            android:id="@+id/auto_dl_bar"
+            android:background="@drawable/border_bottom_top"
+            android:layout_below="@id/profile_info"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <Switch
                 android:id="@+id/download_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="25dp"
                 android:layout_alignRight="@id/subscribe_button"
                 android:layout_below="@id/profilePicture"
                 android:layout_alignParentRight="true"/>
@@ -84,23 +106,9 @@
                 android:layout_toLeftOf="@id/download_switch"
                 android:text="Download automatically"/>
 
-            <TextView
-                android:id="@+id/profile_bio"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:layout_column="1"
-                android:layout_row="1"
-                android:text="Hello there I'm blablabla and I like to blablab a lot! Subscribe! :D"
-                android:layout_below="@+id/profile_username"
-                android:layout_toEndOf="@+id/profilePicture" />
-
-
-
-        </RelativeLayout>
-
+        </LinearLayout>
         <ScrollView
-            android:layout_below="@id/profile_info"
+            android:layout_below="@id/auto_dl_bar"
             android:layout_width="match_parent"
             android:layout_height="fill_parent">
 

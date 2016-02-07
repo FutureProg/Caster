@@ -11,4 +11,5 @@
     <string name="drawer_close">Caster</string>
     <string name="lorem_ipsum">Lorem Ipsum Dolar sit amet</string>
     <string name="title_activity_sign_in_">Sign In</string>
+    <style name="action_bio">Bio</style>
 </resources>

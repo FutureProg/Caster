@@ -39,4 +39,13 @@
         <item name="android:colorPrimaryDark">@color/Caster_Colour_Red_Dark</item>
     </style>
 
+    <style name="ProfileTheme" parent="Theme.AppCompat.NoActionBar" >
+        <item name="colorPrimary">#000000</item>
+        <item name="colorPrimaryDark">#000</item>
+        <item name="android:colorPrimary">#000000</item>
+        <item name="android:colorPrimaryDark">#000000</item>
+        <item name="android:actionMenuTextColor">#000</item>
+    </style>
+    <style name="ProfileTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />
+
 </resources>

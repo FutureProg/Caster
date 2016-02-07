@@ -26,4 +26,5 @@ dependencies {
     compile 'mysql:mysql-connector-java:5.1.35'
     compile 'com.android.support:cardview-v7:22.0.+'
     compile 'com.android.support:design:22.2.0'
+    compile 'de.hdodenhof:circleimageview:2.0.0'
 }

@@ -33,7 +33,10 @@ public class MainFragment extends Fragment implements Runnable, NoConnectionFrag
 
     public MainFragment(){
         Log.v("CASTER_DEBUG","Starting Main...");
-        if (Bin.checkConnection(MainActivity.instance.getApplicationContext())){
+        boolean connection = Bin.isConnected();
+        if(MainActivity.instance != null && Bin.checkConnection(MainActivity.instance.getApplicationContext()))
+            connection = true;
+        if (connection){
             new Thread(this).start();
         }else{
             noConnectionFragment = new NoConnectionFragment();

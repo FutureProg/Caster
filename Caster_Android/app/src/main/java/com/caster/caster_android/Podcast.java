@@ -178,7 +178,6 @@ public class Podcast {
     }
 
     public Bitmap getCoverPhoto() {
-        //TODO
         if (coverPhoto == null) {
             String urlStr = MainActivity.site + "/users/" + getCreatorId() + "/images/podcast/"
                     + metadata.get(COVER_PHOTO);

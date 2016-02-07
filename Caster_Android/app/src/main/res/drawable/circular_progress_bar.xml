@@ -2,6 +2,6 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="ring"
     android:innerRadiusRatio="3"
-    android:thickness="10dp">
+    android:thickness="7dp">
     <solid android:color="@color/Caster_Colour_Red"/>
 </shape>

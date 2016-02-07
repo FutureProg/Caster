@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.caster.caster_android.ProfileActivity">
+
+    <item android:id="@+id/action_bio"
+        android:title="@string/action_bio"
+        android:orderInCategory="100"
+        />
+
+</menu>
