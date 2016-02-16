@@ -53,7 +53,7 @@ public class PodcastBar extends LinearLayout implements View.OnClickListener, Po
         downloadButton = (ImageButton)findViewById(R.id.podcast_bar_download_button);
         if (PodcastDownloader.getDownloader(context).getDownloaded().contains(podcast.getId())) {
             downloadButton.setOnClickListener(this);
-            downloadButton.setBackgroundResource(R.drawable.ic_circle_with_cross);
+            downloadButton.setImageResource(R.drawable.ic_circle_with_cross);
             downloadButton.setTag("delete_tag");
         }else{
             downloadButton.setOnClickListener(this);
@@ -74,14 +74,14 @@ public class PodcastBar extends LinearLayout implements View.OnClickListener, Po
         PodcastDownloader downloader = PodcastDownloader.getDownloader(this.getContext());
         downloader.queueDownload(podcast.getId(), this);
         downloadButton.setTag("delete_tag");
-        downloadButton.setBackgroundResource(R.drawable.ic_circle_with_cross);
+        downloadButton.setImageResource(R.drawable.ic_circle_with_cross);
     }
 
     public void onCancelDownload(View view){
         PodcastDownloader downloader = PodcastDownloader.getDownloader(this.getContext());
         if (downloader.getState(podcast.getId()) != PodcastDownloader.State.FINISHED) {
             downloader.cancelDownload(podcast.getId());
-            downloadButton.setBackgroundResource(R.drawable.ic_download);
+            downloadButton.setImageResource(R.drawable.ic_download);
             downloadButton.setTag("download_tag");
         }
     }
@@ -90,7 +90,7 @@ public class PodcastBar extends LinearLayout implements View.OnClickListener, Po
         PodcastDownloader downloader = PodcastDownloader.getDownloader(this.getContext());
         if(downloader.deletePodcast(podcast.getId())){
             Toast.makeText(getContext(),"Deleted",Toast.LENGTH_SHORT).show();
-            downloadButton.setBackgroundResource(R.drawable.ic_download);
+            downloadButton.setImageResource(R.drawable.ic_download);
             downloadButton.setTag("download_tag");
         }else{
             Toast.makeText(getContext(),"Deletion Failed",Toast.LENGTH_SHORT).show();
@@ -127,7 +127,7 @@ public class PodcastBar extends LinearLayout implements View.OnClickListener, Po
             progressBar.setVisibility(GONE);
         }
         if(state == PodcastDownloader.State.FINISHED){
-            downloadButton.setBackgroundResource(R.drawable.ic_circle_with_cross);
+            downloadButton.setImageResource(R.drawable.ic_circle_with_cross);
             downloadButton.setTag("delete_tag");
         }
     }

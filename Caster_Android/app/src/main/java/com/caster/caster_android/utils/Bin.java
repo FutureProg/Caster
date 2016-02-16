@@ -1,6 +1,7 @@
 package com.caster.caster_android.utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
@@ -44,6 +45,10 @@ public class Bin {
         }
         checkConnection(context);
         PodcastDownloader.getDownloader(context);
+        SharedPreferences pref = context.getSharedPreferences("user_info", 0);
+        if (pref != null){
+            signedInUser = User.makeFromID(pref.getInt("user_id",-1));
+        }
     }
 
     /**
@@ -127,6 +132,8 @@ public class Bin {
 
     public static void signOut(){
         signedInUser = null;
+        SharedPreferences pref = MainActivity.instance.getSharedPreferences("user_info", 0);
+        pref.edit().putInt("user_id",-1).commit();
     }
 
     public static User signUp(String username, String email, String password) throws ExecutionException, InterruptedException {

@@ -8,8 +8,21 @@
         <item
             android:title="Sign In"
             android:id="@+id/nav_sign_in"
+            android:visible="true"
             android:icon="@drawable/ic_account_circle_black_24dp"/>
-        <item android:title="Sign Up" />
+        <item android:title="Sign Up"
+                android:id="@+id/nav_sign_up"
+                android:visible="true"/>
+        <item
+            android:title="Profile"
+            android:id="@+id/nav_profile"
+            android:visible="false"
+            android:icon="@drawable/ic_account_circle_black_24dp"/>
+
+        <item
+            android:title="Sign Out"
+            android:id="@+id/nav_sign_out"
+            android:visible="false"/>
         <item
             android:id="@+id/nav_downloads"
             android:title="Downloads"

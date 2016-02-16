@@ -130,6 +130,71 @@ public class PodcastDownloader implements Runnable {
 
 
     /**
+     * Downloads the specified user for offline use
+     * @param user_id
+     */
+    public void downloadUser(int user_id) throws IOException {
+        String basePath = context.getFilesDir().getAbsolutePath() + "/user_" + user_id;
+        String path = basePath + "/metadata";
+        File file = new File(path);
+        if (!file.exists()) {
+            waitForNetwork();
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+            User creator = User.makeFromID(user_id);
+            //Save the metadata
+            FileOutputStream outputStream = new FileOutputStream(file);
+            for (int key : creator.getMetadata().keySet()) {
+                outputStream.write((key + "\n").getBytes());
+                outputStream.write((creator.getMetadata().get(key) + "\n").getBytes());
+            }
+            outputStream.flush();
+            outputStream.close();
+            //Save the profile photo
+            waitForNetwork();
+            path = basePath + "/profile_picture";
+            file = new File(path);
+            file.createNewFile();
+            outputStream = new FileOutputStream(file);
+            creator.getImage().compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            outputStream.flush();
+            outputStream.close();
+            downloadedUsers.add(creator.getId());
+            waitForNetwork();
+            ArrayList<Podcast> userPodcasts = creator.getPodcasts();
+            for (Podcast _podcast : userPodcasts){
+
+                waitForNetwork();
+                basePath = context.getFilesDir().getAbsolutePath() + "/podcast_" + _podcast.getId();
+                String metaPath = basePath + "/metadata";
+                file= new File(metaPath);
+                if (file.exists()) continue;
+                file.getParentFile().mkdirs();
+                file.createNewFile();
+                outputStream = new FileOutputStream(file);
+                for (int key: _podcast.getMetadata().keySet()) {
+                    outputStream.write((key + "\n").getBytes());
+                    outputStream.write((_podcast.getMetadata().get(key) + "\n").getBytes());
+                }
+                outputStream.flush();
+                outputStream.close();
+
+                waitForNetwork();
+                String coverPath = basePath + "/cover_image";
+                file = new File(coverPath);
+                file.createNewFile();
+                outputStream = new FileOutputStream(file);
+                Bitmap coverimage = _podcast.getCoverPhoto();
+                coverimage.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+                outputStream.flush();
+                outputStream.close();
+                states.put(_podcast.getId(),State.METAONLY);
+            }
+        }
+        downloadedUsers.add(user_id);
+    }
+
+    /**
      * Add a podcast to the download queue
      * @param podcast_id the podcast to be added
      * @param listener the object to call when progress is made on the download
