@@ -12,7 +12,10 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
@@ -27,8 +30,10 @@ import java.util.concurrent.ExecutionException;
  */
 public class User {
 
+    public static final String KEY_APP_USER = "com.caste.caster_android.User.APP_USER";
+
     public static final int USERNAME = 0, DESCRIPTION = 1, SUBSCRIBER_COUNT = 2,ID=3, IMAGE = 4,
-        SUBSCRIPTIONS = 5;
+        SUBSCRIPTIONS = 5,EDIT_STAMP = 6;
 
     HashMap<Integer, Object> metadata; //username, description,subscriber count,id
     ArrayList<Podcast> podcasts;
@@ -40,6 +45,7 @@ public class User {
      * @return an instance of the user
      */
     public static User makeFromID(int userid){
+        if (userid < 0)return null;
         if (Bin.users.containsKey(userid)){
             return Bin.users.get(userid);
         }
@@ -95,8 +101,14 @@ public class User {
             data.put(ID,jsonObject.getInt("user_id"));
             data.put(USERNAME,jsonObject.getString("username"));
             data.put(SUBSCRIPTIONS,jsonObject.getString("subscriptions"));
+            String date_str = jsonObject.getString("edit_date");
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date = df.parse(date_str);
+            data.put(EDIT_STAMP,date);
             re = new User(data);
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
             e.printStackTrace();
         }
         return re;
@@ -209,7 +221,12 @@ public class User {
     }
 
     public int[] getSubscriptions(){
-        String[] reS = ((String)metadata.get(SUBSCRIPTIONS)).split(".");
+        String subs = (String)metadata.get(SUBSCRIPTIONS);
+        if (subs.isEmpty()) return new int[0];
+        if(subs.indexOf(".") == subs.lastIndexOf(".")){
+            return new int[]{Integer.parseInt(subs.substring(0,subs.indexOf(".")))};
+        }
+        String[] reS = subs.split(".");
         int[] re = new int[reS.length];
         for (int i = 0; i < reS.length;i++){
             re[i] = Integer.parseInt(reS[i]);

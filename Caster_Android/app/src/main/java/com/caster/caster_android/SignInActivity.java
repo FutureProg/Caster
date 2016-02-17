@@ -1,62 +1,57 @@
 package com.caster.caster_android;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.caster.caster_android.utils.Bin;
 
 import java.util.concurrent.ExecutionException;
 
 
-public class SignInActivity extends Activity {
 
+public class SignInActivity extends AppCompatActivity{
+
+    public static final int SIGN_IN_REQUEST = 0x021;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.sign_in_layout);
+        setContentView(R.layout.activity_signin);
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar); //set the toolbar as the actionbar
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        return false;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void signIn(View view){
+    public void onSubmit(View v) {
         String email = ((TextView)findViewById(R.id.email_field)).getText().toString();
         String pass = ((TextView)findViewById(R.id.password_field)).getText().toString();
         try {
-            if (Bin.signIn(email,pass) == null){
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("Incorrect Email/Password").setTitle("Message");
-                builder.create().show();
+            User appUser = Bin.signIn(email, pass);
+            if (appUser == null){
+                Toast.makeText(this, "Incorrect Email/Password", Toast.LENGTH_SHORT).show();
                 return;
             }
+            SharedPreferences preferences = getSharedPreferences("user_info",0);
+            preferences.edit().putInt("user_id",appUser.getId()).commit();
+            Intent re = new Intent();
+            setResult(Activity.RESULT_OK,re);
+            finish();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent re = new Intent();
+        setResult(Activity.RESULT_CANCELED,re);
         finish();
     }
 }

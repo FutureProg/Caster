@@ -5,7 +5,7 @@
     tools:context="com.caster.caster_android.ProfileActivity">
 
     <item android:id="@+id/action_bio"
-        android:title="@string/action_bio"
+        android:title="bio"
         android:orderInCategory="100"
         />
 

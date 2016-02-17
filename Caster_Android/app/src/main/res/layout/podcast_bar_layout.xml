@@ -2,7 +2,7 @@
 <com.caster.caster_android.views.PodcastBar
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/white"
+    android:background="?android:attr/selectableItemBackground"
     android:elevation="2dp"
     android:layout_marginBottom="1dp"
     android:orientation="horizontal"
@@ -67,7 +67,9 @@
 
         <ImageButton
             android:id="@+id/podcast_bar_download_button"
-            android:background="@drawable/ic_download"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_download"
+            android:scaleType="fitCenter"
             android:layout_width="40dp"
             android:layout_height="40dp"
             />

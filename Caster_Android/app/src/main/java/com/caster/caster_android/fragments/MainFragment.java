@@ -7,20 +7,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridLayout;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.caster.caster_android.CasterRequest;
 import com.caster.caster_android.MainActivity;
 import com.caster.caster_android.Podcast;
 import com.caster.caster_android.R;
+import com.caster.caster_android.User;
 import com.caster.caster_android.utils.Bin;
-import com.caster.caster_android.views.PodcastBox;
+import com.caster.caster_android.views.PodcastStreamLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -29,6 +32,8 @@ import java.util.concurrent.ExecutionException;
 public class MainFragment extends Fragment implements Runnable, NoConnectionFragment.Callback{
 
     private ArrayList<Podcast> recents;
+    private ArrayList<User> subs;
+
     NoConnectionFragment noConnectionFragment;
 
     public MainFragment(){
@@ -68,8 +73,22 @@ public class MainFragment extends Fragment implements Runnable, NoConnectionFrag
                 param.columnSpec = GridLayout.spec(0);
                 podcastBox.setLayoutParams(param);*/
             }
+
+            if(Bin.getSignedInUser() != null){
+                subs = new ArrayList<>();
+                User appUser = Bin.getSignedInUser();
+                Log.v("CASTER_SUB_LOAD", Arrays.toString(appUser.getSubscriptions()));
+                for (int user_id : appUser.getSubscriptions()){
+                    User user = User.makeFromID(user_id);
+                    user.getPodcasts();
+                    user.getImage();
+                    subs.add(user);
+                }
+            }
+
             MainActivity.instance.getSupportFragmentManager()
-                    .beginTransaction().replace(R.id.content_frame,this).commit();
+                    .beginTransaction().setCustomAnimations(android.R.anim.fade_in,android.R.anim.fade_out)
+                    .replace(R.id.content_frame,this).commit();
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -84,14 +103,30 @@ public class MainFragment extends Fragment implements Runnable, NoConnectionFrag
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View re =  inflater.inflate(R.layout.fragment_main,container,false);
         getRecents(re);
+        if(Bin.getSignedInUser() != null)getSubs(re);
         return re;
     }
 
     private void getRecents(View view){
-        GridLayout gl = (GridLayout) view.findViewById(R.id.recent_uploads);
-        for(int i = 0;i < recents.size();i++) {
+        FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.recent_uploads);
+        Podcast[] podcasts = new Podcast[recents.size()];
+        podcasts = recents.toArray(podcasts);
+        frameLayout.addView(new PodcastStreamLayout(view.getContext(), null, podcasts));
+        /*for(int i = 0;i < recents.size();i++) {
             PodcastBox podcastBox = new PodcastBox(view.getContext(), null, recents.get(i));
             gl.addView(podcastBox);
+        }*/
+    }
+
+    private void getSubs(View view){
+        LinearLayout linearLayout = (LinearLayout)view.findViewById(R.id.subscriptions);
+        linearLayout.setVisibility(View.VISIBLE);
+        for (User user : subs){
+            Podcast[] podcasts = new Podcast[user.getPodcasts().size()];
+            podcasts = user.getPodcasts().toArray(podcasts);
+            PodcastStreamLayout streamLayout = new PodcastStreamLayout(view.getContext(),null,podcasts);
+            streamLayout.setUser(user);
+            linearLayout.addView(streamLayout);
         }
     }
 

@@ -1,8 +1,10 @@
 package com.caster.caster_android;
 
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -64,6 +66,7 @@ public class MainActivity extends AppCompatActivity
         fragmentItemStack = new Stack<>();
         podcastBar = (GridLayout)findViewById(R.id.podcast_bar);
         Bin.init(this.getBaseContext()); //initialize the application
+        if(Bin.getSignedInUser() != null) signedInNavView();
         if(findViewById(R.id.content_frame) != null){
             if(savedInstanceState == null){
                 ProgressFragment progressFragment = new ProgressFragment();
@@ -103,6 +106,9 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         updatePlayerBar();
+        if (Bin.getSignedInUser() != null){
+            NavigationView navigationView = (NavigationView)findViewById(R.id.nav_view);
+        }
     }
 
 
@@ -113,7 +119,7 @@ public class MainActivity extends AppCompatActivity
         if(currentFragment == null)return;
         if (PodcastPlayer.podcast == null){
             podcastBar.setVisibility(View.INVISIBLE);
-            View view = currentFragment.getView();
+            View view = findViewById(R.id.content_frame);
             if(view != null) view.setPadding(view.getPaddingLeft(), view.getPaddingTop(),
                     view.getPaddingRight(), 0);
         }else{
@@ -121,90 +127,35 @@ public class MainActivity extends AppCompatActivity
                     new BitmapDrawable(getResources(), PodcastPlayer.podcast.getCoverPhoto()));
             podcastBar.setVisibility(View.VISIBLE);
             int height = podcastBar.getHeight();
-            View view = currentFragment.getView();
+            View view = findViewById(R.id.content_frame);
             if(view != null) view.setPadding(view.getPaddingLeft(),view.getPaddingTop(),
                     view.getPaddingRight(),height);
         }
     }
-    /*
-    private void setupNavDrawer(){
-        final ActionBar actionBar = getActionBar();
-        actionBar.setHomeButtonEnabled(true);
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerList = (ListView) findViewById(R.id.left_drawer);
-        if (Bin.getSignedInUser() != null){
-            final User user = Bin.getSignedInUser();
-            String[] navArray = {user.getUsername(),"Sign Out"};
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,navArray);
-            drawerList.setAdapter(adapter);
-            drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    if (position == 0){
-                        ProfileActivity.user = user;
-                        Intent intent = new Intent(MainActivity.instance,ProfileActivity.class);
-                        startActivity(intent);
-                        drawerLayout.closeDrawers();
-                    }else{
-                        Bin.signOut();
-                        onCreate(null);
-                    }
-                }
-            });
-        }else{
-            String[] navArray = { "Sign In","Sign Up"};
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, navArray);
-            drawerList.setAdapter(adapter);
-            drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    if (position == 0){
-                        Intent intent = new Intent(MainActivity.instance,SignInActivity.class);
-                        startActivity(intent);
-                        drawerLayout.closeDrawers();
-                    }else {
-                        //Toast.makeText(MainActivity.this, (String) parent.getAdapter().getItem(position),
-                        //        Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(MainActivity.instance, SignUpActivity.class);
-                        startActivity(intent);
-                        drawerLayout.closeDrawers();
-                    }
-                }
-            });
-        }
 
-
-        drawerToggle = new ActionBarDrawerToggle(this,drawerLayout,R.string.drawer_open,R.string.drawer_close){
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                // code here will execute once the drawer is opened( As I dont want anything happened whe drawer is
-                // open I am not going to put anything here)
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                // Code here will execute once drawer is closed
-            }
-
-
-
-        };
-        drawerToggle.setDrawerIndicatorEnabled(true);
-        drawerLayout.setDrawerListener(drawerToggle);
-
-        int upid = getResources().getIdentifier("android:id/up",null,null);
-        if(upid != 0){
-            View view = getWindow().getDecorView().findViewById(upid);
-            if(view instanceof ImageView){
-                ImageView imgView = (ImageView)view;
-                imgView.setColorFilter(Color.rgb(255,255,255));
-            }
-        }
+    /**
+     * Updates the Navigation View to the layout for when the user is signed in
+     */
+    void signedInNavView(){
+        NavigationView navigationView = (NavigationView)findViewById(R.id.nav_view);
+        Menu menu = navigationView.getMenu();
+        menu.findItem(R.id.nav_sign_in).setVisible(false);
+        menu.findItem(R.id.nav_sign_up).setVisible(false);
+        menu.findItem(R.id.nav_sign_out).setVisible(true);
+        menu.findItem(R.id.nav_profile).setVisible(true);
+        Bitmap bitmap = Bin.getSignedInUser().getImage();
+        menu.findItem(R.id.nav_profile).setIcon(new BitmapDrawable(getResources(),bitmap));
+        menu.findItem(R.id.nav_profile).setTitle(Bin.getSignedInUser().getUsername());
     }
-*/
+
+    void signOutNavView(){
+        NavigationView navigationView = (NavigationView)findViewById(R.id.nav_view);
+        Menu menu = navigationView.getMenu();
+        menu.findItem(R.id.nav_sign_in).setVisible(true);
+        menu.findItem(R.id.nav_sign_up).setVisible(true);
+        menu.findItem(R.id.nav_sign_out).setVisible(false);
+        menu.findItem(R.id.nav_profile).setVisible(false);
+    }
 
     /**
      * Opens up the Podcast Player Activity
@@ -316,8 +267,30 @@ public class MainActivity extends AppCompatActivity
             currentFragment = progressFragment;
             current_nav = R.id.nav_home;
         }
+        else if(id == R.id.nav_sign_in) {
+            Intent intent = new Intent(this, SignInActivity.class);
+            startActivityForResult(intent, SignInActivity.SIGN_IN_REQUEST);
+        }
+        else if(id == R.id.nav_profile){
+            ProfileActivity.user = Bin.getSignedInUser();
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
+        }
         DrawerLayout drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         drawerLayout.closeDrawer(GravityCompat.START);
+        if (id == R.id.nav_sign_out){
+            Bin.signOut();
+            signOutNavView();
+            ProgressFragment progressFragment = new ProgressFragment();
+            manager.beginTransaction().replace(R.id.content_frame, progressFragment).commit();
+            MainFragment fragment = new MainFragment();
+            FragmentItem item = new FragmentItem();
+            item.fragment = currentFragment;
+            item.id = current_nav;
+            fragmentItemStack.push(item);
+            currentFragment = progressFragment;
+            current_nav = R.id.nav_home;
+        }
         return true;
     }
 
@@ -343,6 +316,15 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SignInActivity.SIGN_IN_REQUEST){
+            if (resultCode == Activity.RESULT_OK){
+                signedInNavView();
+            }
+        }
+    }
 
     /**
      * Override back button behaviour. Keeping track of the pervious fragments loaded
