@@ -1,15 +1,15 @@
 #include <stdio.h>
-#include <SQLAPI.h>
+// #include <SQLAPI.h>
 #include <vector>
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <algorithm>
 
-namespace std;
+using namespace std;
 
-vector<string> sort_tags(const vector<vector<string>> &v);
-vector<string> sort_likes(const vector<vector<string>> &v);
+vector<string> sort_tags(vector<vector<string> > &v);
+vector<string> sort_likes(vector<vector<string> > &v);
 void clear_table(SACommand &cmd);
 
 int main(int argc, char* argv[]){
@@ -22,9 +22,9 @@ int main(int argc, char* argv[]){
 	vector<string> trending_likes; //contains a list of the 5 most liked podcasts by podcast_id
 	vector<string> trending_views; //contains a list of the 5 most viewed podcasts by podcast_id
 
-	vector<vector<string>> temp_trending_tags; //[[tags], [tags], [tags]]
-	vector<vector<string>> temp_trending_likes; //[[#likes ,podcast_id], [#likes ,podcast_id], [#likes ,podcast_id]]
-	vector<vector<string>> temp_trending_views; //[[#views ,podcast_id], [#views ,podcast_id], [#views ,podcast_id]]
+	vector<vector<string> > temp_trending_tags; //[[tags], [tags], [tags]]
+	vector<vector<string> > temp_trending_likes; //[[#likes ,podcast_id], [#likes ,podcast_id], [#likes ,podcast_id]]
+	vector<vector<string> > temp_trending_views; //[[#views ,podcast_id], [#views ,podcast_id], [#views ,podcast_id]]
 
 	try{
 		string db_name;
@@ -69,11 +69,16 @@ int main(int argc, char* argv[]){
 				likes = cmd.Field("likes").asString();
 				tags = cmd.Field("tags").asString().split(' ');
 				listens =  cmd.Field("listens").asString();
+				string tags_string = "";
+				for(int i = 0; i < tags.size() - 1; i++){
+					tags_string += tags[i] + ",";
+				}
+				tags_string += tags[tags.size() - 1];
 				printf("Podcast fetched: %s, %s likes, %s tags, %s listens",
-					podcast_id,
-					likes,
-					tags,
-					listens);
+					podcast_id.c_str(),
+					likes.c_str(),
+					tags_string.c_str(),
+					listens.c_str());
 
 				//write the row value to trending.txt
 				trending << podcast_id << " " << likes << " " << cmd.Field("tags").asString() << " " << listens << endl;
@@ -95,9 +100,9 @@ int main(int argc, char* argv[]){
 
 			//append empty values if we don't make a top 5
 			while(temp_trending_likes.size() < 5){
-				temp_trending_likes.push_back(0);
-				temp_trending_views.push_back(0);
 				vector<string> v;
+				temp_trending_likes.push_back(v);
+				temp_trending_views.push_back(v);
 				temp_trending_tags.push_back(v);
 			}
 
@@ -187,9 +192,9 @@ int main(int argc, char* argv[]){
 
 			//append empty values if we don't make a top 5
 			while(temp_trending_likes.size() < 5){
-				temp_trending_likes.push_back(0);
-				temp_trending_views.push_back(0);
 				vector<string> v;
+				temp_trending_likes.push_back(v);
+				temp_trending_views.push_back(v);
 				temp_trending_tags.push_back(v);
 			}
 
@@ -248,7 +253,7 @@ int main(int argc, char* argv[]){
 	return 0;
 }
 
-vector<string> sort_tags(const vector<vector<string>> &v){
+vector<string> sort_tags(vector<vector<string>> &v){
 	vector<string> type_tags;
 	for (int i = 0; i < v.size(); i++){
 		for (int j = 0; j < v[i].size(); j++){
@@ -280,7 +285,7 @@ vector<string> sort_tags(const vector<vector<string>> &v){
 	return type_tags;
 }
 
-vector<string> sort_likes(const vector<vector<string>> &v){
+vector<string> sort_likes(vector<vector<string>> &v){
 	vector<string> most_likes;
 	sort(v.begin(), v.end());
 	for (int i = v.size() - ; i > 0; i--){
