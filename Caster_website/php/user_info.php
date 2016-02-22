@@ -1,4 +1,4 @@
-<?php 
+<?php
 include_once $_SERVER['DOCUMENT_ROOT'].'/phpreq/start_session.php';
 include_once 'php_vars.php';
 
@@ -39,6 +39,8 @@ else if($q == "UNAMETOUID"){
 }
 else if($q == "LKD"){
 	get_liked(filter_input(INPUT_POST,'id'));
+}else if($q == "EDIT_DATE"){
+  print user_json(filter_input(INPUT_POST, "id"))["edit_date"];
 }
 
 function get_liked($userid){
@@ -48,7 +50,7 @@ function get_liked($userid){
     }
 	if($userid == -1){
 		$userid = $_SESSION['user_id'];
-	}    
+	}
 	$link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the database");
 	$query = "SELECT `liked` FROM `".TABLE_USERS."` WHERE `user_id`=$userid";
 	$result = mysqli_query($link,$query) or die("Error querying the database");
@@ -87,7 +89,7 @@ function edit_password(){
 function username(){
     $userid = filter_input(INPUT_POST,"id");
     $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to server");
-    $query = "SELECT `username` FROM `".TABLE_USERS."` WHERE `user_id`=".$userid;    
+    $query = "SELECT `username` FROM `".TABLE_USERS."` WHERE `user_id`=".$userid;
     $result = mysqli_query($link,$query) or die("Error querying database");
     if(mysqli_num_rows($result) >= 1){
         $row = mysqli_fetch_array($result);
@@ -101,7 +103,7 @@ function username(){
 function userid(){
     $username = filter_input(INPUT_POST,"name");
     $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to server");
-    $query = "SELECT `user_id` FROM `".TABLE_USERS."` WHERE `username`='$username'";    
+    $query = "SELECT `user_id` FROM `".TABLE_USERS."` WHERE `username`='$username'";
     $result = mysqli_query($link,$query) or die("Error querying database");
     if(mysqli_num_rows($result) >= 1){
         $row = mysqli_fetch_array($result);
@@ -119,20 +121,20 @@ function profile_pic(){
     $result = mysqli_query($link,$query) or die("Error queerying the database");
     if(mysqli_num_rows($result) >= 1){
         $row = mysqli_fetch_array($result);
-        echo $row['picture'];        
+        echo $row['picture'];
     }
     else{
         echo "UNDEFINDED";
     }
-    mysqli_close($link);        
+    mysqli_close($link);
 }
 
 function user_id(){
     if(isset($_SESSION['user_id'])){
-        echo $_SESSION['user_id'];        
+        echo $_SESSION['user_id'];
     }
     else{
-        echo "NO";           
+        echo "NO";
     }
 }
 
@@ -143,7 +145,7 @@ function description(){
     $result = mysqli_query($link,$query) or die("Error queerying the database");
     if(mysqli_num_rows($result) >= 1){
         $row = mysqli_fetch_array($result);
-        echo $row['description'];        
+        echo $row['description'];
     }
     else{
         echo "UNDEFINDED";

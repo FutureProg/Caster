@@ -14,4 +14,5 @@
     <color name="accent_material_light">#dd2c00</color>
     <color name="secondary_text_material_light">#ffffff</color>
     <color name="Caster_Colour_Profile">#000000</color>
+    <color name="app_background_colour">#ffffff</color>
 </resources>

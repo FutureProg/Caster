@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:textSize="@dimen/abc_text_size_title_material"
+            android:textSize="@dimen/abc_text_size_medium_material"
             android:textColor="@android:color/black"
             android:layout_gravity="center"
             android:text="@string/lorem_ipsum"/>

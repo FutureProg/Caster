@@ -69,6 +69,9 @@ elseif ($q == "LKS"){
 elseif ($q == "LSTN"){
 	print listen_to_podcast(filter_input(INPUT_POST,"id"));
 }
+else if($q == "EDIT_DATE"){
+  print get_podcast(filter_input(INPUT_POST, "id"))["edit_date"];
+}
 
 function listen_to_podcast($id){
 	$link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting ot the server");
