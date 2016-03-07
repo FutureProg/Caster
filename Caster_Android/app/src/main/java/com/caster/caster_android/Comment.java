@@ -16,6 +16,8 @@ import java.util.concurrent.ExecutionException;
  */
 public class Comment {
 
+
+    //TODO: Make sure comments work
     public final static int PODCAST_ID=0,USER_ID=1,ID=2,POST_DATE=4,MESSAGE=5;
 
     HashMap<Integer, Object> metadata; //podcast_id,user_id,id,post_date,message

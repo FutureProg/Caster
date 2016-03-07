@@ -241,6 +241,7 @@ public class PodcastDownloader implements Runnable {
     public void saveDownloadLog(){
         Log.v("CASTER_SAVE","SAVE");
         try {
+
             FileOutputStream outputStream = context.openFileOutput("download_list_podcasts",Context.MODE_PRIVATE);
             FileOutputStream metaStream = context.openFileOutput("metaonly_list_podcasts",Context.MODE_PRIVATE);
             for (int podcast_id : states.keySet()) {
@@ -416,6 +417,10 @@ public class PodcastDownloader implements Runnable {
                     outputStream = new FileOutputStream(file);
                     for (int key: podcast.getMetadata().keySet()) {
                         outputStream.write((key + "\n").getBytes());
+                        if(key == Podcast.EDIT_STAMP){
+                            outputStream.write((podcast.getMetadata().get(key) + "\n").getBytes());
+                            continue;
+                        }
                         outputStream.write((podcast.getMetadata().get(key) + "\n").getBytes());
                     }
                     outputStream.flush();
@@ -436,7 +441,7 @@ public class PodcastDownloader implements Runnable {
                     basePath = context.getFilesDir().getAbsolutePath() + "/user_" + podcast.getCreatorId();
                     String path = basePath + "/metadata";
                     file = new File(path);
-                    if (!file.exists()){
+                    if (!file.exists() || (User.makeFromID(podcast.getCreatorId())).needsUpdate()){
                         waitForNetwork();
                         file.getParentFile().mkdirs();
                         file.createNewFile();
@@ -471,8 +476,8 @@ public class PodcastDownloader implements Runnable {
                         waitForNetwork();
                         ArrayList<Podcast> userPodcasts = creator.getPodcasts();
                         for (Podcast _podcast : userPodcasts){
-
                             waitForNetwork();
+                            if(!_podcast.needsUpdate())continue;
                             basePath = context.getFilesDir().getAbsolutePath() + "/podcast_" + _podcast.getId();
                             metaPath = basePath + "/metadata";
                             file= new File(metaPath);
@@ -514,7 +519,7 @@ public class PodcastDownloader implements Runnable {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                //TODO: Check if metadata update is needed before saving
+                //TODO: Test if metadata update is needed before saving
                 states.put(item.podcast_id, State.FINISHED);
                 if (item.listener != null) {
                     MainActivity.instance.runOnUiThread(new Runnable() {

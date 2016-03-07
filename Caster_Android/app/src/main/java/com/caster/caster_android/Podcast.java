@@ -12,6 +12,9 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
@@ -31,7 +34,7 @@ public class Podcast {
 
     public final static int COVER_PHOTO = 0, TITLE = 1, DESCRIPTION = 2, VIEWS = 3, LIKES = 4,
                             LENGTH = 5, ID=6,CREATOR_ID=7, AUDIO_FILE = 8, URLID = 9,
-                            DOWNLOADABLE = 10, CATEGORY = 11;
+                            DOWNLOADABLE = 10, CATEGORY = 11, EDIT_STAMP = 12;
 
     HashMap<Integer, Object> metadata; //image,title, descriptions, views, likes, length, etc.
     User creator;
@@ -96,8 +99,14 @@ public class Podcast {
             data.put(URLID, jsonObject.getString("urlid"));
             data.put(DOWNLOADABLE,jsonObject.getString("downloadable"));
             data.put(CATEGORY,jsonObject.getString("category"));
+            String date_str = jsonObject.getString("edit_date");
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date = df.parse(date_str);
+            data.put(EDIT_STAMP,date);
             re = new Podcast(data);
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
             e.printStackTrace();
         }
         return re;
@@ -240,6 +249,33 @@ public class Podcast {
 
     public String getUrlid() { return (String)metadata.get(URLID); }
 
+    public Date getEditDate(){
+        return (Date)metadata.get(EDIT_STAMP);
+    }
+
+    public boolean needsUpdate(){
+        if(!Bin.checkConnection(MainActivity.instance)){
+            return false;
+        }
+        Date lastUpdate = getEditDate();
+        CasterRequest req = new CasterRequest(MainActivity.site + "/php/podcast.php");
+        try {
+            String res = (String)req.addParam("q","EDIT_DATE").addParam("id",getId()+"").execute().get();
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date update = df.parse(res);
+            metadata.put(EDIT_STAMP,update);
+            return lastUpdate.before(update);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return false;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            return false;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     public HashMap<Integer, Object> getMetadata(){
         return  metadata;
