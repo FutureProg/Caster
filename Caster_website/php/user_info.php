@@ -40,7 +40,7 @@ else if($q == "UNAMETOUID"){
 else if($q == "LKD"){
 	get_liked(filter_input(INPUT_POST,'id'));
 }else if($q == "EDIT_DATE"){
-  print user_json(filter_input(INPUT_POST, "id"))["edit_date"];
+  print edit_stamp(INPUT_POST, "id");
 }
 
 function get_liked($userid){
@@ -170,4 +170,12 @@ function username_to_userid(){
 	$result = mysqli_query($link, $query) or die("Error querying the database");
 	$row = mysqli_fetch_array($result);
 	return $row[user_id];
+}
+
+function edit_stamp($userid){
+  $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the server");
+  $query = "SELECT `edit_date` FROM `".TABLE_USERS."` WHERE `user_id`=$userid";
+  $result = mysqli_query($link,$query) or die("Error querying the database");
+  $row = mysqli_fetch_array($result);
+  return $row['edit_date'];
 }

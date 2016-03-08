@@ -2,6 +2,7 @@ package com.caster.caster_android;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import com.caster.caster_android.utils.Bin;
 import com.caster.caster_android.utils.PodcastDownloader;
@@ -252,6 +253,7 @@ public class User {
             String res = (String)req.addParam("q","EDIT_DATE").addParam("id",getId()+"").execute().get();
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             if(res == null || res.isEmpty())return false;
+            Log.v("Caster_User",res);
             Date update = df.parse(res);
             metadata.put(EDIT_STAMP,update);
             return lastUpdate.before(update);
