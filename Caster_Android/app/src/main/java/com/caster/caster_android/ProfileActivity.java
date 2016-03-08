@@ -72,6 +72,7 @@ public class ProfileActivity extends AppCompatActivity implements PodcastDownloa
             return true;
         }
         else if(item.getItemId() == R.id.action_refresh){
+            Toast.makeText(this,"Refresh",Toast.LENGTH_SHORT).show();
             try {
                 PodcastDownloader.getDownloader(getApplicationContext()).downloadUser(user.getId(),this);
             } catch (IOException e) {

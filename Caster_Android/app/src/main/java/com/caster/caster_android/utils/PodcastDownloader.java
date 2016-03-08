@@ -138,7 +138,8 @@ public class PodcastDownloader implements Runnable {
         String basePath = context.getFilesDir().getAbsolutePath() + "/user_" + user_id;
         String path = basePath + "/metadata";
         File file = new File(path);
-        if (!file.exists() || User.makeFromID(user_id).needsUpdate()) {
+        if (!file.exists() || User.makeFromID(user_id).needsUpdate(context)) {
+            Log.v("Caster_Download","updating..");
             waitForNetwork();
             file.getParentFile().mkdirs();
             file.createNewFile();
@@ -464,7 +465,7 @@ public class PodcastDownloader implements Runnable {
                     basePath = context.getFilesDir().getAbsolutePath() + "/user_" + podcast.getCreatorId();
                     String path = basePath + "/metadata";
                     file = new File(path);
-                    if (!file.exists() || (User.makeFromID(podcast.getCreatorId())).needsUpdate()){
+                    if (!file.exists() || (User.makeFromID(podcast.getCreatorId())).needsUpdate(context)){
                         waitForNetwork();
                         file.getParentFile().mkdirs();
                         file.createNewFile();

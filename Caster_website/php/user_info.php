@@ -40,7 +40,7 @@ else if($q == "UNAMETOUID"){
 else if($q == "LKD"){
 	get_liked(filter_input(INPUT_POST,'id'));
 }else if($q == "EDIT_DATE"){
-  print edit_stamp(INPUT_POST, "id");
+  print edit_stamp(filter_input(INPUT_POST, "id"));
 }
 
 function get_liked($userid){
