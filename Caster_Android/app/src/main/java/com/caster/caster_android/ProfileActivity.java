@@ -16,14 +16,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.caster.caster_android.utils.PodcastDownloader;
 import com.caster.caster_android.views.PodcastBar;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
  * Created by Nick on 15-06-01.
  */
-public class ProfileActivity extends AppCompatActivity{
+public class ProfileActivity extends AppCompatActivity implements PodcastDownloader.OnChangeListener{
 
     public static User user;
 
@@ -69,6 +71,13 @@ public class ProfileActivity extends AppCompatActivity{
             Toast.makeText(this,"BIO",Toast.LENGTH_SHORT).show();
             return true;
         }
+        else if(item.getItemId() == R.id.action_refresh){
+            try {
+                PodcastDownloader.getDownloader(getApplicationContext()).downloadUser(user.getId(),this);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -91,5 +100,22 @@ public class ProfileActivity extends AppCompatActivity{
     public void openPlayer(View view){
         Intent intent = new Intent(this,PodcastPlayer.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onDownloadStateChange(int progress, int podcast_id, PodcastDownloader.State state) {
+        ((ImageView)findViewById(R.id.profilePicture)).setImageBitmap(user.getImage());
+        ((TextView)findViewById(R.id.profile_username)).setText(user.getUsername());
+        //((TextView)findViewById(R.id.profile_bio)).setText(user.getDescription());
+        podcastArea = (LinearLayout)findViewById(R.id.podcast_area);
+        podcastArea.removeAllViewsInLayout();
+        podcasts = new ArrayList<>(user.getPodcasts());
+        this.getSupportActionBar().setTitle("");
+        this.getSupportActionBar().setDisplayShowTitleEnabled(true);
+        for (Podcast podcast : podcasts){
+            Log.v("caster_profile",podcast.getTitle());
+            PodcastBar bar = new PodcastBar(this,null,podcast);
+            podcastArea.addView(bar);
+        }
     }
 }

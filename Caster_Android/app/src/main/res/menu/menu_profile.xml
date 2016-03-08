@@ -5,8 +5,10 @@
     tools:context="com.caster.caster_android.ProfileActivity">
 
     <item android:id="@+id/action_bio"
-        android:title="bio"
-        android:orderInCategory="100"
-        />
+        android:title="Bio" />
+
+    <item android:id="@+id/action_refresh"
+        android:title="Refresh"
+        app:showAsAction="never"/>
 
 </menu>

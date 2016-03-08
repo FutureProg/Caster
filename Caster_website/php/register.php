@@ -51,7 +51,7 @@ function checkEmail($email){
 function signUp($username,$password,$email){
     $link = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME) or die("Error connecting to the server");
     $password = password_hash($password,PASSWORD_DEFAULT);
-    $query = "INSERT INTO ".TABLE_USERS." VALUES (0,NOW(),'$username','$password','$email','','','','')";   
+    $query = "INSERT INTO ".TABLE_USERS." VALUES (0,NOW(),'$username','$password','$email','','','','',NOW())";   
     $result = mysqli_query($link, $query) or die("Error querying database");
     mysqli_close($link);
     #$msg = "<html><body><p>Hello there! Welcome to <a href=''>Caster</a>!<p></body></html>";

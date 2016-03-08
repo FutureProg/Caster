@@ -41,7 +41,8 @@ public class PodcastDownloader implements Runnable {
         DOWNLOADING,
         CANCELLED,
         FINISHED,
-        METAONLY
+        METAONLY,
+        UPDATE
     };
     Queue<Item> items;
     HashSet<Integer> toCancel;
@@ -133,11 +134,11 @@ public class PodcastDownloader implements Runnable {
      * Downloads the specified user for offline use
      * @param user_id
      */
-    public void downloadUser(int user_id) throws IOException {
+    public void downloadUser(int user_id, final OnChangeListener listener) throws IOException {
         String basePath = context.getFilesDir().getAbsolutePath() + "/user_" + user_id;
         String path = basePath + "/metadata";
         File file = new File(path);
-        if (!file.exists()) {
+        if (!file.exists() || User.makeFromID(user_id).needsUpdate()) {
             waitForNetwork();
             file.getParentFile().mkdirs();
             file.createNewFile();
@@ -163,35 +164,57 @@ public class PodcastDownloader implements Runnable {
             waitForNetwork();
             ArrayList<Podcast> userPodcasts = creator.getPodcasts();
             for (Podcast _podcast : userPodcasts){
-
-                waitForNetwork();
-                basePath = context.getFilesDir().getAbsolutePath() + "/podcast_" + _podcast.getId();
-                String metaPath = basePath + "/metadata";
-                file= new File(metaPath);
-                if (file.exists()) continue;
-                file.getParentFile().mkdirs();
-                file.createNewFile();
-                outputStream = new FileOutputStream(file);
-                for (int key: _podcast.getMetadata().keySet()) {
-                    outputStream.write((key + "\n").getBytes());
-                    outputStream.write((_podcast.getMetadata().get(key) + "\n").getBytes());
-                }
-                outputStream.flush();
-                outputStream.close();
-
-                waitForNetwork();
-                String coverPath = basePath + "/cover_image";
-                file = new File(coverPath);
-                file.createNewFile();
-                outputStream = new FileOutputStream(file);
-                Bitmap coverimage = _podcast.getCoverPhoto();
-                coverimage.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-                outputStream.flush();
-                outputStream.close();
-                states.put(_podcast.getId(),State.METAONLY);
+                updatePodcast(_podcast.getId(),null);
             }
         }
+        if(listener != null){
+            MainActivity.instance.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    listener.onDownloadStateChange(100,-1,State.FINISHED);
+                }
+            });
+        }
         downloadedUsers.add(user_id);
+    }
+
+    public void updatePodcast(final int podcast_id, final OnChangeListener listener) throws IOException{
+        Podcast podcast = Podcast.makeFromID(podcast_id);
+        if(podcast.needsUpdate()){
+            Bin.podcasts.remove(podcast_id);
+            podcast = Podcast.makeFromID(podcast_id);
+            String basePath = context.getFilesDir().getAbsolutePath() + "/podcast_" + podcast.getId();
+            waitForNetwork();
+            String metaPath = basePath + "/metadata";
+            File file= new File(metaPath);
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+            FileOutputStream outputStream = new FileOutputStream(file);
+            for (int key: podcast.getMetadata().keySet()) {
+                outputStream.write((key + "\n").getBytes());
+                outputStream.write((podcast.getMetadata().get(key) + "\n").getBytes());
+            }
+            outputStream.flush();
+            outputStream.close();
+
+            waitForNetwork();
+            String coverPath = basePath + "/cover_image";
+            file = new File(coverPath);
+            file.createNewFile();
+            outputStream = new FileOutputStream(file);
+            Bitmap coverimage = podcast.getCoverPhoto();
+            coverimage.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            outputStream.flush();
+            outputStream.close();
+        }
+        if(listener != null){
+            MainActivity.instance.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    listener.onDownloadStateChange(100,podcast_id,State.UPDATE);
+                }
+            });
+        }
     }
 
     /**
@@ -475,13 +498,16 @@ public class PodcastDownloader implements Runnable {
                         //Save the metadata of the users and the images
                         waitForNetwork();
                         ArrayList<Podcast> userPodcasts = creator.getPodcasts();
-                        for (Podcast _podcast : userPodcasts){
+                        for (int i = 0; i < userPodcasts.size();i++){
+                            Podcast _podcast = userPodcasts.get(i);
                             waitForNetwork();
-                            if(!_podcast.needsUpdate())continue;
                             basePath = context.getFilesDir().getAbsolutePath() + "/podcast_" + _podcast.getId();
                             metaPath = basePath + "/metadata";
                             file= new File(metaPath);
-                            if (file.exists()) continue;
+                            if (!_podcast.needsUpdate() || file.exists()) continue;
+                            int id = _podcast.getId();
+                            Bin.podcasts.remove(id);
+                            _podcast = Podcast.makeFromID(id);
                             file.getParentFile().mkdirs();
                             file.createNewFile();
                             outputStream = new FileOutputStream(file);

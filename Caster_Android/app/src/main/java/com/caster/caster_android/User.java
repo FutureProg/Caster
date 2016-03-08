@@ -251,6 +251,7 @@ public class User {
         try {
             String res = (String)req.addParam("q","EDIT_DATE").addParam("id",getId()+"").execute().get();
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            if(res == null || res.isEmpty())return false;
             Date update = df.parse(res);
             metadata.put(EDIT_STAMP,update);
             return lastUpdate.before(update);
