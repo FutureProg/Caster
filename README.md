@@ -12,16 +12,16 @@ The website is hosted on amazon ec2 services here: <a href="http://ec2-52-35-70-
   * Clicking continuously adds views
 * Likes bug
   * Clicking continuously adds likes
-* Trending by tags
-* Trending by views
 * Searching by category
 * Legal
 * Android App
-* Playlists
 * Shorten bottom bar on website (that currently contains legal)
+* Pagination
 
 #TODO Later
-
+* Trending by tags
+* Trending by views
+* Playlists
 * Cache as much static content as possible on the website to speed up performance
 * Analytics
 * Monetization (ads)
