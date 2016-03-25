@@ -145,7 +145,7 @@ function comment(){
     $podcast_id = filter_input(INPUT_POST,"id");
     $message = addslashes(filter_input(INPUT_POST,"msg"));
     $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the server");
-    $query = "INSERT INTO `".TABLE_COMMENTS."` (`comment_id`,`user_id`,`podcast_id`,`message`) VALUES (0,$user_id,$podcast_id,'$message');";
+    $query = "INSERT INTO `".TABLE_COMMENTS."` (`comment_id`,`user_id`,`podcast_id`,`message`,`post_date`) VALUES (0,$user_id,$podcast_id,'$message',NOW());";
     $result = mysqli_query($link,$query) or die("Error querying the database: ");
     echo "OKAY";
 }
