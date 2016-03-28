@@ -171,7 +171,7 @@ function playSound(id,title){
                 sidebar += "</div>";
                 $("#audio-player #podcast-art").attr("src","/users/"+user.user_id+"/images/podcast/"+podcast.image_file);
                 $("#audio-player-comment-area").html("");
-                $("#audio-player #audio-player-content").html(imgtag + sidebar + "<br/><br/><br/><br/><div style='float:left'><p>"+podcast.description+"</p></div>" + "<br/>" + "<div id='audio-player-comment-area'></div>");
+                $("#audio-player #audio-player-content").html(imgtag + sidebar + "<br/><br/><br/><br/><div><p>"+podcast.description+"</p></div>" + "<br/>" + "<div id='audio-player-comment-area'></div>");
                 currentPID = podcast.podcast_id;
                 updateLikeButton();
                 /*var title = podcast.title;

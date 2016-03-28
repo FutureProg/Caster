@@ -164,7 +164,7 @@ function get_comments_json($podcast_id){
 function get_comments_html(){
 	$podcast_id = filter_input(INPUT_POST,"id");
 	$link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the server");
-	$query = "SELECT * FROM `".TABLE_COMMENTS."` WHERE `podcast_id`=$podcast_id";
+	$query = "SELECT * FROM `".TABLE_COMMENTS."` WHERE `podcast_id`=$podcast_id ORDER BY `post_date` DESC";
 	$result = mysqli_query($link,$query) or die ("Error querying server for comments");
 	while($comment = mysqli_fetch_array($result)){
 		$query = "SELECT * FROM `".TABLE_USERS."` WHERE `user_id`=".$comment['user_id'];
@@ -176,9 +176,9 @@ function get_comments_html(){
 		}else{
 			$profpic = "/users/".$user['user_id']."/images/".$profpic;
 		}
-		echo "<div onclick=loadPage('/profile.php?user=".$user['username']."') style='cursor:pointer;float:left;'>\n";
+		echo "<div onclick=loadPage('profile.php?user=".$user['username']."') style='cursor:pointer;float:left;'>\n";
 		echo "<img style='width:20px;height;20px' src='$profpic' /></div>";
-		echo "<div>".$comment['post_date'].": ".$comment['message']."</div><br/>";
+		echo "<div>".$user['username'].": ".$comment['message']."</div><br/>";
 	};
 	echo "OKAY";
 }
