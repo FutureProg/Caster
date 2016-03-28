@@ -1,6 +1,7 @@
 var token;
 var podcast;
 var onnav = null;
+var signedIn = false;
 $(".inner-link").click(function(evt){
     evt.preventDefault();
     loadPage(this.getAttribute("href"));
