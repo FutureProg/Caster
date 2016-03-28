@@ -35,7 +35,7 @@ function loadPage(url,scroll){
 	if(onnav != null){
 		onnav();
 	}
-  $("#main-content").fadeOut(100);
+  $("#main-content").fadeOut(150);
     $.ajax({
         type: "GET",
         url: "/php/page_content/" + url.split("/").pop()
@@ -49,7 +49,7 @@ function loadPage(url,scroll){
         url = "/" + url;
         history.pushState(null,null,url);
         $("#main-content").html(html);
-        $("#main-content").fadeIn(100);
+        $("#main-content").fadeIn(150);
     });
 }
 
