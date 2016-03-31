@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -27,3 +27,10 @@ function randomString($length = 8){
     }
     return $re;
 }
+
+if(isset($_SESSION['user_id'])){?>
+<script>
+    signedIn = true;
+    signed_in_user_id = "<?php echo $_SESSION['user_id'] ?>";
+</script>
+<?php}
