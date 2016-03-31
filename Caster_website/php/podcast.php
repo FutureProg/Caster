@@ -18,6 +18,9 @@ elseif ($q == "DLT"){
 elseif ($q == "CMNT"){
     comment();
 }
+elseif ($q == "DEL_CMNT"){
+    delete_comment();
+}
 elseif ($q == "CMNTS_JSON"){
     print get_comments_json(filter_input(INPUT_POST,"id"));
 }
@@ -147,6 +150,14 @@ function comment(){
     $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the server");
     $query = "INSERT INTO `".TABLE_COMMENTS."` (`comment_id`,`user_id`,`podcast_id`,`message`,`post_date`) VALUES (0,$user_id,$podcast_id,'$message',NOW());";
     $result = mysqli_query($link,$query) or die("Error querying the database: ");
+    echo "OKAY";
+}
+
+function delete_comment(){
+    $comment_id = filter_input((INPUT_POST, "comment_id");
+    $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the server");
+    $query = "DELETE FROM `".TABLE_COMMENTS."` WHERE `comment_id`=$comment_id";
+    $result = mysqli_query($link,$query) or die("Error querying the database.");
     echo "OKAY";
 }
 
