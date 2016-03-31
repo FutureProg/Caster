@@ -31,6 +31,5 @@ function randomString($length = 8){
 if(isset($_SESSION['user_id'])){?>
 <script>
     signedIn = true;
-    signed_in_user_id = "<?php echo $_SESSION['user_id'] ?>";
 </script>
 <?php}
