@@ -154,7 +154,7 @@ function comment(){
 }
 
 function delete_comment(){
-    $comment_id = filter_input((INPUT_POST, "comment_id");
+    $comment_id = filter_input(INPUT_POST, "comment_id");
     $link = mysqli_connect(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME) or die("Error connecting to the server");
     $query = "DELETE FROM `".TABLE_COMMENTS."` WHERE `comment_id`=$comment_id";
     $result = mysqli_query($link,$query) or die("Error querying the database.");
