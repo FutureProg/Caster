@@ -27,9 +27,3 @@ function randomString($length = 8){
     }
     return $re;
 }
-
-if(isset($_SESSION['user_id'])){?>
-<script>
-    signedIn = true;
-</script>
-<?php}
