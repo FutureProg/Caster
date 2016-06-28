@@ -4,6 +4,8 @@ The android app design can be found here: <a href="https://docs.google.com/prese
 
 The website is hosted on amazon ec2 services here: <a href="http://ec2-52-35-70-147.us-west-2.compute.amazonaws.com/">Caster Test Website</a>
 
+This is a site that a friend of mine and I were working on but due to a poor market response have decided against moving forward with. Take a look around but try not to break anything on the site based on what you find here. 
+
 #TODO Before Release
 
 * Report Button
